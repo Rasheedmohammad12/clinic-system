@@ -9,18 +9,28 @@
 body{margin:0;font-family:Tahoma,Arial;background:#f3f4f6}
 .hidden{display:none}
 .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+
+/* SIDEBAR */
 .sidebar{background:#fff;border-left:1px solid #e5e7eb;padding:20px}
 .brand{font-size:20px;font-weight:bold;margin-bottom:25px}
 .nav button{width:100%;border:none;background:transparent;padding:12px;border-radius:10px;text-align:right;cursor:pointer}
 .nav button.active,.nav button:hover{background:#eef2ff;color:#1d4ed8}
 .logout{margin-top:20px;background:#ef4444;color:#fff;border:none;padding:12px;border-radius:10px;width:100%}
+
+/* CONTENT */
 .content{padding:25px}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
 .primary{background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer}
+
+.panel{background:#fff;padding:15px;border-radius:14px;margin-bottom:15px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
 .card{background:#fff;padding:15px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
 input,select,textarea{padding:8px;border-radius:6px;border:1px solid #d1d5db;width:100%}
-.panel{background:#fff;padding:15px;border-radius:14px;margin-bottom:15px}
+
+/* MODAL */
+.backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000}
+.modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+background:#fff;width:480px;max-width:95%;padding:20px;border-radius:14px;z-index:1001}
 </style>
 </head>
 
@@ -28,19 +38,28 @@ input,select,textarea{padding:8px;border-radius:6px;border:1px solid #d1d5db;wid
 
 <script>
 if(!localStorage.getItem("currentUser")) location.href="index.html";
+
+/* كلمة سر المدفوعات */
+if(!localStorage.getItem("paymentsPassword")){
+  localStorage.setItem("paymentsPassword","1234"); // افتراضية
+}
 </script>
 
 <div class="app">
 
+<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="brand">clinic-system</div>
   <div class="nav">
     <button class="active" onclick="showPage('patients',this)">المرضى</button>
     <button onclick="showPage('sessions',this)">الجلسات</button>
+    <button onclick="openPayments()">المدفوعات</button>
+    <button onclick="showPage('settings',this)">الإعدادات</button>
   </div>
   <button class="logout" onclick="logout()">تسجيل خروج</button>
 </aside>
 
+<!-- CONTENT -->
 <main class="content">
 
 <div class="header">
@@ -70,6 +89,25 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
   </div>
 </section>
 
+<!-- PAYMENTS -->
+<section id="paymentsPage" class="hidden">
+  <div class="panel">
+    <h3>المدفوعات (من الجلسات)</h3>
+    <div id="paymentsList"></div>
+    <hr>
+    <h3>💰 المجموع الكلي: <span id="paymentsTotal">0</span></h3>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settingsPage" class="hidden">
+  <div class="panel">
+    <h3>تغيير كلمة سر المدفوعات</h3>
+    <input id="newPass" placeholder="كلمة السر الجديدة">
+    <button class="primary" onclick="changePassword()">حفظ</button>
+  </div>
+</section>
+
 </main>
 </div>
 
@@ -80,8 +118,12 @@ function showPage(page,btn){
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   pageTitle.innerText = btn.innerText;
+
   patientsPage.classList.toggle("hidden", page!=="patients");
   sessionsPage.classList.toggle("hidden", page!=="sessions");
+  paymentsPage.classList.add("hidden");
+  settingsPage.classList.toggle("hidden", page!=="settings");
+
   if(page==="patients") renderPatients();
   if(page==="sessions"){ fillPatientsSelect(); renderSessions(); }
 }
@@ -140,6 +182,43 @@ function renderSessions(){
         </div>`;
     });
   });
+}
+
+function openPayments(){
+  const pass=prompt("أدخل كلمة سر المدفوعات:");
+  if(pass!==localStorage.getItem("paymentsPassword")){
+    alert("كلمة السر غير صحيحة");
+    return;
+  }
+  pageTitle.innerText="المدفوعات";
+  patientsPage.classList.add("hidden");
+  sessionsPage.classList.add("hidden");
+  settingsPage.classList.add("hidden");
+  paymentsPage.classList.remove("hidden");
+  renderPayments();
+}
+
+function renderPayments(){
+  paymentsList.innerHTML="";
+  let total=0;
+  patients.forEach(p=>{
+    p.sessions.forEach(s=>{
+      total+=s.amount;
+      paymentsList.innerHTML+=`
+        <div class="card">
+          <b>${p.name}</b><br>
+          ${s.date} – ${s.amount}
+        </div>`;
+    });
+  });
+  paymentsTotal.innerText=total;
+}
+
+function changePassword(){
+  if(!newPass.value) return;
+  localStorage.setItem("paymentsPassword",newPass.value);
+  alert("تم تغيير كلمة السر");
+  newPass.value="";
 }
 
 function logout(){

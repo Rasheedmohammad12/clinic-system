@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clinic System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      width: 320px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2c7be5;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .lang {
+      margin-top: 10px;
+      cursor: pointer;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2 id="title">Clinic Login</h2>
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="msg" style="color:red;"></p>
+  <div class="lang" onclick="toggleLang()">عربي / EN</div>
+</div>
+
+<script>
+  let lang = "en";
+  const PASSWORD = "clinic123";
+
+  function login() {
+    const pass = document.getElementById("password").value;
+    if (pass === PASSWORD) {
+      alert(lang === "en" ? "Welcome to Dashboard" : "مرحباً بك في النظام");
+    } else {
+      document.getElementById("msg").innerText =
+        lang === "en" ? "Wrong password" : "كلمة المرور خاطئة";
+    }
+  }
+
+  function toggleLang() {
+    lang = lang === "en" ? "ar" : "en";
+    document.getElementById("title").innerText =
+      lang === "en" ? "Clinic Login" : "تسجيل دخول العيادة";
+    document.getElementById("password").placeholder =
+      lang === "en" ? "Password" : "كلمة المرور";
+  }
+</script>
+
+</body>
+</html>

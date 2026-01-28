@@ -16,22 +16,17 @@
 
         .box {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 10px;
-            width: 380px;
+            width: 420px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             text-align: center;
         }
 
-        h2 {
-            margin-bottom: 10px;
-        }
-
         input, button {
             width: 100%;
-            padding: 12px;
-            margin-top: 12px;
-            font-size: 15px;
+            padding: 10px;
+            margin-top: 10px;
         }
 
         button {
@@ -42,45 +37,34 @@
             cursor: pointer;
         }
 
-        button.logout {
+        .logout {
             background: #dc3545;
-            margin-top: 20px;
         }
 
         .hidden {
             display: none;
         }
 
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            gap: 10px;
+        .menu button {
+            margin-top: 8px;
         }
 
-        .card {
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        li {
             background: #f1f3f5;
-            border-radius: 8px;
-            padding: 15px;
-            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 6px;
         }
 
-        .card h3 {
-            margin: 0;
-            font-size: 16px;
-            color: #555;
-        }
-
-        .card p {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 8px 0 0;
-            color: #007bff;
-        }
-
-        .error {
-            color: red;
-            margin-top: 10px;
+        .back {
+            background: #6c757d;
         }
     </style>
 </head>
@@ -91,37 +75,38 @@
     <h2>Clinic Login</h2>
     <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
-    <div id="error" class="error"></div>
+    <p id="error" style="color:red;"></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="box hidden">
-    <h2>Clinic Dashboard</h2>
-    <p>Welcome to Clinic System</p>
+    <h2>Dashboard</h2>
 
-    <div class="stats">
-        <div class="card">
-            <h3>Patients</h3>
-            <p id="patients">24</p>
-        </div>
-        <div class="card">
-            <h3>Appointments</h3>
-            <p id="appointments">12</p>
-        </div>
-        <div class="card">
-            <h3>Revenue</h3>
-            <p>$ <span id="revenue">860</span></p>
-        </div>
+    <div class="menu">
+        <button onclick="openPatients()">Patients</button>
+        <button class="logout" onclick="logout()">Logout</button>
     </div>
+</div>
 
-    <button class="logout" onclick="logout()">Logout</button>
+<!-- PATIENTS -->
+<div id="patientsPage" class="box hidden">
+    <h2>Patients</h2>
+
+    <input type="text" id="patientName" placeholder="Patient name">
+    <button onclick="addPatient()">Add Patient</button>
+
+    <ul id="patientsList"></ul>
+
+    <button class="back" onclick="backToDashboard()">Back</button>
 </div>
 
 <script>
-    // Auto login if already logged in
+    // Auto login
     if (localStorage.getItem("loggedIn") === "true") {
         showDashboard();
     }
+
+    let patients = JSON.parse(localStorage.getItem("patients")) || [];
 
     function login() {
         const pass = document.getElementById("password").value;
@@ -134,13 +119,49 @@
     }
 
     function logout() {
-        localStorage.removeItem("loggedIn");
+        localStorage.clear();
         location.reload();
     }
 
     function showDashboard() {
-        document.getElementById("loginBox").classList.add("hidden");
+        hideAll();
         document.getElementById("dashboard").classList.remove("hidden");
+    }
+
+    function openPatients() {
+        hideAll();
+        document.getElementById("patientsPage").classList.remove("hidden");
+        renderPatients();
+    }
+
+    function backToDashboard() {
+        showDashboard();
+    }
+
+    function hideAll() {
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("dashboard").classList.add("hidden");
+        document.getElementById("patientsPage").classList.add("hidden");
+    }
+
+    function addPatient() {
+        const name = document.getElementById("patientName").value.trim();
+        if (name === "") return;
+
+        patients.push(name);
+        localStorage.setItem("patients", JSON.stringify(patients));
+        document.getElementById("patientName").value = "";
+        renderPatients();
+    }
+
+    function renderPatients() {
+        const list = document.getElementById("patientsList");
+        list.innerHTML = "";
+        patients.forEach(p => {
+            const li = document.createElement("li");
+            li.textContent = p;
+            list.appendChild(li);
+        });
     }
 </script>
 

@@ -4,7 +4,6 @@ const patientSelect = document.getElementById("patientSelect");
 function loadPatients() {
   const patients = getPatients();
   patientSelect.innerHTML = `<option value="">-- اختر المريض --</option>`;
-
   patients.forEach(p => {
     const opt = document.createElement("option");
     opt.value = p.id;
@@ -25,15 +24,9 @@ form.addEventListener("submit", e => {
     return;
   }
 
-  // إضافة مباشرة إلى المدفوعات
-  addPayment({
-    patientId,
-    amount,
-    note
-  });
+  addPayment(patientId, amount, note);
 
   alert("✅ تم استلام المبلغ وإضافته إلى المدفوعات");
-
   form.reset();
 });
 

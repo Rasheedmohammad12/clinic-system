@@ -2,64 +2,62 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>نظام العيادة</title>
+<title>سستم عيادة</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-/* ===== GLOBAL ===== */
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f7fb;
-  color:#0f172a;
+  font-family:Tahoma,Arial;
+  background:#f4f6f9;
+  color:#111827;
 }
 .hidden{display:none}
 button,input,select{
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
+  padding:11px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
   font-size:14px;
 }
 button{
   background:#2563eb;
   color:#fff;
-  cursor:pointer;
   border:none;
+  cursor:pointer;
 }
-.logout{
+button.logout{
   background:#fff;
   color:#dc2626;
   border:1px solid #fecaca;
 }
+h1,h2{margin-top:0}
 
-/* ===== AUTH ===== */
+/* AUTH */
 .center{
   min-height:100vh;
   display:grid;
   place-items:center;
 }
-.auth-card{
+.card{
   background:#fff;
-  width:360px;
   padding:25px;
-  border-radius:14px;
+  width:360px;
+  border-radius:12px;
   box-shadow:0 10px 25px rgba(0,0,0,.1);
 }
-.auth-card h2{text-align:center;margin-top:0}
 .link{
-  margin-top:12px;
   text-align:center;
-  font-size:13px;
+  margin-top:10px;
   color:#2563eb;
   cursor:pointer;
 }
-.err{color:#dc2626;margin-top:10px;text-align:center}
-.ok{color:#16a34a;text-align:center}
+.err{color:#dc2626;text-align:center;margin-top:10px}
+.ok{color:#16a34a;text-align:center;margin-top:10px}
 
-/* ===== LAYOUT ===== */
+/* LAYOUT */
 .app{
   display:grid;
-  grid-template-columns:1fr 260px;
+  grid-template-columns:1fr 240px;
   min-height:100vh;
 }
 .sidebar{
@@ -69,72 +67,70 @@ button{
 }
 .brand{
   font-weight:bold;
-  margin-bottom:15px;
+  font-size:18px;
+  margin-bottom:20px;
 }
 .nav button{
   width:100%;
   background:transparent;
-  color:#0f172a;
+  color:#111827;
   text-align:right;
+  margin-bottom:6px;
 }
 .nav button.active{
   background:#e8f0ff;
   font-weight:bold;
 }
-.content{padding:25px}
+.content{
+  padding:25px;
+}
 
-/* ===== DASHBOARD ===== */
-.grid4{
+/* DASHBOARD */
+.stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:15px;
 }
-.card{
+.stat{
   background:#fff;
   padding:15px;
-  border-radius:14px;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
-.card small{color:#6b7280}
-.big{font-size:26px;font-weight:bold}
-.grid2{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-  margin-top:15px;
-}
+.stat small{color:#6b7280}
+.stat .num{font-size:26px;font-weight:bold}
 
-/* ===== PANELS ===== */
+/* PANELS */
 .panel{
   background:#fff;
   padding:15px;
-  border-radius:14px;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
   margin-top:15px;
 }
 .cards{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
   gap:12px;
 }
 .pcard{
   background:#f9fafb;
   padding:12px;
-  border-radius:12px;
+  border-radius:10px;
   position:relative;
 }
 .pcard button{
   position:absolute;
-  top:8px;
-  left:8px;
+  top:6px;
+  left:6px;
   background:#dc2626;
-  padding:5px 8px;
+  padding:4px 7px;
   font-size:11px;
 }
 .item{
   background:#f9fafb;
   padding:12px;
-  border-radius:12px;
+  border-radius:10px;
   margin-bottom:8px;
   display:flex;
   justify-content:space-between;
@@ -146,8 +142,8 @@ button{
 
 <!-- LOGIN -->
 <div id="loginView" class="center">
-  <div class="auth-card">
-    <h2>تسجيل الدخول</h2>
+  <div class="card">
+    <h2>سستم عيادة</h2>
     <input id="loginUser" placeholder="اسم المستخدم">
     <input id="loginPass" type="password" placeholder="كلمة المرور">
     <button onclick="login()">دخول</button>
@@ -158,13 +154,13 @@ button{
 
 <!-- REGISTER -->
 <div id="registerView" class="center hidden">
-  <div class="auth-card">
+  <div class="card">
     <h2>إنشاء مستخدم</h2>
     <input id="regUser" placeholder="اسم المستخدم">
     <input id="regPass" type="password" placeholder="كلمة المرور">
     <button onclick="register()">إنشاء</button>
     <div id="regMsg"></div>
-    <div class="link" onclick="showLogin()">عودة</div>
+    <div class="link" onclick="showLogin()">رجوع</div>
   </div>
 </div>
 
@@ -176,11 +172,11 @@ button{
     <!-- DASHBOARD -->
     <section id="page-dashboard">
       <h1>لوحة التحكم</h1>
-      <div class="grid4">
-        <div class="card"><small>المرضى</small><div class="big" id="sPatients">0</div></div>
-        <div class="card"><small>الجلسات</small><div class="big" id="sApps">0</div></div>
-        <div class="card"><small>الإيرادات</small><div class="big">JD <span id="sRev">0</span></div></div>
-        <div class="card"><small>معلقة</small><div class="big">JD <span id="sPend">0</span></div></div>
+      <div class="stats">
+        <div class="stat"><small>المرضى</small><div class="num" id="sPatients">0</div></div>
+        <div class="stat"><small>الجلسات</small><div class="num" id="sApps">0</div></div>
+        <div class="stat"><small>الإيرادات</small><div class="num">JD <span id="sRev">0</span></div></div>
+        <div class="stat"><small>معلقة</small><div class="num">JD <span id="sPend">0</span></div></div>
       </div>
     </section>
 
@@ -215,42 +211,22 @@ button{
         <input id="payAmount" type="number" placeholder="المبلغ">
         <select id="payStatus">
           <option value="paid">مدفوع</option>
-          <option value="pending">معلّق</option>
+          <option value="pending">معلق</option>
         </select>
         <button onclick="addPayment()">إضافة</button>
       </div>
       <div class="panel" id="paymentsList"></div>
     </section>
 
-    <!-- SETTINGS -->
-    <section id="page-settings" class="hidden">
-      <div class="panel">
-        <h2>تغيير كلمة مرور المستخدم</h2>
-        <input id="oldPass" type="password" placeholder="كلمة المرور الحالية">
-        <input id="newPass" type="password" placeholder="كلمة المرور الجديدة">
-        <button onclick="changeUserPass()">تغيير</button>
-        <div id="userPassMsg"></div>
-      </div>
-
-      <div class="panel">
-        <h2>تغيير كلمة مرور المدفوعات</h2>
-        <input id="oldRev" type="password" placeholder="كلمة المرور الحالية">
-        <input id="newRev" type="password" placeholder="كلمة المرور الجديدة">
-        <button onclick="changeRevPass()">تغيير</button>
-        <div id="revPassMsg"></div>
-      </div>
-    </section>
-
   </main>
 
   <aside class="sidebar">
-    <div class="brand">نظام العيادة</div>
+    <div class="brand">سستم عيادة</div>
     <div class="nav">
       <button class="active" onclick="go('dashboard',this)">لوحة التحكم</button>
       <button onclick="go('patients',this)">المرضى</button>
       <button onclick="go('appointments',this)">الجلسات</button>
       <button onclick="goProtected('payments',this)">المدفوعات</button>
-      <button onclick="go('settings',this)">الإعدادات</button>
     </div>
     <button class="logout" onclick="logout()">تسجيل خروج</button>
   </aside>
@@ -258,53 +234,48 @@ button{
 </div>
 
 <script>
-/* ===== USERS ===== */
-const USERS_KEY="users";
-const CURR_KEY="currentUser";
-let users=JSON.parse(localStorage.getItem(USERS_KEY)||"[]");
+/* USERS */
+const USERS="users", CURR="currentUser";
+let users=JSON.parse(localStorage.getItem(USERS)||"[]");
 
-/* ===== DATA ===== */
+/* DATA */
 let patients=JSON.parse(localStorage.getItem("patients")||"[]");
 let apps=JSON.parse(localStorage.getItem("apps")||"[]");
 let pays=JSON.parse(localStorage.getItem("pays")||"[]");
 
-/* ===== REVENUE PASS ===== */
+/* REVENUE PASS */
 if(!localStorage.getItem("revPass")) localStorage.setItem("revPass","rev123");
 
-/* ===== AUTH NAV ===== */
+/* AUTH NAV */
 function showRegister(){loginView.classList.add("hidden");registerView.classList.remove("hidden")}
 function showLogin(){registerView.classList.add("hidden");loginView.classList.remove("hidden")}
 
-/* ===== REGISTER ===== */
 function register(){
   if(!regUser.value||!regPass.value){regMsg.innerHTML="<div class='err'>كل الحقول مطلوبة</div>";return;}
-  if(users.find(u=>u.u===regUser.value)){regMsg.innerHTML="<div class='err'>المستخدم موجود</div>";return;}
+  if(users.find(u=>u.u===regUser.value)){regMsg.innerHTML="<div class='err'>موجود</div>";return;}
   users.push({u:regUser.value,p:regPass.value});
-  localStorage.setItem(USERS_KEY,JSON.stringify(users));
-  regMsg.innerHTML="<div class='ok'>تم الإنشاء</div>";
+  localStorage.setItem(USERS,JSON.stringify(users));
+  regMsg.innerHTML="<div class='ok'>تم</div>";
 }
 
-/* ===== LOGIN ===== */
 function login(){
   const u=users.find(x=>x.u===loginUser.value&&x.p===loginPass.value);
   if(!u){loginErr.innerText="بيانات خاطئة";return;}
-  localStorage.setItem(CURR_KEY,u.u);
+  localStorage.setItem(CURR,u.u);
   boot();
 }
 
-/* ===== BOOT ===== */
 function boot(){
   loginView.classList.add("hidden");
   registerView.classList.add("hidden");
   appView.classList.remove("hidden");
-  go("dashboard",document.querySelector(".nav button"));
+  refresh();
 }
-if(localStorage.getItem(CURR_KEY)) boot();
+if(localStorage.getItem(CURR)) boot();
 
-/* ===== LOGOUT ===== */
-function logout(){localStorage.removeItem(CURR_KEY);location.reload();}
+function logout(){localStorage.removeItem(CURR);location.reload();}
 
-/* ===== NAV ===== */
+/* NAV */
 function go(p,btn){
   document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
   document.getElementById("page-"+p).classList.remove("hidden");
@@ -316,11 +287,10 @@ function go(p,btn){
   if(p==="payments") renderPays();
 }
 function goProtected(p,btn){
-  const pass=prompt("كلمة مرور المدفوعات:");
-  if(pass===localStorage.getItem("revPass")) go(p,btn);
+  if(prompt("كلمة مرور المدفوعات:")===localStorage.getItem("revPass")) go(p,btn);
 }
 
-/* ===== DASH ===== */
+/* DASH */
 function refresh(){
   sPatients.innerText=patients.length;
   sApps.innerText=apps.length;
@@ -328,7 +298,7 @@ function refresh(){
   sPend.innerText=pays.filter(p=>p.s==="pending").reduce((a,b)=>a+b.a,0);
 }
 
-/* ===== PATIENTS ===== */
+/* PATIENTS */
 function addPatient(){
   if(!pName.value)return;
   patients.push(pName.value);
@@ -339,14 +309,14 @@ function renderPatients(){
   patientsGrid.innerHTML="";
   patients.forEach((p,i)=>{
     patientsGrid.innerHTML+=`
-      <div class="pcard">
-        <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">X</button>
-        <b>${p}</b>
-      </div>`;
+    <div class="pcard">
+      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">X</button>
+      <b>${p}</b>
+    </div>`;
   });
 }
 
-/* ===== APPOINTMENTS ===== */
+/* APPS */
 function addApp(){
   if(!aName.value||!aDate.value)return;
   apps.push({n:aName.value,d:aDate.value});
@@ -358,13 +328,13 @@ function renderApps(){
   appsList.innerHTML="";
   apps.forEach((a,i)=>{
     appsList.innerHTML+=`
-      <div class="item">${a.n} - ${a.d}
-        <button class="logout" onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">حذف</button>
-      </div>`;
+    <div class="item">${a.n} - ${a.d}
+      <button class="logout" onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">حذف</button>
+    </div>`;
   });
 }
 
-/* ===== PAYMENTS ===== */
+/* PAYMENTS */
 function addPayment(){
   if(!payName.value||!payAmount.value)return;
   pays.push({n:payName.value,a:Number(payAmount.value),s:payStatus.value});
@@ -376,27 +346,10 @@ function renderPays(){
   paymentsList.innerHTML="";
   pays.forEach((p,i)=>{
     paymentsList.innerHTML+=`
-      <div class="item">${p.n} - JD ${p.a} (${p.s})
-        <button class="logout" onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">حذف</button>
-      </div>`;
+    <div class="item">${p.n} - JD ${p.a} (${p.s})
+      <button class="logout" onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">حذف</button>
+    </div>`;
   });
-}
-
-/* ===== SETTINGS ===== */
-function changeUserPass(){
-  const u=localStorage.getItem(CURR_KEY);
-  const idx=users.findIndex(x=>x.u===u&&x.p===oldPass.value);
-  if(idx===-1){userPassMsg.innerHTML="<div class='err'>كلمة المرور الحالية خاطئة</div>";return;}
-  users[idx].p=newPass.value;
-  localStorage.setItem(USERS_KEY,JSON.stringify(users));
-  userPassMsg.innerHTML="<div class='ok'>تم التغيير</div>";
-}
-function changeRevPass(){
-  if(oldRev.value!==localStorage.getItem("revPass")){
-    revPassMsg.innerHTML="<div class='err'>كلمة المرور الحالية خاطئة</div>";return;
-  }
-  localStorage.setItem("revPass",newRev.value);
-  revPassMsg.innerHTML="<div class='ok'>تم التغيير</div>";
 }
 </script>
 

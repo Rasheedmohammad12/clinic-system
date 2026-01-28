@@ -25,7 +25,6 @@ body{margin:0;font-family:Tahoma,Arial;background:#f3f4f6}
 .stat .num{font-size:26px;font-weight:bold;margin-top:6px}
 
 .primary{background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer}
-
 .grid{margin-top:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
 .card{background:#fff;padding:15px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08);cursor:pointer}
 
@@ -46,6 +45,11 @@ background:#dcfce7;color:#166534;padding:12px 18px;border-radius:10px;z-index:20
 
 <script>
 if(!localStorage.getItem("currentUser")) location.href="index.html";
+
+/* كلمة سر المدفوعات */
+if(!localStorage.getItem("paymentsPassword")){
+  localStorage.setItem("paymentsPassword","1234"); // غيّرها لاحقًا
+}
 </script>
 
 <div class="app">
@@ -53,7 +57,8 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
 <aside class="sidebar">
   <div class="brand">clinic-system</div>
   <div class="nav">
-    <button class="active" onclick="goPatients(this)">المرضى</button>
+    <button class="active" onclick="showPatients(this)">المرضى</button>
+    <button onclick="openPayments()">المدفوعات</button>
   </div>
   <button class="logout" onclick="logout()">تسجيل خروج</button>
 </aside>
@@ -61,7 +66,7 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
 <main class="content">
 
 <div class="header">
-  <h2>المرضى</h2>
+  <h2 id="pageTitle">المرضى</h2>
   <button class="primary" onclick="openAddPatient()">+ إضافة مريض</button>
 </div>
 
@@ -77,10 +82,10 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
 <!-- Toast -->
 <div id="toast" class="toast"></div>
 
-<!-- Modal Add Patient -->
+<!-- Add Patient -->
 <div id="backdrop" class="backdrop"></div>
 <div id="patientModal" class="modal">
-  <h3>إضافة مريض جديد</h3>
+  <h3>إضافة مريض</h3>
 
   <label>رقم الملف *</label>
   <input id="pFile">
@@ -91,22 +96,16 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
   <label>الهاتف *</label>
   <input id="pPhone">
 
-  <label>تاريخ الإضافة</label>
-  <input id="pDate" type="date">
-
   <label>المبلغ الكلي *</label>
   <input id="pTotal" type="number">
 
-  <label>ملاحظات</label>
-  <textarea id="pNotes"></textarea>
-
-  <div style="margin-top:15px;display:flex;gap:10px">
+  <div style="margin-top:15px">
     <button onclick="closeModal()">إلغاء</button>
     <button class="primary" onclick="savePatient()">حفظ</button>
   </div>
 </div>
 
-<!-- Modal Sessions -->
+<!-- Sessions -->
 <div id="sessionModal" class="modal">
   <h3 id="sessionTitle"></h3>
 
@@ -119,7 +118,7 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
   <label>ملاحظات</label>
   <textarea id="sNote"></textarea>
 
-  <div style="margin-top:15px;display:flex;gap:10px">
+  <div style="margin-top:15px">
     <button onclick="closeSession()">إغلاق</button>
     <button class="primary" onclick="addSession()">إضافة جلسة</button>
   </div>
@@ -129,7 +128,6 @@ if(!localStorage.getItem("currentUser")) location.href="index.html";
 
 <script>
 const toast=document.getElementById("toast");
-const patientsGrid=document.getElementById("patientsGrid");
 let patients=JSON.parse(localStorage.getItem("patients")||"[]");
 let currentPatient=null;
 
@@ -139,10 +137,24 @@ function showToast(msg){
   setTimeout(()=>toast.style.display="none",2500);
 }
 
+function showPatients(btn){
+  pageTitle.innerText="المرضى";
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function openPayments(){
+  const pass=prompt("أدخل كلمة سر المدفوعات:");
+  if(pass!==localStorage.getItem("paymentsPassword")){
+    alert("كلمة السر غير صحيحة");
+    return;
+  }
+  alert("تم الدخول لقسم المدفوعات (جاهز للتوسيع)");
+}
+
 function openAddPatient(){
   backdrop.style.display="block";
   patientModal.style.display="block";
-  pDate.value=new Date().toISOString().split("T")[0];
 }
 function closeModal(){
   backdrop.style.display="none";
@@ -151,20 +163,16 @@ function closeModal(){
 
 function savePatient(){
   if(!pFile.value||!pName.value||!pPhone.value||!pTotal.value){
-    showToast("يرجى تعبئة الحقول المطلوبة");
+    showToast("يرجى تعبئة الحقول");
     return;
   }
-
   patients.push({
     fileNo:pFile.value,
     name:pName.value,
     phone:pPhone.value,
-    date:pDate.value,
-    notes:pNotes.value,
     total:Number(pTotal.value),
     sessions:[]
   });
-
   localStorage.setItem("patients",JSON.stringify(patients));
   closeModal();
   renderPatients();
@@ -192,8 +200,7 @@ function renderPatients(){
 
 function openSessions(i){
   currentPatient=i;
-  const p=patients[i];
-  sessionTitle.innerText=`جلسات ${p.name}`;
+  sessionTitle.innerText="جلسات "+patients[i].name;
   backdrop.style.display="block";
   sessionModal.style.display="block";
   renderSessions();
@@ -218,10 +225,9 @@ function addSession(){
 }
 
 function renderSessions(){
-  const list=document.getElementById("sessionsList");
-  list.innerHTML="";
+  sessionsList.innerHTML="";
   patients[currentPatient].sessions.forEach(s=>{
-    list.innerHTML+=`<div>📅 ${s.date} – 💰 ${s.paid}</div>`;
+    sessionsList.innerHTML+=`<div>📅 ${s.date} – 💰 ${s.paid}</div>`;
   });
 }
 

@@ -7,22 +7,32 @@
 
 <body>
 
-<h2>💳 المدفوعات</h2>
+<h2 id="title"></h2>
 
 <table border="1" width="100%">
 <thead>
 <tr>
   <th>#</th>
-  <th>المريض</th>
-  <th>المبلغ</th>
-  <th>ملاحظة</th>
-  <th>التاريخ</th>
+  <th id="thPatient"></th>
+  <th id="thAmount"></th>
+  <th id="thNote"></th>
+  <th id="thDate"></th>
 </tr>
 </thead>
 <tbody id="paymentsTable"></tbody>
 </table>
 
+<script src="assets/js/settings-system.js"></script>
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/payments.js"></script>
+
+<script>
+document.getElementById("title").innerText = t("payments");
+thPatient.innerText = t("patient");
+thAmount.innerText = t("amount");
+thNote.innerText = t("note");
+thDate.innerText = t("date");
+</script>
+
 </body>
 </html>

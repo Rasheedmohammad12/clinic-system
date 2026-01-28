@@ -2,115 +2,140 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>لوحة التحكم | clinic-system </title>
+<title>Dashboard | clinic-system</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Tahoma,Arial;
-  background:#f4f6f9;
-  color:#111827;
+  font-family:Tahoma, Arial;
+  background:#f1f5f9;
+  color:#0f172a;
 }
 .hidden{display:none}
-button,input,select{
+
+/* ===== LAYOUT ===== */
+.app{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  background:#0f172a;
+  color:#fff;
+  padding:20px;
+}
+.brand{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+.nav button{
+  width:100%;
+  background:transparent;
+  color:#e5e7eb;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  text-align:right;
+  margin-bottom:6px;
+  cursor:pointer;
+}
+.nav button.active,
+.nav button:hover{
+  background:#1e293b;
+  color:#fff;
+}
+.logout{
+  margin-top:20px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#dc2626;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* ===== CONTENT ===== */
+.content{
+  padding:25px;
+}
+.header{
+  background:#fff;
+  padding:15px 20px;
+  border-radius:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+}
+.header h2{margin:0}
+
+/* ===== STATS ===== */
+.stats{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:15px;
+}
+.stat{
+  background:#fff;
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+}
+.stat small{color:#64748b}
+.stat .num{
+  font-size:30px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+/* ===== PANELS ===== */
+.panel{
+  background:#fff;
+  margin-top:20px;
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+}
+input,select,button{
   padding:10px;
   border-radius:8px;
-  border:1px solid #d1d5db;
+  border:1px solid #cbd5f5;
 }
-button{
+button.primary{
   background:#2563eb;
   color:#fff;
   border:none;
   cursor:pointer;
 }
-button.logout{
-  background:#fff;
-  color:#dc2626;
-  border:1px solid #fecaca;
-}
-
-/* LAYOUT */
-.app{
-  display:grid;
-  grid-template-columns:1fr 240px;
-  min-height:100vh;
-}
-.sidebar{
-  background:#fff;
-  border-left:1px solid #e5e7eb;
-  padding:15px;
-}
-.brand{
-  font-weight:bold;
-  font-size:18px;
-  margin-bottom:20px;
-}
-.nav button{
-  width:100%;
-  background:transparent;
-  color:#111827;
-  text-align:right;
-  margin-bottom:6px;
-}
-.nav button.active{
-  background:#e8f0ff;
-  font-weight:bold;
-}
-.content{
-  padding:25px;
-}
-
-/* DASHBOARD */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-}
-.stat{
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
-}
-.stat small{color:#6b7280}
-.stat .num{font-size:26px;font-weight:bold}
-
-/* PANELS */
-.panel{
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
-  margin-top:15px;
-}
 .cards{
+  margin-top:15px;
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
   gap:12px;
 }
-.pcard{
-  background:#f9fafb;
+.card-item{
+  background:#f8fafc;
   padding:12px;
   border-radius:10px;
   position:relative;
 }
-.pcard button{
+.card-item button{
   position:absolute;
   top:6px;
   left:6px;
   background:#dc2626;
-  padding:4px 7px;
-  font-size:11px;
-}
-.item{
-  background:#f9fafb;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:8px;
-  display:flex;
-  justify-content:space-between;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  padding:4px 6px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -120,104 +145,109 @@ button.logout{
 <script>
 /* 🔐 حماية الصفحة */
 if(!localStorage.getItem("currentUser")){
-  location.href = "index.html";
+  location.href="index.html";
 }
 </script>
 
 <div class="app">
 
-  <!-- المحتوى -->
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">clinic-system</div>
+    <div class="nav">
+      <button class="active" onclick="go('dashboard',this)">Dashboard</button>
+      <button onclick="go('patients',this)">Patients</button>
+      <button onclick="go('appointments',this)">Appointments</button>
+      <button onclick="go('payments',this)">Payments</button>
+    </div>
+    <button class="logout" onclick="logout()">Logout</button>
+  </aside>
+
+  <!-- CONTENT -->
   <main class="content">
 
-    <!-- DASHBOARD -->
-    <section id="page-dashboard">
-      <h1>لوحة التحكم</h1>
-      <div class="stats">
-        <div class="stat"><small>المرضى</small><div class="num" id="sPatients">0</div></div>
-        <div class="stat"><small>الجلسات</small><div class="num" id="sApps">0</div></div>
-        <div class="stat"><small>الإيرادات</small><div class="num">JD <span id="sRev">0</span></div></div>
-        <div class="stat"><small>معلقة</small><div class="num">JD <span id="sPend">0</span></div></div>
-      </div>
-    </section>
+    <div class="header">
+      <h2>Dashboard</h2>
+      <div>👋 مرحبًا، <b id="userName"></b></div>
+    </div>
 
-    <!-- PATIENTS -->
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat"><small>Patients</small><div class="num" id="sPatients">0</div></div>
+      <div class="stat"><small>Appointments</small><div class="num" id="sApps">0</div></div>
+      <div class="stat"><small>Revenue</small><div class="num">JD <span id="sRev">0</span></div></div>
+      <div class="stat"><small>Pending</small><div class="num">JD <span id="sPend">0</span></div></div>
+    </div>
+
+    <!-- PAGES -->
+    <section id="page-dashboard"></section>
+
     <section id="page-patients" class="hidden">
       <div class="panel">
-        <h2>المرضى</h2>
-        <input id="pName" placeholder="اسم المريض">
-        <button onclick="addPatient()">إضافة</button>
+        <h3>Add Patient</h3>
+        <input id="pName" placeholder="Patient name">
+        <button class="primary" onclick="addPatient()">Add</button>
       </div>
       <div class="panel">
         <div id="patientsGrid" class="cards"></div>
       </div>
     </section>
 
-    <!-- APPOINTMENTS -->
     <section id="page-appointments" class="hidden">
       <div class="panel">
-        <h2>الجلسات</h2>
-        <input id="aName" placeholder="اسم المريض">
+        <h3>Add Appointment</h3>
+        <input id="aName" placeholder="Patient name">
         <input id="aDate" type="date">
-        <button onclick="addApp()">إضافة</button>
+        <button class="primary" onclick="addApp()">Add</button>
       </div>
       <div class="panel" id="appsList"></div>
     </section>
 
-    <!-- PAYMENTS -->
     <section id="page-payments" class="hidden">
       <div class="panel">
-        <h2>المدفوعات</h2>
-        <input id="payName" placeholder="اسم المريض">
-        <input id="payAmount" type="number" placeholder="المبلغ (JD)">
+        <h3>Add Payment</h3>
+        <input id="payName" placeholder="Patient name">
+        <input id="payAmount" type="number" placeholder="Amount (JD)">
         <select id="payStatus">
-          <option value="paid">مدفوع</option>
-          <option value="pending">معلق</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
         </select>
-        <button onclick="addPayment()">إضافة</button>
+        <button class="primary" onclick="addPayment()">Add</button>
       </div>
       <div class="panel" id="paymentsList"></div>
     </section>
 
   </main>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="brand">سستم عيادة</div>
-    <div class="nav">
-      <button class="active" onclick="go('dashboard',this)">لوحة التحكم</button>
-      <button onclick="go('patients',this)">المرضى</button>
-      <button onclick="go('appointments',this)">الجلسات</button>
-      <button onclick="go('payments',this)">المدفوعات</button>
-    </div>
-    <button class="logout" onclick="logout()">تسجيل خروج</button>
-  </aside>
-
 </div>
 
 <script>
+/* USER */
+userName.innerText = localStorage.getItem("currentUser");
+
 /* DATA */
-let patients = JSON.parse(localStorage.getItem("patients") || "[]");
-let apps = JSON.parse(localStorage.getItem("apps") || "[]");
-let pays = JSON.parse(localStorage.getItem("pays") || "[]");
+let patients = JSON.parse(localStorage.getItem("patients")||"[]");
+let apps = JSON.parse(localStorage.getItem("apps")||"[]");
+let pays = JSON.parse(localStorage.getItem("pays")||"[]");
 
 /* NAV */
-function go(page, btn){
+function go(p,btn){
   document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById("page-"+page).classList.remove("hidden");
+  document.getElementById("page-"+p).classList.remove("hidden");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   refresh();
-  if(page==="patients") renderPatients();
-  if(page==="appointments") renderApps();
-  if(page==="payments") renderPays();
+  if(p==="patients") renderPatients();
+  if(p==="appointments") renderApps();
+  if(p==="payments") renderPays();
 }
 
 /* DASH */
 function refresh(){
-  sPatients.innerText = patients.length;
-  sApps.innerText = apps.length;
-  sRev.innerText = pays.filter(p=>p.s==="paid").reduce((a,b)=>a+b.a,0);
-  sPend.innerText = pays.filter(p=>p.s==="pending").reduce((a,b)=>a+b.a,0);
+  sPatients.innerText=patients.length;
+  sApps.innerText=apps.length;
+  sRev.innerText=pays.filter(p=>p.s==="paid").reduce((a,b)=>a+b.a,0);
+  sPend.innerText=pays.filter(p=>p.s==="pending").reduce((a,b)=>a+b.a,0);
 }
 
 /* PATIENTS */
@@ -232,8 +262,8 @@ function renderPatients(){
   patientsGrid.innerHTML="";
   patients.forEach((p,i)=>{
     patientsGrid.innerHTML+=`
-    <div class="pcard">
-      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">X</button>
+    <div class="card-item">
+      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">✕</button>
       <b>${p}</b>
     </div>`;
   });
@@ -251,8 +281,9 @@ function renderApps(){
   appsList.innerHTML="";
   apps.forEach((a,i)=>{
     appsList.innerHTML+=`
-    <div class="item">${a.n} - ${a.d}
-      <button class="logout" onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">حذف</button>
+    <div class="card-item">
+      ${a.n} – ${a.d}
+      <button onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">✕</button>
     </div>`;
   });
 }
@@ -269,8 +300,9 @@ function renderPays(){
   paymentsList.innerHTML="";
   pays.forEach((p,i)=>{
     paymentsList.innerHTML+=`
-    <div class="item">${p.n} - JD ${p.a} (${p.s})
-      <button class="logout" onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">حذف</button>
+    <div class="card-item">
+      ${p.n} – JD ${p.a} (${p.s})
+      <button onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">✕</button>
     </div>`;
   });
 }
@@ -278,10 +310,9 @@ function renderPays(){
 /* LOGOUT */
 function logout(){
   localStorage.removeItem("currentUser");
-  location.href = "index.html";
+  location.href="index.html";
 }
 
-/* INIT */
 refresh();
 </script>
 

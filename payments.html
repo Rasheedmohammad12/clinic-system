@@ -8,26 +8,13 @@
 <body>
 
 <script>
-  const savedPin = localStorage.getItem("payments_pin");
-
-  if (!savedPin) {
-    alert("لم يتم تعيين رمز حماية للمدفوعات");
-    window.location.href = "settings.html";
-  } else {
-    const entered = prompt("أدخل الرمز السري للمدفوعات:");
-
-    if (entered !== savedPin) {
-      alert("❌ الرمز غير صحيح");
-      window.location.href = "dashboard.html";
-    } else {
-      // السماح + إظهار زر المدفوعات
-      sessionStorage.setItem("payments_access", "true");
-    }
+  if(sessionStorage.getItem("payments_access") !== "true"){
+    alert("❌ غير مصرح بدخول صفحة المدفوعات");
+    window.location.href = "dashboard.html";
   }
 </script>
 
-<!-- باقي صفحة المدفوعات -->
-<h2>صفحة المدفوعات</h2>
+<h2>💳 صفحة المدفوعات</h2>
 
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/payments.js"></script>

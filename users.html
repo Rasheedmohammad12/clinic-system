@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>إدارة المستخدمين | Clinic System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0}
+header{background:#1e88e5;color:#fff;padding:15px;text-align:center}
+.container{padding:20px}
+form,table{background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+input,select,button{width:100%;padding:10px;margin-top:10px}
+button{background:#1e88e5;color:#fff;border:none;border-radius:6px;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{padding:10px;border-bottom:1px solid #ddd;text-align:center}
+.back{color:#1e88e5;text-decoration:none;display:inline-block;margin-bottom:15px}
+.delete{color:red;cursor:pointer}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>إدارة المستخدمين (Admin)</h2>
+</header>
+
+<div class="container">
+
+<a class="back" href="dashboard.html">⬅ رجوع للوحة التحكم</a>
+
+<!-- إضافة مستخدم -->
+<form id="userForm">
+  <h3>إضافة مستخدم جديد</h3>
+  <input id="username" placeholder="اسم المستخدم" required>
+  <input id="password" type="password" placeholder="كلمة السر" required>
+
+  <select id="role">
+    <option value="reception">Reception</option>
+    <option value="doctor">Doctor</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <button type="submit">إضافة المستخدم</button>
+</form>
+
+<!-- جدول المستخدمين -->
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>اسم المستخدم</th>
+  <th>الصلاحية</th>
+  <th>حذف</th>
+</tr>
+</thead>
+<tbody id="usersTable"></tbody>
+</table>
+
+</div>
+
+<script type="module" src="assets/js/users.js"></script>
+</body>
+</html>

@@ -1,47 +1,58 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>الإعدادات</title>
+<title>Settings</title>
 <style>
-body{font-family:Arial;background:#f1f5f9;margin:0}
-header{background:#2563eb;color:#fff;padding:15px;text-align:center}
-form{background:#fff;padding:20px;max-width:420px;margin:30px auto;border-radius:10px}
-label{display:block;margin-top:10px}
-select,button{width:100%;padding:10px;margin-top:8px}
+body{font-family:Arial;margin:0;background:#f1f5f9}
+.dark{background:#0f172a;color:#fff}
+form{background:#fff;padding:20px;max-width:420px;margin:40px auto;border-radius:12px}
+.dark form{background:#1e293b}
+select,button{width:100%;padding:10px;margin-top:10px}
 button{background:#2563eb;color:#fff;border:none}
-a{display:block;text-align:center;margin-top:15px;color:#2563eb}
 </style>
 </head>
-
 <body>
 
-<header><h2>⚙️ الإعدادات</h2></header>
-
 <form>
-  <label>اللغة / Language</label>
-  <select id="langSelect">
+  <h3>System Settings</h3>
+
+  <label>Language</label>
+  <select id="lang">
     <option value="ar">العربية</option>
     <option value="en">English</option>
   </select>
 
-  <button type="button" id="saveBtn">حفظ</button>
-</form>
+  <label>Theme</label>
+  <select id="theme">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
 
-<a href="dashboard.html">⬅ رجوع</a>
+  <label>Currency</label>
+  <select id="currency">
+    <option value="JOD">JOD</option>
+    <option value="USD">USD</option>
+    <option value="ILS">ILS</option>
+  </select>
+
+  <button type="button" id="save">Save</button>
+</form>
 
 <script src="assets/js/settings-system.js"></script>
 <script>
-const settings = getSettings();
-langSelect.value = settings.lang;
+const s=getSettings();
+lang.value=s.lang;
+theme.value=s.theme;
+currency.value=s.currency;
 
-saveBtn.onclick = () => {
-  settings.lang = langSelect.value;
-  saveSettings(settings);
-  alert("تم حفظ الإعدادات / Settings saved");
+save.onclick=()=>{
+  s.lang=lang.value;
+  s.theme=theme.value;
+  s.currency=currency.value;
+  saveSettings(s);
   location.reload();
 };
 </script>
-
 </body>
 </html>

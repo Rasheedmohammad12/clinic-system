@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>Clinic System | Dashboard</title>
+  <title>لوحة التحكم | Clinic System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -10,11 +10,10 @@
       font-family: Arial, sans-serif;
       background: #f4f6f8;
       margin: 0;
-      padding: 0;
     }
     header {
       background: #1e88e5;
-      color: white;
+      color: #fff;
       padding: 15px;
       text-align: center;
     }
@@ -27,11 +26,11 @@
       gap: 20px;
     }
     .card {
-      background: white;
+      background: #fff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .card h2 {
       margin: 0;
@@ -60,6 +59,11 @@
     nav a:hover {
       background: #1565c0;
     }
+    .user-info {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #e3f2fd;
+    }
   </style>
 </head>
 
@@ -68,11 +72,12 @@
 <header>
   <h1>نظام إدارة العيادة</h1>
   <p>لوحة التحكم</p>
+  <div class="user-info" id="userInfo"></div>
 </header>
 
 <div class="container">
 
-  <!-- CARDS -->
+  <!-- الإحصائيات -->
   <div class="cards">
     <div class="card">
       <h2>عدد المرضى</h2>
@@ -90,19 +95,41 @@
     </div>
   </div>
 
-  <!-- NAVIGATION -->
+  <!-- التنقل -->
   <nav>
-    <a href="patients.html">إضافة / عرض المرضى</a>
-    <a href="sessions.html">الجلسات والمواعيد</a>
+    <a href="patients.html">المرضى</a>
+    <a href="sessions.html">الجلسات</a>
     <a href="payments.html">المدفوعات</a>
-    <a href="index.html">تسجيل خروج</a>
+    <a href="patient-report.html">كشف حساب مريض</a>
+    <a href="#" id="logoutLink">تسجيل خروج</a>
   </nav>
 
 </div>
 
-<!-- JS FILES -->
+<!-- ملفات النظام -->
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/dashboard.js"></script>
+
+<!-- الحماية + الجلسة -->
+<script type="module">
+  import { requireAuth, logout, getCurrentUser } from "./assets/js/auth.js";
+
+  // حماية الصفحة
+  requireAuth();
+
+  // عرض المستخدم الحالي
+  const user = getCurrentUser();
+  if (user) {
+    document.getElementById("userInfo").textContent =
+      `مرحباً ${user.username} | الصلاحية: ${user.role}`;
+  }
+
+  // تسجيل خروج
+  document.getElementById("logoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    logout();
+  });
+</script>
 
 </body>
 </html>

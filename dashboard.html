@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard | clinic-system</title>
+<title>لوحة التحكم | clinic-system</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Inter, Arial;
-  background:#f4f6f8;
+  font-family:Tahoma, Arial;
+  background:#f3f4f6;
   color:#111827;
 }
 .hidden{display:none}
@@ -24,12 +25,12 @@ body{
 /* ===== SIDEBAR ===== */
 .sidebar{
   background:#ffffff;
-  border-right:1px solid #e5e7eb;
+  border-left:1px solid #e5e7eb;
   padding:20px;
 }
 .brand{
   font-size:20px;
-  font-weight:700;
+  font-weight:bold;
   margin-bottom:30px;
 }
 .nav button{
@@ -38,7 +39,7 @@ body{
   border:none;
   padding:14px;
   border-radius:12px;
-  text-align:left;
+  text-align:right;
   font-size:15px;
   cursor:pointer;
   color:#374151;
@@ -76,9 +77,6 @@ body{
   margin:0;
   font-size:24px;
 }
-.user{
-  color:#6b7280;
-}
 
 /* ===== STATS ===== */
 .stats{
@@ -90,47 +88,22 @@ body{
   background:#fff;
   padding:20px;
   border-radius:18px;
-  box-shadow:0 10px 25px rgba(0,0,0,.06);
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
 }
-.stat small{
-  color:#6b7280;
-}
+.stat small{color:#6b7280}
 .stat .num{
   font-size:32px;
-  font-weight:700;
+  font-weight:bold;
   margin-top:8px;
 }
 
-/* ===== SECTION ===== */
-.section{
-  margin-top:35px;
-}
-.section h3{
-  margin-bottom:15px;
-  font-size:20px;
-}
-
-/* ===== FORMS ===== */
-.form{
-  background:#fff;
-  padding:18px;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.06);
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-input,select{
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #d1d5db;
-}
-button.primary{
+/* ===== BUTTON ===== */
+.primary{
   background:#2563eb;
   color:#fff;
   border:none;
-  border-radius:10px;
   padding:12px 18px;
+  border-radius:10px;
   cursor:pointer;
 }
 
@@ -142,15 +115,14 @@ button.primary{
   gap:16px;
 }
 .card{
-  background:#ffffff;
+  background:#fff;
   padding:16px;
   border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.05);
+  box-shadow:0 6px 15px rgba(0,0,0,.06);
   position:relative;
 }
 .card b{
   display:block;
-  font-size:16px;
   margin-bottom:6px;
 }
 .card small{
@@ -158,14 +130,66 @@ button.primary{
 }
 .card button{
   position:absolute;
-  top:12px;
-  right:12px;
+  top:10px;
+  left:10px;
   background:#ef4444;
   color:#fff;
   border:none;
   border-radius:8px;
   padding:6px 8px;
   cursor:pointer;
+}
+
+/* ===== MODAL ===== */
+.backdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:1000;
+}
+.modal{
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#fff;
+  width:420px;
+  max-width:90%;
+  border-radius:16px;
+  padding:20px;
+  z-index:1001;
+}
+.modal h3{margin-top:0}
+.modal label{display:block;margin-top:10px;font-size:14px}
+.modal input,
+.modal select,
+.modal textarea{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+}
+.modal textarea{resize:none;height:80px}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#fee2e2;
+  color:#991b1b;
+  padding:12px 18px;
+  border-radius:10px;
+  display:none;
+  z-index:2000;
+}
+.toast.success{
+  background:#dcfce7;
+  color:#166534;
 }
 </style>
 </head>
@@ -180,153 +204,130 @@ if(!localStorage.getItem("currentUser")){
 
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="brand">clinic-system</div>
-    <div class="nav">
-      <button class="active" onclick="go('dashboard',this)">Dashboard</button>
-      <button onclick="go('patients',this)">Patients</button>
-      <button onclick="go('appointments',this)">Appointments</button>
-      <button onclick="go('payments',this)">Payments</button>
-    </div>
-    <button class="logout" onclick="logout()">Logout</button>
-  </aside>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">clinic-system</div>
+  <div class="nav">
+    <button class="active" onclick="go('dashboard',this)">لوحة التحكم</button>
+    <button onclick="go('patients',this)">المرضى</button>
+  </div>
+  <button class="logout" onclick="logout()">تسجيل خروج</button>
+</aside>
 
-  <!-- CONTENT -->
-  <main class="content">
+<!-- CONTENT -->
+<main class="content">
 
-    <div class="header">
-      <h2 id="pageTitle">Dashboard</h2>
-      <div class="user">👋 Welcome, <b id="userName"></b></div>
-    </div>
+<div class="header">
+  <h2 id="pageTitle">لوحة التحكم</h2>
+  <div>👋 مرحبًا <b id="userName"></b></div>
+</div>
 
-    <!-- STATS -->
-    <div class="stats">
-      <div class="stat"><small>Patients</small><div class="num" id="sPatients">0</div></div>
-      <div class="stat"><small>Appointments</small><div class="num" id="sApps">0</div></div>
-      <div class="stat"><small>Revenue</small><div class="num">JD <span id="sRev">0</span></div></div>
-      <div class="stat"><small>Pending</small><div class="num">JD <span id="sPend">0</span></div></div>
-    </div>
+<div class="stats">
+  <div class="stat"><small>عدد المرضى</small><div class="num" id="sPatients">0</div></div>
+</div>
 
-    <!-- PATIENTS -->
-    <section id="page-patients" class="section hidden">
-      <h3>Patients</h3>
-      <div class="form">
-        <input id="pName" placeholder="Patient name">
-        <button class="primary" onclick="addPatient()">Add</button>
-      </div>
-      <div id="patientsGrid" class="grid"></div>
-    </section>
+<!-- PATIENTS -->
+<section id="page-patients" class="hidden">
+  <button class="primary" onclick="openPatientModal()">+ إضافة مريض</button>
+  <div id="patientsGrid" class="grid"></div>
+</section>
 
-    <!-- APPOINTMENTS -->
-    <section id="page-appointments" class="section hidden">
-      <h3>Appointments</h3>
-      <div class="form">
-        <input id="aName" placeholder="Patient name">
-        <input id="aDate" type="date">
-        <button class="primary" onclick="addApp()">Add</button>
-      </div>
-      <div id="appsList" class="grid"></div>
-    </section>
+</main>
+</div>
 
-    <!-- PAYMENTS -->
-    <section id="page-payments" class="section hidden">
-      <h3>Payments</h3>
-      <div class="form">
-        <input id="payName" placeholder="Patient name">
-        <input id="payAmount" type="number" placeholder="Amount (JD)">
-        <select id="payStatus">
-          <option value="paid">Paid</option>
-          <option value="pending">Pending</option>
-        </select>
-        <button class="primary" onclick="addPayment()">Add</button>
-      </div>
-      <div id="paymentsList" class="grid"></div>
-    </section>
+<!-- ===== TOAST ===== -->
+<div id="toast" class="toast"></div>
 
-  </main>
+<!-- ===== MODAL ===== -->
+<div id="backdrop" class="backdrop"></div>
+<div id="patientModal" class="modal">
+  <h3>إضافة مريض جديد</h3>
 
+  <label>الاسم الكامل *</label>
+  <input id="pName">
+
+  <label>رقم الهاتف *</label>
+  <input id="pPhone">
+
+  <label>البريد الإلكتروني</label>
+  <input id="pEmail">
+
+  <label>العمر</label>
+  <input id="pAge">
+
+  <label>الجنس</label>
+  <select id="pGender">
+    <option value="">اختر...</option>
+    <option>ذكر</option>
+    <option>أنثى</option>
+  </select>
+
+  <label>ملاحظات</label>
+  <textarea id="pNotes"></textarea>
+
+  <div style="margin-top:15px;display:flex;gap:10px">
+    <button onclick="closePatientModal()">إلغاء</button>
+    <button class="primary" onclick="savePatient()">إضافة المريض</button>
+  </div>
 </div>
 
 <script>
 userName.innerText = localStorage.getItem("currentUser");
-
 let patients = JSON.parse(localStorage.getItem("patients")||"[]");
-let apps = JSON.parse(localStorage.getItem("apps")||"[]");
-let pays = JSON.parse(localStorage.getItem("pays")||"[]");
 
 function go(p,btn){
   document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById("page-"+p)?.classList.remove("hidden");
+  document.getElementById("page-"+p).classList.remove("hidden");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   pageTitle.innerText = btn.innerText;
-  refresh();
-  if(p==="patients") renderPatients();
-  if(p==="appointments") renderApps();
-  if(p==="payments") renderPays();
+  renderPatients();
 }
 
-function refresh(){
-  sPatients.innerText=patients.length;
-  sApps.innerText=apps.length;
-  sRev.innerText=pays.filter(p=>p.s==="paid").reduce((a,b)=>a+b.a,0);
-  sPend.innerText=pays.filter(p=>p.s==="pending").reduce((a,b)=>a+b.a,0);
+function openPatientModal(){
+  backdrop.style.display="block";
+  patientModal.style.display="block";
+}
+function closePatientModal(){
+  backdrop.style.display="none";
+  patientModal.style.display="none";
 }
 
-function addPatient(){
-  if(!pName.value) return;
-  patients.push(pName.value);
+function toast(msg,success=false){
+  toastEl.innerText=msg;
+  toastEl.className="toast"+(success?" success":"");
+  toastEl.style.display="block";
+  setTimeout(()=>toastEl.style.display="none",2500);
+}
+
+function savePatient(){
+  if(!pName.value || !pPhone.value){
+    showToast("فشل تحميل المرضى");
+    return;
+  }
+  patients.push({
+    name:pName.value,
+    phone:pPhone.value,
+    email:pEmail.value,
+    age:pAge.value,
+    gender:pGender.value,
+    notes:pNotes.value
+  });
   localStorage.setItem("patients",JSON.stringify(patients));
-  pName.value="";
-  renderPatients();refresh();
+  closePatientModal();
+  renderPatients();
+  showToast("تم إضافة المريض بنجاح",true);
 }
+
 function renderPatients(){
   patientsGrid.innerHTML="";
+  sPatients.innerText=patients.length;
   patients.forEach((p,i)=>{
     patientsGrid.innerHTML+=`
     <div class="card">
-      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">✕</button>
-      <b>${p}</b>
-      <small>Patient</small>
-    </div>`;
-  });
-}
-
-function addApp(){
-  if(!aName.value||!aDate.value) return;
-  apps.push({n:aName.value,d:aDate.value});
-  localStorage.setItem("apps",JSON.stringify(apps));
-  aName.value="";aDate.value="";
-  renderApps();refresh();
-}
-function renderApps(){
-  appsList.innerHTML="";
-  apps.forEach((a,i)=>{
-    appsList.innerHTML+=`
-    <div class="card">
-      <button onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">✕</button>
-      <b>${a.n}</b>
-      <small>${a.d}</small>
-    </div>`;
-  });
-}
-
-function addPayment(){
-  if(!payName.value||!payAmount.value) return;
-  pays.push({n:payName.value,a:Number(payAmount.value),s:payStatus.value});
-  localStorage.setItem("pays",JSON.stringify(pays));
-  payName.value="";payAmount.value="";
-  renderPays();refresh();
-}
-function renderPays(){
-  paymentsList.innerHTML="";
-  pays.forEach((p,i)=>{
-    paymentsList.innerHTML+=`
-    <div class="card">
-      <button onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">✕</button>
-      <b>${p.n}</b>
-      <small>JD ${p.a} – ${p.s}</small>
+      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients()">✕</button>
+      <b>${p.name}</b>
+      <small>${p.phone}</small>
     </div>`;
   });
 }
@@ -336,7 +337,8 @@ function logout(){
   location.href="index.html";
 }
 
-refresh();
+const toastEl=document.getElementById("toast");
+renderPatients();
 </script>
 
 </body>

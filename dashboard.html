@@ -31,18 +31,19 @@ body{
 .brand{
   font-size:20px;
   font-weight:bold;
-  margin-bottom:25px;
+  margin-bottom:30px;
 }
 .nav button{
   width:100%;
   background:transparent;
-  color:#e5e7eb;
+  color:#cbd5f5;
   border:none;
-  padding:12px;
-  border-radius:10px;
+  padding:13px;
+  border-radius:12px;
   text-align:right;
   margin-bottom:6px;
   cursor:pointer;
+  font-size:14px;
 }
 .nav button.active,
 .nav button:hover{
@@ -50,11 +51,11 @@ body{
   color:#fff;
 }
 .logout{
-  margin-top:20px;
+  margin-top:25px;
   width:100%;
   padding:12px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   background:#dc2626;
   color:#fff;
   cursor:pointer;
@@ -64,78 +65,121 @@ body{
 .content{
   padding:25px;
 }
+
+/* HEADER */
 .header{
   background:#fff;
-  padding:15px 20px;
-  border-radius:14px;
+  padding:18px 22px;
+  border-radius:18px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
-.header h2{margin:0}
+.header h2{
+  margin:0;
+  font-size:20px;
+}
 
 /* ===== STATS ===== */
 .stats{
-  margin-top:20px;
+  margin-top:25px;
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:15px;
+  gap:18px;
 }
 .stat{
-  background:#fff;
-  padding:18px;
-  border-radius:14px;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  background:linear-gradient(135deg,#ffffff,#f8fafc);
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
-.stat small{color:#64748b}
+.stat small{
+  color:#64748b;
+  font-size:13px;
+}
 .stat .num{
-  font-size:30px;
+  font-size:32px;
   font-weight:bold;
-  margin-top:8px;
+  margin-top:10px;
+}
+
+/* ===== SECTION HEADER ===== */
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:30px;
+  margin-bottom:10px;
+}
+.section-header h3{
+  margin:0;
+  font-size:18px;
+}
+.section-header span{
+  color:#64748b;
+  font-size:13px;
 }
 
 /* ===== PANELS ===== */
 .panel{
   background:#fff;
-  margin-top:20px;
-  padding:18px;
-  border-radius:14px;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  margin-bottom:20px;
 }
-input,select,button{
-  padding:10px;
-  border-radius:8px;
+.form-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+input,select{
+  padding:12px;
+  border-radius:10px;
   border:1px solid #cbd5f5;
+  font-size:14px;
 }
 button.primary{
   background:#2563eb;
   color:#fff;
   border:none;
+  padding:12px 18px;
+  border-radius:10px;
   cursor:pointer;
 }
+
+/* ===== CARDS ===== */
 .cards{
-  margin-top:15px;
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:15px;
 }
 .card-item{
   background:#f8fafc;
-  padding:12px;
-  border-radius:10px;
+  padding:15px;
+  border-radius:16px;
   position:relative;
+  box-shadow:0 6px 15px rgba(0,0,0,.06);
+}
+.card-item b{
+  display:block;
+  margin-bottom:6px;
+}
+.card-item small{
+  color:#64748b;
 }
 .card-item button{
   position:absolute;
-  top:6px;
-  left:6px;
+  top:10px;
+  left:10px;
   background:#dc2626;
   color:#fff;
   border:none;
-  border-radius:6px;
-  padding:4px 6px;
+  border-radius:8px;
+  padding:6px 8px;
   cursor:pointer;
+  font-size:12px;
 }
 </style>
 </head>
@@ -143,7 +187,6 @@ button.primary{
 <body>
 
 <script>
-/* 🔐 حماية الصفحة */
 if(!localStorage.getItem("currentUser")){
   location.href="index.html";
 }
@@ -167,54 +210,82 @@ if(!localStorage.getItem("currentUser")){
   <main class="content">
 
     <div class="header">
-      <h2>Dashboard</h2>
+      <h2 id="pageTitle">Dashboard</h2>
       <div>👋 مرحبًا، <b id="userName"></b></div>
     </div>
 
     <!-- STATS -->
     <div class="stats">
-      <div class="stat"><small>Patients</small><div class="num" id="sPatients">0</div></div>
-      <div class="stat"><small>Appointments</small><div class="num" id="sApps">0</div></div>
-      <div class="stat"><small>Revenue</small><div class="num">JD <span id="sRev">0</span></div></div>
+      <div class="stat"><small>Total Patients</small><div class="num" id="sPatients">0</div></div>
+      <div class="stat"><small>Total Appointments</small><div class="num" id="sApps">0</div></div>
+      <div class="stat"><small>Total Revenue</small><div class="num">JD <span id="sRev">0</span></div></div>
       <div class="stat"><small>Pending</small><div class="num">JD <span id="sPend">0</span></div></div>
     </div>
 
-    <!-- PAGES -->
+    <!-- DASHBOARD -->
     <section id="page-dashboard"></section>
 
+    <!-- PATIENTS -->
     <section id="page-patients" class="hidden">
-      <div class="panel">
-        <h3>Add Patient</h3>
-        <input id="pName" placeholder="Patient name">
-        <button class="primary" onclick="addPatient()">Add</button>
+      <div class="section-header">
+        <h3>Patients</h3>
+        <span>Manage clinic patients</span>
       </div>
+
+      <div class="panel">
+        <div class="form-row">
+          <input id="pName" placeholder="Patient name">
+          <button class="primary" onclick="addPatient()">Add Patient</button>
+        </div>
+      </div>
+
       <div class="panel">
         <div id="patientsGrid" class="cards"></div>
       </div>
     </section>
 
+    <!-- APPOINTMENTS -->
     <section id="page-appointments" class="hidden">
-      <div class="panel">
-        <h3>Add Appointment</h3>
-        <input id="aName" placeholder="Patient name">
-        <input id="aDate" type="date">
-        <button class="primary" onclick="addApp()">Add</button>
+      <div class="section-header">
+        <h3>Appointments</h3>
+        <span>Sessions & visits</span>
       </div>
-      <div class="panel" id="appsList"></div>
+
+      <div class="panel">
+        <div class="form-row">
+          <input id="aName" placeholder="Patient name">
+          <input id="aDate" type="date">
+          <button class="primary" onclick="addApp()">Add Appointment</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div id="appsList" class="cards"></div>
+      </div>
     </section>
 
+    <!-- PAYMENTS -->
     <section id="page-payments" class="hidden">
-      <div class="panel">
-        <h3>Add Payment</h3>
-        <input id="payName" placeholder="Patient name">
-        <input id="payAmount" type="number" placeholder="Amount (JD)">
-        <select id="payStatus">
-          <option value="paid">Paid</option>
-          <option value="pending">Pending</option>
-        </select>
-        <button class="primary" onclick="addPayment()">Add</button>
+      <div class="section-header">
+        <h3>Payments</h3>
+        <span>Clinic revenue</span>
       </div>
-      <div class="panel" id="paymentsList"></div>
+
+      <div class="panel">
+        <div class="form-row">
+          <input id="payName" placeholder="Patient name">
+          <input id="payAmount" type="number" placeholder="Amount (JD)">
+          <select id="payStatus">
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+          </select>
+          <button class="primary" onclick="addPayment()">Add Payment</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div id="paymentsList" class="cards"></div>
+      </div>
     </section>
 
   </main>
@@ -236,6 +307,7 @@ function go(p,btn){
   document.getElementById("page-"+p).classList.remove("hidden");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
+  pageTitle.innerText = btn.innerText;
   refresh();
   if(p==="patients") renderPatients();
   if(p==="appointments") renderApps();
@@ -265,6 +337,7 @@ function renderPatients(){
     <div class="card-item">
       <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">✕</button>
       <b>${p}</b>
+      <small>Patient</small>
     </div>`;
   });
 }
@@ -282,8 +355,9 @@ function renderApps(){
   apps.forEach((a,i)=>{
     appsList.innerHTML+=`
     <div class="card-item">
-      ${a.n} – ${a.d}
       <button onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">✕</button>
+      <b>${a.n}</b>
+      <small>${a.d}</small>
     </div>`;
   });
 }
@@ -301,8 +375,9 @@ function renderPays(){
   pays.forEach((p,i)=>{
     paymentsList.innerHTML+=`
     <div class="card-item">
-      ${p.n} – JD ${p.a} (${p.s})
       <button onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">✕</button>
+      <b>${p.n}</b>
+      <small>JD ${p.a} – ${p.s}</small>
     </div>`;
   });
 }

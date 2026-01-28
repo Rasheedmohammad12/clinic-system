@@ -3,58 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <title>Clinic System</title>
+
 <style>
+:root{
+    --primary:#2563eb;
+    --bg:#f4f6f8;
+    --card:#ffffff;
+    --danger:#dc2626;
+    --gray:#6b7280;
+}
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f8;
     margin:0;
+    font-family:Arial,sans-serif;
+    background:var(--bg);
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
 }
 .box{
-    background:#fff;
+    background:var(--card);
     padding:25px;
-    border-radius:10px;
-    width:480px;
-    box-shadow:0 4px 15px rgba(0,0,0,.1);
-    text-align:center;
+    border-radius:14px;
+    width:520px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
     position:relative;
 }
-input,button{
+.hidden{display:none}
+h2{text-align:center;margin-top:0}
+button,input{
     width:100%;
     padding:10px;
     margin-top:8px;
+    border-radius:6px;
+    border:1px solid #e5e7eb;
 }
 button{
-    background:#007bff;
+    background:var(--primary);
     color:#fff;
     border:none;
-    border-radius:5px;
     cursor:pointer;
 }
-.logout{background:#dc3545}
-.back{background:#6c757d}
-.delete{background:#dc3545;font-size:12px;padding:6px 10px;width:auto;margin-top:0}
-.hidden{display:none}
-.menu button{margin-top:8px}
-ul{list-style:none;padding:0;margin-top:15px;text-align:left}
-li{
-    background:#f1f3f5;
-    padding:8px;
-    border-radius:5px;
-    margin-bottom:6px;
-    font-size:14px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-}
-.total{
-    margin-top:10px;
-    font-weight:bold;
-}
+.logout{background:var(--danger)}
+.back{background:var(--gray)}
 .langBtn{
     position:absolute;
     top:12px;
@@ -64,35 +55,81 @@ li{
     background:#111827;
     font-size:12px;
 }
-.rtl{
-    direction:rtl;
-    text-align:right;
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:20px;
 }
-.rtl ul{ text-align:right; }
-.rtl li{ flex-direction:row-reverse; }
-.smallNote{
+.card{
+    background:#f9fafb;
+    border-radius:12px;
+    padding:15px;
+    text-align:center;
+}
+.card h3{
+    margin:0;
+    font-size:14px;
+    color:var(--gray);
+}
+.card p{
+    font-size:22px;
+    font-weight:bold;
+    margin:6px 0 0;
+    color:var(--primary);
+}
+.menu button{margin-top:10px}
+ul{list-style:none;padding:0;margin-top:15px}
+li{
+    background:#f1f5f9;
+    padding:8px;
+    border-radius:6px;
+    margin-bottom:6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.delete{
+    background:var(--danger);
     font-size:12px;
-    color:#6b7280;
-    margin-top:8px;
+    padding:5px 10px;
+    width:auto;
 }
+.rtl{direction:rtl;text-align:right}
 </style>
 </head>
+
 <body>
 
 <!-- LOGIN -->
 <div id="loginBox" class="box">
-    <button class="langBtn" onclick="toggleLang()" id="langBtnLogin">AR</button>
+    <button class="langBtn" onclick="toggleLang()">AR</button>
     <h2 id="loginTitle">Clinic Login</h2>
     <input type="password" id="password" placeholder="Password">
     <button onclick="login()" id="loginBtn">Login</button>
-    <p id="error" style="color:red"></p>
-    <div class="smallNote" id="loginHint">Password: clinic123</div>
+    <p id="error" style="color:red;text-align:center"></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="box hidden">
-    <button class="langBtn" onclick="toggleLang()" id="langBtnDash">AR</button>
+    <button class="langBtn" onclick="toggleLang()">AR</button>
     <h2 id="dashTitle">Dashboard</h2>
+
+    <div class="cards">
+        <div class="card">
+            <h3 id="patientsLbl">Patients</h3>
+            <p id="patientsCount">0</p>
+        </div>
+        <div class="card">
+            <h3 id="appointmentsLbl">Appointments</h3>
+            <p id="appointmentsCount">0</p>
+        </div>
+        <div class="card">
+            <h3 id="revenueLbl">Revenue</h3>
+            <p>$<span id="revenueTotal">0</span></p>
+        </div>
+    </div>
+
     <div class="menu">
         <button onclick="openPatients()" id="patientsNav">Patients</button>
         <button onclick="openAppointments()" id="appointmentsNav">Appointments</button>
@@ -103,271 +140,145 @@ li{
 
 <!-- PATIENTS -->
 <div id="patientsPage" class="box hidden">
-    <button class="langBtn" onclick="toggleLang()" id="langBtnPatients">AR</button>
     <h2 id="patientsTitle">Patients</h2>
     <input id="patientName" placeholder="Patient name">
-    <button onclick="addPatient()" id="addPatientBtn">Add</button>
+    <button onclick="addPatient()">Add</button>
     <ul id="patientsList"></ul>
-    <button class="back" onclick="showDashboard()" id="backPatients">Back</button>
+    <button class="back" onclick="showDashboard()">Back</button>
 </div>
 
 <!-- APPOINTMENTS -->
 <div id="appointmentsPage" class="box hidden">
-    <button class="langBtn" onclick="toggleLang()" id="langBtnApps">AR</button>
     <h2 id="appointmentsTitle">Appointments</h2>
     <input id="appPatient" placeholder="Patient name">
     <input type="date" id="appDate">
-    <button onclick="addAppointment()" id="addAppointmentBtn">Add</button>
+    <button onclick="addAppointment()">Add</button>
     <ul id="appointmentsList"></ul>
-    <button class="back" onclick="showDashboard()" id="backAppointments">Back</button>
+    <button class="back" onclick="showDashboard()">Back</button>
 </div>
 
 <!-- REVENUES -->
 <div id="revenuesPage" class="box hidden">
-    <button class="langBtn" onclick="toggleLang()" id="langBtnRev">AR</button>
     <h2 id="revenuesTitle">Revenues</h2>
     <input id="revReason" placeholder="Reason">
     <input type="number" id="revAmount" placeholder="Amount">
-    <button onclick="addRevenue()" id="addRevenueBtn">Add</button>
+    <button onclick="addRevenue()">Add</button>
     <ul id="revenuesList"></ul>
-    <div class="total" id="totalWrap">Total: $<span id="totalRevenue">0</span></div>
-    <button class="back" onclick="showDashboard()" id="backRevenues">Back</button>
+    <button class="back" onclick="showDashboard()">Back</button>
 </div>
 
 <script>
-// ===== I18N =====
-const dict = {
-  en: {
-    loginTitle:"Clinic Login",
-    passwordPh:"Password",
-    loginBtn:"Login",
-    loginHint:"Password: clinic123",
-    dashTitle:"Dashboard",
-    patientsNav:"Patients",
-    appointmentsNav:"Appointments",
-    revenuesNav:"Revenues",
-    logoutBtn:"Logout",
-    patientsTitle:"Patients",
-    patientNamePh:"Patient name",
-    add:"Add",
-    back:"Back",
-    appointmentsTitle:"Appointments",
-    revenuesTitle:"Revenues",
-    reasonPh:"Reason",
-    amountPh:"Amount",
-    total:"Total",
-    wrongPass:"Wrong password",
-    del:"X"
-  },
-  ar: {
-    loginTitle:"تسجيل دخول العيادة",
-    passwordPh:"كلمة المرور",
-    loginBtn:"دخول",
-    loginHint:"كلمة المرور: clinic123",
-    dashTitle:"لوحة التحكم",
-    patientsNav:"المرضى",
-    appointmentsNav:"المواعيد",
-    revenuesNav:"الإيرادات",
-    logoutBtn:"تسجيل خروج",
-    patientsTitle:"المرضى",
-    patientNamePh:"اسم المريض",
-    add:"إضافة",
-    back:"رجوع",
-    appointmentsTitle:"المواعيد",
-    revenuesTitle:"الإيرادات",
-    reasonPh:"السبب",
-    amountPh:"المبلغ",
-    total:"المجموع",
-    wrongPass:"كلمة المرور غير صحيحة",
-    del:"حذف"
-  }
+let lang=localStorage.getItem("lang")||"en";
+let patients=JSON.parse(localStorage.getItem("patients"))||[];
+let appointments=JSON.parse(localStorage.getItem("appointments"))||[];
+let revenues=JSON.parse(localStorage.getItem("revenues"))||[];
+
+const t={
+en:{
+login:"Clinic Login",dash:"Dashboard",patients:"Patients",appointments:"Appointments",
+revenues:"Revenues",logout:"Logout",wrong:"Wrong password"
+},
+ar:{
+login:"تسجيل دخول العيادة",dash:"لوحة التحكم",patients:"المرضى",appointments:"المواعيد",
+revenues:"الإيرادات",logout:"تسجيل خروج",wrong:"كلمة مرور خاطئة"
+}
 };
 
-let lang = localStorage.getItem("lang") || "en";
-
 function applyLang(){
-  const t = dict[lang];
-
-  // direction
-  document.documentElement.lang = lang;
-  const pages = [loginBox, dashboard, patientsPage, appointmentsPage, revenuesPage];
-  pages.forEach(p => p.classList.toggle("rtl", lang === "ar"));
-
-  // button labels for lang toggle
-  const toggleLabel = (lang === "en") ? "AR" : "EN";
-  ["langBtnLogin","langBtnDash","langBtnPatients","langBtnApps","langBtnRev"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.innerText = toggleLabel;
-  });
-
-  // login
-  loginTitle.innerText = t.loginTitle;
-  password.placeholder = t.passwordPh;
-  loginBtn.innerText = t.loginBtn;
-  loginHint.innerText = t.loginHint;
-
-  // dashboard
-  dashTitle.innerText = t.dashTitle;
-  patientsNav.innerText = t.patientsNav;
-  appointmentsNav.innerText = t.appointmentsNav;
-  revenuesNav.innerText = t.revenuesNav;
-  logoutBtn.innerText = t.logoutBtn;
-
-  // patients
-  patientsTitle.innerText = t.patientsTitle;
-  patientName.placeholder = t.patientNamePh;
-  addPatientBtn.innerText = t.add;
-  backPatients.innerText = t.back;
-
-  // appointments
-  appointmentsTitle.innerText = t.appointmentsTitle;
-  appPatient.placeholder = t.patientNamePh;
-  addAppointmentBtn.innerText = t.add;
-  backAppointments.innerText = t.back;
-
-  // revenues
-  revenuesTitle.innerText = t.revenuesTitle;
-  revReason.placeholder = t.reasonPh;
-  revAmount.placeholder = t.amountPh;
-  addRevenueBtn.innerText = t.add;
-  backRevenues.innerText = t.back;
-  totalWrap.firstChild.textContent = t.total + ": $";
-
-  // re-render lists to update delete label
-  renderPatients();
-  renderAppointments();
-  renderRevenues();
+document.body.classList.toggle("rtl",lang==="ar");
+loginTitle.innerText=t[lang].login;
+dashTitle.innerText=t[lang].dash;
+patientsNav.innerText=t[lang].patients;
+appointmentsNav.innerText=t[lang].appointments;
+revenuesNav.innerText=t[lang].revenues;
+logoutBtn.innerText=t[lang].logout;
+patientsLbl.innerText=t[lang].patients;
+appointmentsLbl.innerText=t[lang].appointments;
+revenueLbl.innerText=t[lang].revenues;
 }
 
 function toggleLang(){
-  lang = (lang === "en") ? "ar" : "en";
-  localStorage.setItem("lang", lang);
-  applyLang();
+lang=lang==="en"?"ar":"en";
+localStorage.setItem("lang",lang);
+applyLang();
 }
 
-// ===== AUTH =====
-if(localStorage.getItem("loggedIn")==="true") showDashboard();
-
-// ===== DATA =====
-let patients = JSON.parse(localStorage.getItem("patients")) || [];
-let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
-let revenues = JSON.parse(localStorage.getItem("revenues")) || [];
-
-// ===== NAV =====
 function hideAll(){
-  loginBox.classList.add("hidden");
-  dashboard.classList.add("hidden");
-  patientsPage.classList.add("hidden");
-  appointmentsPage.classList.add("hidden");
-  revenuesPage.classList.add("hidden");
+loginBox.classList.add("hidden");
+dashboard.classList.add("hidden");
+patientsPage.classList.add("hidden");
+appointmentsPage.classList.add("hidden");
+revenuesPage.classList.add("hidden");
 }
-function showDashboard(){ hideAll(); dashboard.classList.remove("hidden"); }
-function openPatients(){ hideAll(); patientsPage.classList.remove("hidden"); renderPatients(); }
-function openAppointments(){ hideAll(); appointmentsPage.classList.remove("hidden"); renderAppointments(); }
-function openRevenues(){ hideAll(); revenuesPage.classList.remove("hidden"); renderRevenues(); }
+function showDashboard(){
+hideAll();
+updateStats();
+dashboard.classList.remove("hidden");
+}
+function openPatients(){hideAll();patientsPage.classList.remove("hidden");renderPatients();}
+function openAppointments(){hideAll();appointmentsPage.classList.remove("hidden");renderAppointments();}
+function openRevenues(){hideAll();revenuesPage.classList.remove("hidden");renderRevenues();}
 
-// ===== LOGIN / LOGOUT =====
 function login(){
-  if(password.value === "clinic123"){
-    localStorage.setItem("loggedIn","true");
-    error.innerText = "";
-    showDashboard();
-  } else {
-    error.innerText = dict[lang].wrongPass;
-  }
+if(password.value==="clinic123"){
+localStorage.setItem("loggedIn","true");
+showDashboard();
+}else error.innerText=t[lang].wrong;
 }
-function logout(){
-  localStorage.removeItem("loggedIn");
-  location.reload();
+function logout(){localStorage.removeItem("loggedIn");location.reload();}
+
+function updateStats(){
+patientsCount.innerText=patients.length;
+appointmentsCount.innerText=appointments.length;
+revenueTotal.innerText=revenues.reduce((s,r)=>s+r.a,0);
 }
 
-// ===== PATIENTS =====
 function addPatient(){
-  const name = patientName.value.trim();
-  if(!name) return;
-  patients.push(name);
-  localStorage.setItem("patients", JSON.stringify(patients));
-  patientName.value = "";
-  renderPatients();
-}
-function deletePatient(i){
-  patients.splice(i,1);
-  localStorage.setItem("patients", JSON.stringify(patients));
-  renderPatients();
+if(!patientName.value)return;
+patients.push(patientName.value);
+localStorage.setItem("patients",JSON.stringify(patients));
+patientName.value="";
+renderPatients();
 }
 function renderPatients(){
-  if(!patientsList) return;
-  patientsList.innerHTML = "";
-  const delLabel = dict[lang].del;
-  patients.forEach((p,i)=>{
-    patientsList.innerHTML += `<li><span>${escapeHtml(p)}</span><button class="delete" onclick="deletePatient(${i})">${delLabel}</button></li>`;
-  });
+patientsList.innerHTML="";
+patients.forEach((p,i)=>{
+patientsList.innerHTML+=`<li>${p}<button class="delete" onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients()">X</button></li>`;
+});
+updateStats();
 }
 
-// ===== APPOINTMENTS =====
 function addAppointment(){
-  const name = appPatient.value.trim();
-  const date = appDate.value;
-  if(!name || !date) return;
-  appointments.push({n:name, d:date});
-  localStorage.setItem("appointments", JSON.stringify(appointments));
-  appPatient.value = "";
-  appDate.value = "";
-  renderAppointments();
-}
-function deleteAppointment(i){
-  appointments.splice(i,1);
-  localStorage.setItem("appointments", JSON.stringify(appointments));
-  renderAppointments();
+if(!appPatient.value||!appDate.value)return;
+appointments.push({n:appPatient.value,d:appDate.value});
+localStorage.setItem("appointments",JSON.stringify(appointments));
+appPatient.value="";appDate.value="";
+renderAppointments();
 }
 function renderAppointments(){
-  if(!appointmentsList) return;
-  appointmentsList.innerHTML = "";
-  const delLabel = dict[lang].del;
-  appointments.forEach((a,i)=>{
-    appointmentsList.innerHTML += `<li><span>${escapeHtml(a.n)} - ${escapeHtml(a.d)}</span><button class="delete" onclick="deleteAppointment(${i})">${delLabel}</button></li>`;
-  });
+appointmentsList.innerHTML="";
+appointments.forEach((a,i)=>{
+appointmentsList.innerHTML+=`<li>${a.n} - ${a.d}<button class="delete" onclick="appointments.splice(${i},1);localStorage.setItem('appointments',JSON.stringify(appointments));renderAppointments()">X</button></li>`;
+});
+updateStats();
 }
 
-// ===== REVENUES =====
 function addRevenue(){
-  const reason = revReason.value.trim();
-  const amount = Number(revAmount.value);
-  if(!reason || !revAmount.value) return;
-  revenues.push({r:reason, a:amount});
-  localStorage.setItem("revenues", JSON.stringify(revenues));
-  revReason.value = "";
-  revAmount.value = "";
-  renderRevenues();
-}
-function deleteRevenue(i){
-  revenues.splice(i,1);
-  localStorage.setItem("revenues", JSON.stringify(revenues));
-  renderRevenues();
+if(!revReason.value||!revAmount.value)return;
+revenues.push({r:revReason.value,a:Number(revAmount.value)});
+localStorage.setItem("revenues",JSON.stringify(revenues));
+revReason.value="";revAmount.value="";
+renderRevenues();
 }
 function renderRevenues(){
-  if(!revenuesList) return;
-  revenuesList.innerHTML = "";
-  const delLabel = dict[lang].del;
-  let total = 0;
-  revenues.forEach((x,i)=>{
-    total += Number(x.a || 0);
-    revenuesList.innerHTML += `<li><span>${escapeHtml(x.r)} - $${escapeHtml(String(x.a))}</span><button class="delete" onclick="deleteRevenue(${i})">${delLabel}</button></li>`;
-  });
-  totalRevenue.innerText = total;
+revenuesList.innerHTML="";
+revenues.forEach((r,i)=>{
+revenuesList.innerHTML+=`<li>${r.r} - $${r.a}<button class="delete" onclick="revenues.splice(${i},1);localStorage.setItem('revenues',JSON.stringify(revenues));renderRevenues()">X</button></li>`;
+});
+updateStats();
 }
 
-// ===== HELPERS =====
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-// init language
+if(localStorage.getItem("loggedIn")==="true")showDashboard();
 applyLang();
 </script>
 

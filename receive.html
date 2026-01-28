@@ -3,30 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>استلام المبالغ</title>
-<style>
-body{font-family:Arial;background:#f1f5f9;margin:0}
-header{background:#2563eb;color:#fff;padding:15px;text-align:center}
-form{background:#fff;padding:20px;margin:30px auto;max-width:450px;border-radius:10px}
-input,select,button{width:100%;padding:10px;margin-top:10px}
-button{background:#2563eb;color:#fff;border:none}
-a{display:block;text-align:center;margin-top:15px;color:#2563eb}
-</style>
 </head>
 
 <body>
 
-<header><h2>💰 استلام مبلغ</h2></header>
+<h2 id="title"></h2>
 
 <form id="receiveForm">
-  <select id="patientSelect" required></select>
-  <input type="number" id="amount" placeholder="المبلغ المستلم" required>
-  <input type="text" id="note" placeholder="ملاحظة (اختياري)">
-  <button type="submit">استلام</button>
+  <select id="patientSelect"></select>
+  <input type="number" id="amount" placeholder="Amount">
+  <input type="text" id="note" placeholder="Note">
+  <button type="submit">Save</button>
 </form>
 
-<a href="dashboard.html">⬅ رجوع</a>
+<a href="dashboard.html">⬅ Back</a>
 
+<script src="assets/js/settings-system.js"></script>
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/receive.js"></script>
+
+<script>
+document.getElementById("title").innerText = t("receive");
+</script>
+
 </body>
 </html>

@@ -17,14 +17,14 @@ body{
     background:#fff;
     padding:25px;
     border-radius:10px;
-    width:440px;
+    width:460px;
     box-shadow:0 4px 15px rgba(0,0,0,.1);
     text-align:center;
 }
 input,button{
     width:100%;
     padding:10px;
-    margin-top:10px;
+    margin-top:8px;
 }
 button{
     background:#007bff;
@@ -35,6 +35,7 @@ button{
 }
 .logout{background:#dc3545}
 .back{background:#6c757d}
+.delete{background:#dc3545;font-size:12px;padding:5px}
 .hidden{display:none}
 .menu button{margin-top:8px}
 ul{list-style:none;padding:0;margin-top:15px;text-align:left}
@@ -44,8 +45,14 @@ li{
     border-radius:5px;
     margin-bottom:6px;
     font-size:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
-h2{margin-top:0}
+.total{
+    margin-top:10px;
+    font-weight:bold;
+}
 </style>
 </head>
 <body>
@@ -64,6 +71,7 @@ h2{margin-top:0}
     <div class="menu">
         <button onclick="openPatients()">Patients</button>
         <button onclick="openAppointments()">Appointments</button>
+        <button onclick="openRevenues()">Revenues</button>
         <button class="logout" onclick="logout()">Logout</button>
     </div>
 </div>
@@ -71,8 +79,8 @@ h2{margin-top:0}
 <!-- PATIENTS -->
 <div id="patientsPage" class="box hidden">
     <h2>Patients</h2>
-    <input type="text" id="patientName" placeholder="Patient name">
-    <button onclick="addPatient()">Add Patient</button>
+    <input id="patientName" placeholder="Patient name">
+    <button onclick="addPatient()">Add</button>
     <ul id="patientsList"></ul>
     <button class="back" onclick="showDashboard()">Back</button>
 </div>
@@ -80,25 +88,33 @@ h2{margin-top:0}
 <!-- APPOINTMENTS -->
 <div id="appointmentsPage" class="box hidden">
     <h2>Appointments</h2>
-    <input type="text" id="appPatient" placeholder="Patient name">
+    <input id="appPatient" placeholder="Patient name">
     <input type="date" id="appDate">
-    <button onclick="addAppointment()">Add Appointment</button>
+    <button onclick="addAppointment()">Add</button>
     <ul id="appointmentsList"></ul>
+    <button class="back" onclick="showDashboard()">Back</button>
+</div>
+
+<!-- REVENUES -->
+<div id="revenuesPage" class="box hidden">
+    <h2>Revenues</h2>
+    <input id="revReason" placeholder="Reason">
+    <input type="number" id="revAmount" placeholder="Amount">
+    <button onclick="addRevenue()">Add</button>
+    <ul id="revenuesList"></ul>
+    <div class="total">Total: $<span id="totalRevenue">0</span></div>
     <button class="back" onclick="showDashboard()">Back</button>
 </div>
 
 <script>
 // ===== AUTH =====
-if(localStorage.getItem("loggedIn")==="true"){showDashboard()}
+if(localStorage.getItem("loggedIn")==="true")showDashboard();
 
 function login(){
-    const pass=document.getElementById("password").value;
-    if(pass==="clinic123"){
+    if(password.value==="clinic123"){
         localStorage.setItem("loggedIn","true");
         showDashboard();
-    }else{
-        document.getElementById("error").innerText="Wrong password";
-    }
+    }else error.innerText="Wrong password";
 }
 function logout(){
     localStorage.removeItem("loggedIn");
@@ -108,6 +124,7 @@ function logout(){
 // ===== DATA =====
 let patients=JSON.parse(localStorage.getItem("patients"))||[];
 let appointments=JSON.parse(localStorage.getItem("appointments"))||[];
+let revenues=JSON.parse(localStorage.getItem("revenues"))||[];
 
 // ===== NAV =====
 function hideAll(){
@@ -115,58 +132,74 @@ function hideAll(){
     dashboard.classList.add("hidden");
     patientsPage.classList.add("hidden");
     appointmentsPage.classList.add("hidden");
+    revenuesPage.classList.add("hidden");
 }
-function showDashboard(){
-    hideAll();
-    dashboard.classList.remove("hidden");
-}
-function openPatients(){
-    hideAll();
-    patientsPage.classList.remove("hidden");
-    renderPatients();
-}
-function openAppointments(){
-    hideAll();
-    appointmentsPage.classList.remove("hidden");
-    renderAppointments();
-}
+function showDashboard(){hideAll();dashboard.classList.remove("hidden")}
+function openPatients(){hideAll();patientsPage.classList.remove("hidden");renderPatients()}
+function openAppointments(){hideAll();appointmentsPage.classList.remove("hidden");renderAppointments()}
+function openRevenues(){hideAll();revenuesPage.classList.remove("hidden");renderRevenues()}
 
 // ===== PATIENTS =====
 function addPatient(){
-    const name=patientName.value.trim();
-    if(!name)return;
-    patients.push(name);
+    if(!patientName.value.trim())return;
+    patients.push(patientName.value);
     localStorage.setItem("patients",JSON.stringify(patients));
     patientName.value="";
     renderPatients();
 }
+function deletePatient(i){
+    patients.splice(i,1);
+    localStorage.setItem("patients",JSON.stringify(patients));
+    renderPatients();
+}
 function renderPatients(){
     patientsList.innerHTML="";
-    patients.forEach(p=>{
-        const li=document.createElement("li");
-        li.textContent=p;
-        patientsList.appendChild(li);
+    patients.forEach((p,i)=>{
+        patientsList.innerHTML+=`<li>${p}<button class="delete" onclick="deletePatient(${i})">X</button></li>`;
     });
 }
 
 // ===== APPOINTMENTS =====
 function addAppointment(){
-    const name=appPatient.value.trim();
-    const date=appDate.value;
-    if(!name||!date)return;
-    appointments.push({name,date});
+    if(!appPatient.value||!appDate.value)return;
+    appointments.push({n:appPatient.value,d:appDate.value});
     localStorage.setItem("appointments",JSON.stringify(appointments));
-    appPatient.value="";
-    appDate.value="";
+    appPatient.value="";appDate.value="";
+    renderAppointments();
+}
+function deleteAppointment(i){
+    appointments.splice(i,1);
+    localStorage.setItem("appointments",JSON.stringify(appointments));
     renderAppointments();
 }
 function renderAppointments(){
     appointmentsList.innerHTML="";
-    appointments.forEach(a=>{
-        const li=document.createElement("li");
-        li.textContent=`${a.name} – ${a.date}`;
-        appointmentsList.appendChild(li);
+    appointments.forEach((a,i)=>{
+        appointmentsList.innerHTML+=`<li>${a.n} - ${a.d}<button class="delete" onclick="deleteAppointment(${i})">X</button></li>`;
     });
+}
+
+// ===== REVENUES =====
+function addRevenue(){
+    if(!revReason.value||!revAmount.value)return;
+    revenues.push({r:revReason.value,a:Number(revAmount.value)});
+    localStorage.setItem("revenues",JSON.stringify(revenues));
+    revReason.value="";revAmount.value="";
+    renderRevenues();
+}
+function deleteRevenue(i){
+    revenues.splice(i,1);
+    localStorage.setItem("revenues",JSON.stringify(revenues));
+    renderRevenues();
+}
+function renderRevenues(){
+    revenuesList.innerHTML="";
+    let total=0;
+    revenues.forEach((r,i)=>{
+        total+=r.a;
+        revenuesList.innerHTML+=`<li>${r.r} - $${r.a}<button class="delete" onclick="deleteRevenue(${i})">X</button></li>`;
+    });
+    totalRevenue.innerText=total;
 }
 </script>
 

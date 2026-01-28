@@ -7,17 +7,22 @@
 
 <body>
 
-<script>
-  if(sessionStorage.getItem("payments_access") !== "true"){
-    alert("❌ غير مصرح بدخول صفحة المدفوعات");
-    window.location.href = "dashboard.html";
-  }
-</script>
+<h2>💳 المدفوعات</h2>
 
-<h2>💳 صفحة المدفوعات</h2>
+<table border="1" width="100%">
+<thead>
+<tr>
+  <th>#</th>
+  <th>المريض</th>
+  <th>المبلغ</th>
+  <th>ملاحظة</th>
+  <th>التاريخ</th>
+</tr>
+</thead>
+<tbody id="paymentsTable"></tbody>
+</table>
 
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/payments.js"></script>
-
 </body>
 </html>

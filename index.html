@@ -2,41 +2,15 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>سستم عيادة</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تسجيل الدخول | سستم عيادة</title>
 <style>
-*{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Tahoma,Arial;
+  font-family:Arial;
   background:#f4f6f9;
-  color:#111827;
-}
-.hidden{display:none}
-button,input,select{
-  padding:11px;
-  border-radius:8px;
-  border:1px solid #d1d5db;
-  font-size:14px;
-}
-button{
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-button.logout{
-  background:#fff;
-  color:#dc2626;
-  border:1px solid #fecaca;
-}
-h1,h2{margin-top:0}
-
-/* AUTH */
-.center{
-  min-height:100vh;
   display:grid;
   place-items:center;
+  height:100vh;
 }
 .card{
   background:#fff;
@@ -45,311 +19,58 @@ h1,h2{margin-top:0}
   border-radius:12px;
   box-shadow:0 10px 25px rgba(0,0,0,.1);
 }
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+}
+button{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
 .link{
   text-align:center;
-  margin-top:10px;
+  margin-top:12px;
   color:#2563eb;
   cursor:pointer;
 }
-.err{color:#dc2626;text-align:center;margin-top:10px}
-.ok{color:#16a34a;text-align:center;margin-top:10px}
-
-/* LAYOUT */
-.app{
-  display:grid;
-  grid-template-columns:1fr 240px;
-  min-height:100vh;
-}
-.sidebar{
-  background:#fff;
-  border-left:1px solid #e5e7eb;
-  padding:15px;
-}
-.brand{
-  font-weight:bold;
-  font-size:18px;
-  margin-bottom:20px;
-}
-.nav button{
-  width:100%;
-  background:transparent;
-  color:#111827;
-  text-align:right;
-  margin-bottom:6px;
-}
-.nav button.active{
-  background:#e8f0ff;
-  font-weight:bold;
-}
-.content{
-  padding:25px;
-}
-
-/* DASHBOARD */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-}
-.stat{
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
-}
-.stat small{color:#6b7280}
-.stat .num{font-size:26px;font-weight:bold}
-
-/* PANELS */
-.panel{
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
-  margin-top:15px;
-}
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-  gap:12px;
-}
-.pcard{
-  background:#f9fafb;
-  padding:12px;
-  border-radius:10px;
-  position:relative;
-}
-.pcard button{
-  position:absolute;
-  top:6px;
-  left:6px;
-  background:#dc2626;
-  padding:4px 7px;
-  font-size:11px;
-}
-.item{
-  background:#f9fafb;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:8px;
-  display:flex;
-  justify-content:space-between;
-}
+.err{color:red;text-align:center;margin-top:10px}
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-<div id="loginView" class="center">
-  <div class="card">
-    <h2>سستم عيادة</h2>
-    <input id="loginUser" placeholder="اسم المستخدم">
-    <input id="loginPass" type="password" placeholder="كلمة المرور">
-    <button onclick="login()">دخول</button>
-    <div id="loginErr" class="err"></div>
-    <div class="link" onclick="showRegister()">إنشاء مستخدم</div>
+<div class="card">
+  <h2>سستم عيادة</h2>
+  <input id="user" placeholder="اسم المستخدم">
+  <input id="pass" type="password" placeholder="كلمة المرور">
+  <button onclick="login()">تسجيل دخول</button>
+  <div id="err" class="err"></div>
+  <div class="link" onclick="location.href='register.html'">
+    إنشاء حساب جديد
   </div>
-</div>
-
-<!-- REGISTER -->
-<div id="registerView" class="center hidden">
-  <div class="card">
-    <h2>إنشاء مستخدم</h2>
-    <input id="regUser" placeholder="اسم المستخدم">
-    <input id="regPass" type="password" placeholder="كلمة المرور">
-    <button onclick="register()">إنشاء</button>
-    <div id="regMsg"></div>
-    <div class="link" onclick="showLogin()">رجوع</div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="appView" class="app hidden">
-
-  <main class="content">
-
-    <!-- DASHBOARD -->
-    <section id="page-dashboard">
-      <h1>لوحة التحكم</h1>
-      <div class="stats">
-        <div class="stat"><small>المرضى</small><div class="num" id="sPatients">0</div></div>
-        <div class="stat"><small>الجلسات</small><div class="num" id="sApps">0</div></div>
-        <div class="stat"><small>الإيرادات</small><div class="num">JD <span id="sRev">0</span></div></div>
-        <div class="stat"><small>معلقة</small><div class="num">JD <span id="sPend">0</span></div></div>
-      </div>
-    </section>
-
-    <!-- PATIENTS -->
-    <section id="page-patients" class="hidden">
-      <div class="panel">
-        <h2>المرضى</h2>
-        <input id="pName" placeholder="اسم المريض">
-        <button onclick="addPatient()">إضافة</button>
-      </div>
-      <div class="panel">
-        <div id="patientsGrid" class="cards"></div>
-      </div>
-    </section>
-
-    <!-- APPOINTMENTS -->
-    <section id="page-appointments" class="hidden">
-      <div class="panel">
-        <h2>الجلسات</h2>
-        <input id="aName" placeholder="اسم المريض">
-        <input id="aDate" type="date">
-        <button onclick="addApp()">إضافة</button>
-      </div>
-      <div class="panel" id="appsList"></div>
-    </section>
-
-    <!-- PAYMENTS -->
-    <section id="page-payments" class="hidden">
-      <div class="panel">
-        <h2>المدفوعات (محمي)</h2>
-        <input id="payName" placeholder="اسم المريض">
-        <input id="payAmount" type="number" placeholder="المبلغ">
-        <select id="payStatus">
-          <option value="paid">مدفوع</option>
-          <option value="pending">معلق</option>
-        </select>
-        <button onclick="addPayment()">إضافة</button>
-      </div>
-      <div class="panel" id="paymentsList"></div>
-    </section>
-
-  </main>
-
-  <aside class="sidebar">
-    <div class="brand">سستم عيادة</div>
-    <div class="nav">
-      <button class="active" onclick="go('dashboard',this)">لوحة التحكم</button>
-      <button onclick="go('patients',this)">المرضى</button>
-      <button onclick="go('appointments',this)">الجلسات</button>
-      <button onclick="goProtected('payments',this)">المدفوعات</button>
-    </div>
-    <button class="logout" onclick="logout()">تسجيل خروج</button>
-  </aside>
-
 </div>
 
 <script>
-/* USERS */
-const USERS="users", CURR="currentUser";
-let users=JSON.parse(localStorage.getItem(USERS)||"[]");
-
-/* DATA */
-let patients=JSON.parse(localStorage.getItem("patients")||"[]");
-let apps=JSON.parse(localStorage.getItem("apps")||"[]");
-let pays=JSON.parse(localStorage.getItem("pays")||"[]");
-
-/* REVENUE PASS */
-if(!localStorage.getItem("revPass")) localStorage.setItem("revPass","rev123");
-
-/* AUTH NAV */
-function showRegister(){loginView.classList.add("hidden");registerView.classList.remove("hidden")}
-function showLogin(){registerView.classList.add("hidden");loginView.classList.remove("hidden")}
-
-function register(){
-  if(!regUser.value||!regPass.value){regMsg.innerHTML="<div class='err'>كل الحقول مطلوبة</div>";return;}
-  if(users.find(u=>u.u===regUser.value)){regMsg.innerHTML="<div class='err'>موجود</div>";return;}
-  users.push({u:regUser.value,p:regPass.value});
-  localStorage.setItem(USERS,JSON.stringify(users));
-  regMsg.innerHTML="<div class='ok'>تم</div>";
-}
+const users = JSON.parse(localStorage.getItem("users") || "[]");
 
 function login(){
-  const u=users.find(x=>x.u===loginUser.value&&x.p===loginPass.value);
-  if(!u){loginErr.innerText="بيانات خاطئة";return;}
-  localStorage.setItem(CURR,u.u);
-  boot();
+  const u = user.value.trim();
+  const p = pass.value.trim();
+  const found = users.find(x => x.u === u && x.p === p);
+  if(!found){
+    err.innerText = "بيانات الدخول غير صحيحة";
+    return;
+  }
+  localStorage.setItem("currentUser", u);
+  location.href = "dashboard.html";
 }
 
-function boot(){
-  loginView.classList.add("hidden");
-  registerView.classList.add("hidden");
-  appView.classList.remove("hidden");
-  refresh();
-}
-if(localStorage.getItem(CURR)) boot();
-
-function logout(){localStorage.removeItem(CURR);location.reload();}
-
-/* NAV */
-function go(p,btn){
-  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById("page-"+p).classList.remove("hidden");
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-  refresh();
-  if(p==="patients") renderPatients();
-  if(p==="appointments") renderApps();
-  if(p==="payments") renderPays();
-}
-function goProtected(p,btn){
-  if(prompt("كلمة مرور المدفوعات:")===localStorage.getItem("revPass")) go(p,btn);
-}
-
-/* DASH */
-function refresh(){
-  sPatients.innerText=patients.length;
-  sApps.innerText=apps.length;
-  sRev.innerText=pays.filter(p=>p.s==="paid").reduce((a,b)=>a+b.a,0);
-  sPend.innerText=pays.filter(p=>p.s==="pending").reduce((a,b)=>a+b.a,0);
-}
-
-/* PATIENTS */
-function addPatient(){
-  if(!pName.value)return;
-  patients.push(pName.value);
-  localStorage.setItem("patients",JSON.stringify(patients));
-  pName.value="";renderPatients();refresh();
-}
-function renderPatients(){
-  patientsGrid.innerHTML="";
-  patients.forEach((p,i)=>{
-    patientsGrid.innerHTML+=`
-    <div class="pcard">
-      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">X</button>
-      <b>${p}</b>
-    </div>`;
-  });
-}
-
-/* APPS */
-function addApp(){
-  if(!aName.value||!aDate.value)return;
-  apps.push({n:aName.value,d:aDate.value});
-  localStorage.setItem("apps",JSON.stringify(apps));
-  aName.value="";aDate.value="";
-  renderApps();refresh();
-}
-function renderApps(){
-  appsList.innerHTML="";
-  apps.forEach((a,i)=>{
-    appsList.innerHTML+=`
-    <div class="item">${a.n} - ${a.d}
-      <button class="logout" onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">حذف</button>
-    </div>`;
-  });
-}
-
-/* PAYMENTS */
-function addPayment(){
-  if(!payName.value||!payAmount.value)return;
-  pays.push({n:payName.value,a:Number(payAmount.value),s:payStatus.value});
-  localStorage.setItem("pays",JSON.stringify(pays));
-  payName.value="";payAmount.value="";
-  renderPays();refresh();
-}
-function renderPays(){
-  paymentsList.innerHTML="";
-  pays.forEach((p,i)=>{
-    paymentsList.innerHTML+=`
-    <div class="item">${p.n} - JD ${p.a} (${p.s})
-      <button class="logout" onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">حذف</button>
-    </div>`;
-  });
+if(localStorage.getItem("currentUser")){
+  location.href = "dashboard.html";
 }
 </script>
 

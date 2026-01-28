@@ -1,72 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Clinic System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .box {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            width: 420px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .logout {
-            background: #dc3545;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .menu button {
-            margin-top: 8px;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-            text-align: left;
-        }
-
-        li {
-            background: #f1f3f5;
-            padding: 8px;
-            border-radius: 5px;
-            margin-bottom: 6px;
-        }
-
-        .back {
-            background: #6c757d;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Clinic System</title>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f8;
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.box{
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    width:440px;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+    text-align:center;
+}
+input,button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+}
+button{
+    background:#007bff;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+.logout{background:#dc3545}
+.back{background:#6c757d}
+.hidden{display:none}
+.menu button{margin-top:8px}
+ul{list-style:none;padding:0;margin-top:15px;text-align:left}
+li{
+    background:#f1f3f5;
+    padding:8px;
+    border-radius:5px;
+    margin-bottom:6px;
+    font-size:14px;
+}
+h2{margin-top:0}
+</style>
 </head>
 <body>
 
@@ -75,15 +55,15 @@
     <h2>Clinic Login</h2>
     <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
-    <p id="error" style="color:red;"></p>
+    <p id="error" style="color:red"></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="box hidden">
     <h2>Dashboard</h2>
-
     <div class="menu">
         <button onclick="openPatients()">Patients</button>
+        <button onclick="openAppointments()">Appointments</button>
         <button class="logout" onclick="logout()">Logout</button>
     </div>
 </div>
@@ -91,78 +71,103 @@
 <!-- PATIENTS -->
 <div id="patientsPage" class="box hidden">
     <h2>Patients</h2>
-
     <input type="text" id="patientName" placeholder="Patient name">
     <button onclick="addPatient()">Add Patient</button>
-
     <ul id="patientsList"></ul>
+    <button class="back" onclick="showDashboard()">Back</button>
+</div>
 
-    <button class="back" onclick="backToDashboard()">Back</button>
+<!-- APPOINTMENTS -->
+<div id="appointmentsPage" class="box hidden">
+    <h2>Appointments</h2>
+    <input type="text" id="appPatient" placeholder="Patient name">
+    <input type="date" id="appDate">
+    <button onclick="addAppointment()">Add Appointment</button>
+    <ul id="appointmentsList"></ul>
+    <button class="back" onclick="showDashboard()">Back</button>
 </div>
 
 <script>
-    // Auto login
-    if (localStorage.getItem("loggedIn") === "true") {
+// ===== AUTH =====
+if(localStorage.getItem("loggedIn")==="true"){showDashboard()}
+
+function login(){
+    const pass=document.getElementById("password").value;
+    if(pass==="clinic123"){
+        localStorage.setItem("loggedIn","true");
         showDashboard();
+    }else{
+        document.getElementById("error").innerText="Wrong password";
     }
+}
+function logout(){
+    localStorage.removeItem("loggedIn");
+    location.reload();
+}
 
-    let patients = JSON.parse(localStorage.getItem("patients")) || [];
+// ===== DATA =====
+let patients=JSON.parse(localStorage.getItem("patients"))||[];
+let appointments=JSON.parse(localStorage.getItem("appointments"))||[];
 
-    function login() {
-        const pass = document.getElementById("password").value;
-        if (pass === "clinic123") {
-            localStorage.setItem("loggedIn", "true");
-            showDashboard();
-        } else {
-            document.getElementById("error").innerText = "Wrong password";
-        }
-    }
+// ===== NAV =====
+function hideAll(){
+    loginBox.classList.add("hidden");
+    dashboard.classList.add("hidden");
+    patientsPage.classList.add("hidden");
+    appointmentsPage.classList.add("hidden");
+}
+function showDashboard(){
+    hideAll();
+    dashboard.classList.remove("hidden");
+}
+function openPatients(){
+    hideAll();
+    patientsPage.classList.remove("hidden");
+    renderPatients();
+}
+function openAppointments(){
+    hideAll();
+    appointmentsPage.classList.remove("hidden");
+    renderAppointments();
+}
 
-    function logout() {
-        localStorage.clear();
-        location.reload();
-    }
+// ===== PATIENTS =====
+function addPatient(){
+    const name=patientName.value.trim();
+    if(!name)return;
+    patients.push(name);
+    localStorage.setItem("patients",JSON.stringify(patients));
+    patientName.value="";
+    renderPatients();
+}
+function renderPatients(){
+    patientsList.innerHTML="";
+    patients.forEach(p=>{
+        const li=document.createElement("li");
+        li.textContent=p;
+        patientsList.appendChild(li);
+    });
+}
 
-    function showDashboard() {
-        hideAll();
-        document.getElementById("dashboard").classList.remove("hidden");
-    }
-
-    function openPatients() {
-        hideAll();
-        document.getElementById("patientsPage").classList.remove("hidden");
-        renderPatients();
-    }
-
-    function backToDashboard() {
-        showDashboard();
-    }
-
-    function hideAll() {
-        document.getElementById("loginBox").classList.add("hidden");
-        document.getElementById("dashboard").classList.add("hidden");
-        document.getElementById("patientsPage").classList.add("hidden");
-    }
-
-    function addPatient() {
-        const name = document.getElementById("patientName").value.trim();
-        if (name === "") return;
-
-        patients.push(name);
-        localStorage.setItem("patients", JSON.stringify(patients));
-        document.getElementById("patientName").value = "";
-        renderPatients();
-    }
-
-    function renderPatients() {
-        const list = document.getElementById("patientsList");
-        list.innerHTML = "";
-        patients.forEach(p => {
-            const li = document.createElement("li");
-            li.textContent = p;
-            list.appendChild(li);
-        });
-    }
+// ===== APPOINTMENTS =====
+function addAppointment(){
+    const name=appPatient.value.trim();
+    const date=appDate.value;
+    if(!name||!date)return;
+    appointments.push({name,date});
+    localStorage.setItem("appointments",JSON.stringify(appointments));
+    appPatient.value="";
+    appDate.value="";
+    renderAppointments();
+}
+function renderAppointments(){
+    appointmentsList.innerHTML="";
+    appointments.forEach(a=>{
+        const li=document.createElement("li");
+        li.textContent=`${a.name} – ${a.date}`;
+        appointmentsList.appendChild(li);
+    });
+}
 </script>
 
 </body>

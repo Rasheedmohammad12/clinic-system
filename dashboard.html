@@ -7,328 +7,221 @@
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Tahoma, Arial;
-  background:#f3f4f6;
-  color:#111827;
-}
+body{margin:0;font-family:Tahoma,Arial;background:#f3f4f6}
 .hidden{display:none}
 
-/* ===== LAYOUT ===== */
-.app{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  min-height:100vh;
-}
+/* Layout */
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:#fff;border-left:1px solid #e5e7eb;padding:20px}
+.brand{font-size:20px;font-weight:bold;margin-bottom:25px}
+.nav button{width:100%;border:none;background:transparent;padding:12px;border-radius:10px;text-align:right;cursor:pointer}
+.nav button.active,.nav button:hover{background:#eef2ff;color:#1d4ed8}
+.logout{margin-top:20px;background:#ef4444;color:#fff;border:none;padding:12px;border-radius:10px;width:100%}
 
-/* ===== SIDEBAR ===== */
-.sidebar{
-  background:#ffffff;
-  border-left:1px solid #e5e7eb;
-  padding:20px;
-}
-.brand{
-  font-size:20px;
-  font-weight:bold;
-  margin-bottom:30px;
-}
-.nav button{
-  width:100%;
-  background:transparent;
-  border:none;
-  padding:14px;
-  border-radius:12px;
-  text-align:right;
-  font-size:15px;
-  cursor:pointer;
-  color:#374151;
-  margin-bottom:6px;
-}
-.nav button.active,
-.nav button:hover{
-  background:#eef2ff;
-  color:#1d4ed8;
-}
-.logout{
-  margin-top:30px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:#ef4444;
-  color:#fff;
-  cursor:pointer;
-}
+.content{padding:25px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
+.stat{background:#fff;padding:18px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
+.stat .num{font-size:26px;font-weight:bold;margin-top:6px}
 
-/* ===== CONTENT ===== */
-.content{
-  padding:30px;
-}
+.primary{background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer}
 
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
-}
-.header h2{
-  margin:0;
-  font-size:24px;
-}
+.grid{margin-top:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
+.card{background:#fff;padding:15px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08);cursor:pointer}
 
-/* ===== STATS ===== */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:20px;
-}
-.stat{
-  background:#fff;
-  padding:20px;
-  border-radius:18px;
-  box-shadow:0 8px 20px rgba(0,0,0,.06);
-}
-.stat small{color:#6b7280}
-.stat .num{
-  font-size:32px;
-  font-weight:bold;
-  margin-top:8px;
-}
+/* Modal */
+.backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000}
+.modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+background:#fff;width:480px;max-width:95%;padding:20px;border-radius:14px;z-index:1001}
+.modal label{display:block;margin-top:10px}
+.modal input,.modal textarea{width:100%;padding:8px;margin-top:5px;border-radius:6px;border:1px solid #d1d5db}
+.modal textarea{resize:none;height:70px}
 
-/* ===== BUTTON ===== */
-.primary{
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  padding:12px 18px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-/* ===== CARDS ===== */
-.grid{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:16px;
-}
-.card{
-  background:#fff;
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 6px 15px rgba(0,0,0,.06);
-  position:relative;
-}
-.card b{
-  display:block;
-  margin-bottom:6px;
-}
-.card small{
-  color:#6b7280;
-}
-.card button{
-  position:absolute;
-  top:10px;
-  left:10px;
-  background:#ef4444;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  padding:6px 8px;
-  cursor:pointer;
-}
-
-/* ===== MODAL ===== */
-.backdrop{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  z-index:1000;
-}
-.modal{
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#fff;
-  width:420px;
-  max-width:90%;
-  border-radius:16px;
-  padding:20px;
-  z-index:1001;
-}
-.modal h3{margin-top:0}
-.modal label{display:block;margin-top:10px;font-size:14px}
-.modal input,
-.modal select,
-.modal textarea{
-  width:100%;
-  padding:10px;
-  margin-top:5px;
-  border-radius:8px;
-  border:1px solid #d1d5db;
-}
-.modal textarea{resize:none;height:80px}
-
-/* ===== TOAST ===== */
-.toast{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#fee2e2;
-  color:#991b1b;
-  padding:12px 18px;
-  border-radius:10px;
-  display:none;
-  z-index:2000;
-}
-.toast.success{
-  background:#dcfce7;
-  color:#166534;
-}
+.toast{display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);
+background:#dcfce7;color:#166534;padding:12px 18px;border-radius:10px;z-index:2000}
 </style>
 </head>
 
 <body>
 
 <script>
-if(!localStorage.getItem("currentUser")){
-  location.href="index.html";
-}
+if(!localStorage.getItem("currentUser")) location.href="index.html";
 </script>
 
 <div class="app">
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="brand">clinic-system</div>
   <div class="nav">
-    <button class="active" onclick="go('dashboard',this)">لوحة التحكم</button>
-    <button onclick="go('patients',this)">المرضى</button>
+    <button class="active" onclick="goPatients(this)">المرضى</button>
   </div>
   <button class="logout" onclick="logout()">تسجيل خروج</button>
 </aside>
 
-<!-- CONTENT -->
 <main class="content">
 
 <div class="header">
-  <h2 id="pageTitle">لوحة التحكم</h2>
-  <div>👋 مرحبًا <b id="userName"></b></div>
+  <h2>المرضى</h2>
+  <button class="primary" onclick="openAddPatient()">+ إضافة مريض</button>
 </div>
 
 <div class="stats">
   <div class="stat"><small>عدد المرضى</small><div class="num" id="sPatients">0</div></div>
 </div>
 
-<!-- PATIENTS -->
-<section id="page-patients" class="hidden">
-  <button class="primary" onclick="openPatientModal()">+ إضافة مريض</button>
-  <div id="patientsGrid" class="grid"></div>
-</section>
+<div id="patientsGrid" class="grid"></div>
 
 </main>
 </div>
 
-<!-- ===== TOAST ===== -->
+<!-- Toast -->
 <div id="toast" class="toast"></div>
 
-<!-- ===== MODAL ===== -->
+<!-- Modal Add Patient -->
 <div id="backdrop" class="backdrop"></div>
 <div id="patientModal" class="modal">
   <h3>إضافة مريض جديد</h3>
 
-  <label>الاسم الكامل *</label>
+  <label>رقم الملف *</label>
+  <input id="pFile">
+
+  <label>الاسم *</label>
   <input id="pName">
 
-  <label>رقم الهاتف *</label>
+  <label>الهاتف *</label>
   <input id="pPhone">
 
-  <label>البريد الإلكتروني</label>
-  <input id="pEmail">
+  <label>تاريخ الإضافة</label>
+  <input id="pDate" type="date">
 
-  <label>العمر</label>
-  <input id="pAge">
-
-  <label>الجنس</label>
-  <select id="pGender">
-    <option value="">اختر...</option>
-    <option>ذكر</option>
-    <option>أنثى</option>
-  </select>
+  <label>المبلغ الكلي *</label>
+  <input id="pTotal" type="number">
 
   <label>ملاحظات</label>
   <textarea id="pNotes"></textarea>
 
   <div style="margin-top:15px;display:flex;gap:10px">
-    <button onclick="closePatientModal()">إلغاء</button>
-    <button class="primary" onclick="savePatient()">إضافة المريض</button>
+    <button onclick="closeModal()">إلغاء</button>
+    <button class="primary" onclick="savePatient()">حفظ</button>
   </div>
 </div>
 
-<script>
-userName.innerText = localStorage.getItem("currentUser");
-let patients = JSON.parse(localStorage.getItem("patients")||"[]");
+<!-- Modal Sessions -->
+<div id="sessionModal" class="modal">
+  <h3 id="sessionTitle"></h3>
 
-function go(p,btn){
-  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById("page-"+p).classList.remove("hidden");
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  pageTitle.innerText = btn.innerText;
-  renderPatients();
+  <label>تاريخ الجلسة</label>
+  <input id="sDate" type="date">
+
+  <label>المبلغ المدفوع</label>
+  <input id="sPaid" type="number">
+
+  <label>ملاحظات</label>
+  <textarea id="sNote"></textarea>
+
+  <div style="margin-top:15px;display:flex;gap:10px">
+    <button onclick="closeSession()">إغلاق</button>
+    <button class="primary" onclick="addSession()">إضافة جلسة</button>
+  </div>
+
+  <div id="sessionsList" style="margin-top:15px"></div>
+</div>
+
+<script>
+const toast=document.getElementById("toast");
+const patientsGrid=document.getElementById("patientsGrid");
+let patients=JSON.parse(localStorage.getItem("patients")||"[]");
+let currentPatient=null;
+
+function showToast(msg){
+  toast.innerText=msg;
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",2500);
 }
 
-function openPatientModal(){
+function openAddPatient(){
   backdrop.style.display="block";
   patientModal.style.display="block";
+  pDate.value=new Date().toISOString().split("T")[0];
 }
-function closePatientModal(){
+function closeModal(){
   backdrop.style.display="none";
   patientModal.style.display="none";
 }
 
-function toast(msg,success=false){
-  toastEl.innerText=msg;
-  toastEl.className="toast"+(success?" success":"");
-  toastEl.style.display="block";
-  setTimeout(()=>toastEl.style.display="none",2500);
-}
-
 function savePatient(){
-  if(!pName.value || !pPhone.value){
-    showToast("فشل تحميل المرضى");
+  if(!pFile.value||!pName.value||!pPhone.value||!pTotal.value){
+    showToast("يرجى تعبئة الحقول المطلوبة");
     return;
   }
+
   patients.push({
+    fileNo:pFile.value,
     name:pName.value,
     phone:pPhone.value,
-    email:pEmail.value,
-    age:pAge.value,
-    gender:pGender.value,
-    notes:pNotes.value
+    date:pDate.value,
+    notes:pNotes.value,
+    total:Number(pTotal.value),
+    sessions:[]
   });
+
   localStorage.setItem("patients",JSON.stringify(patients));
-  closePatientModal();
+  closeModal();
   renderPatients();
-  showToast("تم إضافة المريض بنجاح",true);
+  showToast("تم إضافة المريض");
 }
 
 function renderPatients(){
   patientsGrid.innerHTML="";
   sPatients.innerText=patients.length;
+
   patients.forEach((p,i)=>{
+    const paid=p.sessions.reduce((a,s)=>a+s.paid,0);
+    const remain=p.total-paid;
+
     patientsGrid.innerHTML+=`
-    <div class="card">
-      <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients()">✕</button>
+    <div class="card" onclick="openSessions(${i})">
       <b>${p.name}</b>
-      <small>${p.phone}</small>
+      <small>رقم الملف: ${p.fileNo}</small><br>
+      <small>الإجمالي: ${p.total}</small><br>
+      <small>المدفوع: ${paid}</small><br>
+      <small>المتبقي: ${remain}</small>
     </div>`;
+  });
+}
+
+function openSessions(i){
+  currentPatient=i;
+  const p=patients[i];
+  sessionTitle.innerText=`جلسات ${p.name}`;
+  backdrop.style.display="block";
+  sessionModal.style.display="block";
+  renderSessions();
+}
+
+function closeSession(){
+  backdrop.style.display="none";
+  sessionModal.style.display="none";
+}
+
+function addSession(){
+  if(!sDate.value||!sPaid.value) return;
+  patients[currentPatient].sessions.push({
+    date:sDate.value,
+    paid:Number(sPaid.value),
+    note:sNote.value
+  });
+  localStorage.setItem("patients",JSON.stringify(patients));
+  sPaid.value="";sNote.value="";
+  renderSessions();
+  renderPatients();
+}
+
+function renderSessions(){
+  const list=document.getElementById("sessionsList");
+  list.innerHTML="";
+  patients[currentPatient].sessions.forEach(s=>{
+    list.innerHTML+=`<div>📅 ${s.date} – 💰 ${s.paid}</div>`;
   });
 }
 
@@ -337,7 +230,6 @@ function logout(){
   location.href="index.html";
 }
 
-const toastEl=document.getElementById("toast");
 renderPatients();
 </script>
 

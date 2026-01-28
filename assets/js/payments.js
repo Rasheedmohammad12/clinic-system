@@ -7,7 +7,7 @@ function renderPayments() {
   tableBody.innerHTML = "";
 
   if (payments.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5">لا يوجد مدفوعات</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="5">—</td></tr>`;
     return;
   }
 
@@ -16,8 +16,8 @@ function renderPayments() {
     tableBody.innerHTML += `
       <tr>
         <td>${i + 1}</td>
-        <td>${patient ? patient.name : "غير معروف"}</td>
-        <td>${p.amount} ₪</td>
+        <td>${patient ? patient.name : "-"}</td>
+        <td>${formatCurrency(p.amount)}</td>
         <td>${p.note || "-"}</td>
         <td>${new Date(p.date).toLocaleDateString()}</td>
       </tr>`;

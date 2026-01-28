@@ -3,7 +3,7 @@ const patientSelect = document.getElementById("patientSelect");
 
 function loadPatients() {
   const patients = getPatients();
-  patientSelect.innerHTML = `<option value="">-- اختر المريض --</option>`;
+  patientSelect.innerHTML = `<option value="">--</option>`;
   patients.forEach(p => {
     const opt = document.createElement("option");
     opt.value = p.id;
@@ -12,22 +12,15 @@ function loadPatients() {
   });
 }
 
-form.addEventListener("submit", e => {
+form.onsubmit = e => {
   e.preventDefault();
-
-  const patientId = patientSelect.value;
-  const amount = Number(document.getElementById("amount").value);
-  const note = document.getElementById("note").value;
-
-  if (!patientId || amount <= 0) {
-    alert("❌ أدخل بيانات صحيحة");
-    return;
-  }
-
-  addPayment(patientId, amount, note);
-
-  alert("✅ تم استلام المبلغ وإضافته إلى المدفوعات");
+  addPayment(
+    patientSelect.value,
+    Number(amount.value),
+    note.value
+  );
+  alert("Saved");
   form.reset();
-});
+};
 
 document.addEventListener("DOMContentLoaded", loadPatients);

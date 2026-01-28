@@ -3,37 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>الإعدادات</title>
+
 <style>
-body{font-family:Arial;background:#f4f6f8;margin:0}
-header{background:#1e88e5;color:#fff;padding:15px;text-align:center}
-form{background:#fff;padding:20px;margin:30px auto;max-width:400px;border-radius:8px}
+body{font-family:Arial;background:#f1f5f9;margin:0}
+header{background:#2563eb;color:#fff;padding:15px;text-align:center}
+form{background:#fff;padding:20px;max-width:400px;margin:30px auto;border-radius:10px}
 input,button{width:100%;padding:10px;margin-top:10px}
-button{background:#1e88e5;color:#fff;border:none}
-a{text-align:center;display:block;margin-top:15px;color:#1e88e5}
+button{background:#2563eb;color:#fff;border:none}
+a{display:block;text-align:center;margin-top:15px;color:#2563eb}
 </style>
 </head>
 
 <body>
 
-<header><h2>الإعدادات</h2></header>
+<header><h2>⚙️ الإعدادات</h2></header>
 
 <form id="settingsForm">
   <h3>رمز حماية المدفوعات</h3>
-  <input type="password" id="pin" placeholder="أدخل رمز سري (مثال 1234)" required>
+  <input type="password" id="pin" placeholder="مثال: 1234" required>
   <button>حفظ الرمز</button>
 </form>
 
 <a href="dashboard.html">⬅ رجوع</a>
 
 <script>
-document.getElementById("settingsForm").onsubmit = e => {
+document.getElementById("settingsForm").onsubmit = e =>{
   e.preventDefault();
   if(pin.value.length < 4){
     alert("الرمز لازم يكون 4 أرقام على الأقل");
     return;
   }
   localStorage.setItem("payments_pin", pin.value);
-  alert("تم حفظ الرمز بنجاح ✅");
+  alert("✅ تم حفظ الرمز بنجاح");
   pin.value="";
 };
 </script>

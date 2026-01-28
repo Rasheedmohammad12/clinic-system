@@ -1,980 +1,404 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>نظام العيادة</title>
-  <style>
-    :root{
-      --bg:#f5f7fb;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --text:#0f172a;
-      --line:#e5e7eb;
-      --primary:#2563eb;
-      --primary-soft:#e8f0ff;
-      --success:#16a34a;
-      --success-soft:#e9f9ef;
-      --warn:#f97316;
-      --warn-soft:#fff3e9;
-      --danger:#dc2626;
-      --shadow:0 10px 25px rgba(15,23,42,.08);
-      --radius:14px;
-    }
+<meta charset="UTF-8">
+<title>نظام العيادة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ===== GLOBAL ===== */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f7fb;
+  color:#0f172a;
+}
+.hidden{display:none}
+button,input,select{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+}
+button{
+  background:#2563eb;
+  color:#fff;
+  cursor:pointer;
+  border:none;
+}
+.logout{
+  background:#fff;
+  color:#dc2626;
+  border:1px solid #fecaca;
+}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: Arial, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
+/* ===== AUTH ===== */
+.center{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+}
+.auth-card{
+  background:#fff;
+  width:360px;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+.auth-card h2{text-align:center;margin-top:0}
+.link{
+  margin-top:12px;
+  text-align:center;
+  font-size:13px;
+  color:#2563eb;
+  cursor:pointer;
+}
+.err{color:#dc2626;margin-top:10px;text-align:center}
+.ok{color:#16a34a;text-align:center}
 
-    /* ====== LOGIN ====== */
-    .login-wrap{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:20px;
-    }
-    .login-card{
-      width:min(420px, 92vw);
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-    }
-    .login-card h1{
-      margin:0 0 6px 0;
-      font-size:22px;
-    }
-    .login-card p{
-      margin:0 0 18px 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .field{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px 12px;
-      font-size:14px;
-      outline:none;
-      background:#fff;
-    }
-    .btn{
-      width:100%;
-      border:none;
-      border-radius:12px;
-      padding:12px 12px;
-      font-size:14px;
-      cursor:pointer;
-      background:var(--primary);
-      color:#fff;
-      margin-top:10px;
-    }
-    .err{color:var(--danger); font-size:13px; margin-top:10px; min-height:18px}
+/* ===== LAYOUT ===== */
+.app{
+  display:grid;
+  grid-template-columns:1fr 260px;
+  min-height:100vh;
+}
+.sidebar{
+  background:#fff;
+  border-left:1px solid #e5e7eb;
+  padding:15px;
+}
+.brand{
+  font-weight:bold;
+  margin-bottom:15px;
+}
+.nav button{
+  width:100%;
+  background:transparent;
+  color:#0f172a;
+  text-align:right;
+}
+.nav button.active{
+  background:#e8f0ff;
+  font-weight:bold;
+}
+.content{padding:25px}
 
-    /* ====== APP LAYOUT ====== */
-    .app{
-      display:grid;
-      grid-template-columns: 1fr 280px; /* content | sidebar (RTL) */
-      min-height:100vh;
-    }
+/* ===== DASHBOARD ===== */
+.grid4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.card{
+  background:#fff;
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+}
+.card small{color:#6b7280}
+.big{font-size:26px;font-weight:bold}
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+  margin-top:15px;
+}
 
-    /* Sidebar */
-    .sidebar{
-      background:var(--card);
-      border-left:1px solid var(--line);
-      padding:18px 14px;
-      position:sticky;
-      top:0;
-      height:100vh;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:14px;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-    }
-    .brand .title{
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    .brand .tag{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .nav{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .nav button{
-      width:100%;
-      border:1px solid transparent;
-      background:transparent;
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      color:var(--text);
-    }
-    .nav button:hover{
-      background:#f8fafc;
-      border-color:var(--line);
-    }
-    .nav button.active{
-      background:var(--primary-soft);
-      border-color:#cfe0ff;
-      color:#0b2a6a;
-      font-weight:700;
-    }
-    .nav .left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .ico{
-      width:34px; height:34px;
-      border-radius:10px;
-      display:grid;
-      place-items:center;
-      border:1px solid var(--line);
-      background:#fff;
-      font-size:16px;
-    }
-
-    .side-footer{
-      position:absolute;
-      bottom:16px;
-      left:14px;
-      right:14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .logout{
-      background:#fff;
-      border:1px solid #fecaca;
-      color:var(--danger);
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-size:14px;
-    }
-    .logout:hover{ background:#fff5f5; }
-
-    /* Content */
-    .content{
-      padding:22px 22px 30px 22px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-    .page-head h1{
-      margin:0;
-      font-size:34px;
-      letter-spacing:.2px;
-    }
-    .page-head p{
-      margin:6px 0 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .toast{
-      background:var(--success-soft);
-      border:1px solid #bbf7d0;
-      color:#0f5132;
-      padding:10px 12px;
-      border-radius:12px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:260px;
-      box-shadow:0 12px 25px rgba(22,163,74,.10);
-    }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background:var(--success);
-    }
-    .toast small{color:#14532d}
-
-    /* Cards */
-    .grid-4{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:14px;
-      margin-top:14px;
-    }
-    .grid-2{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:14px;
-      margin-top:14px;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:14px 14px;
-      box-shadow:0 6px 18px rgba(15,23,42,.06);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      min-height:86px;
-    }
-    .card .meta{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .card .meta .label{
-      color:var(--muted);
-      font-size:13px;
-    }
-    .card .meta .value{
-      font-size:22px;
-      font-weight:800;
-    }
-    .badge{
-      width:40px;height:40px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      border:1px solid var(--line);
-      font-weight:700;
-    }
-    .b-blue{ background:var(--primary-soft); color:#1d4ed8; border-color:#cfe0ff;}
-    .b-green{ background:var(--success-soft); color:#15803d; border-color:#bbf7d0;}
-    .b-orange{ background:var(--warn-soft); color:#c2410c; border-color:#fed7aa;}
-    .b-gray{ background:#f3f4f6; color:#111827; border-color:#e5e7eb;}
-
-    .big-card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px 16px;
-      box-shadow:0 6px 18px rgba(15,23,42,.06);
-      min-height:124px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-    }
-    .big-card h3{
-      margin:0;
-      font-size:15px;
-    }
-    .big-card .big{
-      font-size:34px;
-      font-weight:900;
-      color:var(--primary);
-      margin-top:6px;
-    }
-    .big-card .sub{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:6px;
-    }
-
-    /* Pages common */
-    .panel{
-      margin-top:14px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:14px;
-      box-shadow:0 6px 18px rgba(15,23,42,.06);
-    }
-    .panel h2{
-      margin:0 0 10px 0;
-      font-size:16px;
-    }
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .in{
-      flex:1;
-      min-width:180px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:11px 12px;
-      font-size:14px;
-      outline:none;
-    }
-    .btn-sm{
-      border:none;
-      border-radius:12px;
-      padding:11px 14px;
-      cursor:pointer;
-      background:var(--primary);
-      color:#fff;
-      font-size:14px;
-      white-space:nowrap;
-    }
-    .btn-ghost{
-      background:#fff;
-      border:1px solid var(--line);
-      color:var(--text);
-    }
-
-    /* Patients grid cards */
-    .cards{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap:12px;
-      margin-top:12px;
-    }
-    .p-card{
-      background:#fbfdff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      position:relative;
-      min-height:92px;
-    }
-    .p-card .name{
-      font-weight:800;
-      margin:0 0 6px 0;
-      font-size:14px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-    .p-card .mini{
-      color:var(--muted);
-      font-size:12px;
-    }
-    .x{
-      position:absolute;
-      top:10px;
-      left:10px; /* RTL */
-      border:none;
-      border-radius:10px;
-      padding:6px 10px;
-      cursor:pointer;
-      background:#fff;
-      border:1px solid #fecaca;
-      color:var(--danger);
-      font-weight:700;
-      font-size:12px;
-    }
-    .x:hover{ background:#fff5f5; }
-
-    /* Lists */
-    .list{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .item{
-      background:#fbfdff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .item .t{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:0;
-    }
-    .item .t strong{
-      font-size:14px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-    .item .t span{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .item .actions{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .del{
-      border:none;
-      border-radius:12px;
-      padding:9px 12px;
-      cursor:pointer;
-      background:#fff;
-      border:1px solid #fecaca;
-      color:var(--danger);
-      font-weight:700;
-      font-size:13px;
-    }
-    .del:hover{ background:#fff5f5; }
-
-    /* Responsive */
-    @media (max-width: 1100px){
-      .app{ grid-template-columns: 1fr 250px; }
-      .boxwide{ width:100%; }
-      .grid-4{ grid-template-columns: repeat(2,1fr); }
-      .grid-2{ grid-template-columns: 1fr; }
-      .content{ padding:18px; }
-    }
-    @media (max-width: 780px){
-      .app{
-        grid-template-columns: 1fr;
-      }
-      .sidebar{
-        position:relative;
-        height:auto;
-        border-left:none;
-        border-top:1px solid var(--line);
-      }
-      .grid-4{ grid-template-columns: 1fr; }
-    }
-  </style>
+/* ===== PANELS ===== */
+.panel{
+  background:#fff;
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  margin-top:15px;
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+}
+.pcard{
+  background:#f9fafb;
+  padding:12px;
+  border-radius:12px;
+  position:relative;
+}
+.pcard button{
+  position:absolute;
+  top:8px;
+  left:8px;
+  background:#dc2626;
+  padding:5px 8px;
+  font-size:11px;
+}
+.item{
+  background:#f9fafb;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginView" class="login-wrap">
-    <div class="login-card">
-      <h1>نظام العيادة</h1>
-      <p>تسجيل الدخول للوصول إلى لوحة التحكم</p>
-      <input id="pw" class="field" type="password" placeholder="كلمة المرور" />
-      <button class="btn" onclick="login()">دخول</button>
-      <div id="loginErr" class="err"></div>
-      <p style="margin:12px 0 0;color:#94a3b8;font-size:12px;">كلمة المرور الافتراضية: <b>clinic123</b></p>
+<!-- LOGIN -->
+<div id="loginView" class="center">
+  <div class="auth-card">
+    <h2>تسجيل الدخول</h2>
+    <input id="loginUser" placeholder="اسم المستخدم">
+    <input id="loginPass" type="password" placeholder="كلمة المرور">
+    <button onclick="login()">دخول</button>
+    <div id="loginErr" class="err"></div>
+    <div class="link" onclick="showRegister()">إنشاء مستخدم</div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="registerView" class="center hidden">
+  <div class="auth-card">
+    <h2>إنشاء مستخدم</h2>
+    <input id="regUser" placeholder="اسم المستخدم">
+    <input id="regPass" type="password" placeholder="كلمة المرور">
+    <button onclick="register()">إنشاء</button>
+    <div id="regMsg"></div>
+    <div class="link" onclick="showLogin()">عودة</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appView" class="app hidden">
+
+  <main class="content">
+
+    <!-- DASHBOARD -->
+    <section id="page-dashboard">
+      <h1>لوحة التحكم</h1>
+      <div class="grid4">
+        <div class="card"><small>المرضى</small><div class="big" id="sPatients">0</div></div>
+        <div class="card"><small>الجلسات</small><div class="big" id="sApps">0</div></div>
+        <div class="card"><small>الإيرادات</small><div class="big">JD <span id="sRev">0</span></div></div>
+        <div class="card"><small>معلقة</small><div class="big">JD <span id="sPend">0</span></div></div>
+      </div>
+    </section>
+
+    <!-- PATIENTS -->
+    <section id="page-patients" class="hidden">
+      <div class="panel">
+        <h2>المرضى</h2>
+        <input id="pName" placeholder="اسم المريض">
+        <button onclick="addPatient()">إضافة</button>
+      </div>
+      <div class="panel">
+        <div id="patientsGrid" class="cards"></div>
+      </div>
+    </section>
+
+    <!-- APPOINTMENTS -->
+    <section id="page-appointments" class="hidden">
+      <div class="panel">
+        <h2>الجلسات</h2>
+        <input id="aName" placeholder="اسم المريض">
+        <input id="aDate" type="date">
+        <button onclick="addApp()">إضافة</button>
+      </div>
+      <div class="panel" id="appsList"></div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section id="page-payments" class="hidden">
+      <div class="panel">
+        <h2>المدفوعات (محمي)</h2>
+        <input id="payName" placeholder="اسم المريض">
+        <input id="payAmount" type="number" placeholder="المبلغ">
+        <select id="payStatus">
+          <option value="paid">مدفوع</option>
+          <option value="pending">معلّق</option>
+        </select>
+        <button onclick="addPayment()">إضافة</button>
+      </div>
+      <div class="panel" id="paymentsList"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="page-settings" class="hidden">
+      <div class="panel">
+        <h2>تغيير كلمة مرور المستخدم</h2>
+        <input id="oldPass" type="password" placeholder="كلمة المرور الحالية">
+        <input id="newPass" type="password" placeholder="كلمة المرور الجديدة">
+        <button onclick="changeUserPass()">تغيير</button>
+        <div id="userPassMsg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>تغيير كلمة مرور المدفوعات</h2>
+        <input id="oldRev" type="password" placeholder="كلمة المرور الحالية">
+        <input id="newRev" type="password" placeholder="كلمة المرور الجديدة">
+        <button onclick="changeRevPass()">تغيير</button>
+        <div id="revPassMsg"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside class="sidebar">
+    <div class="brand">نظام العيادة</div>
+    <div class="nav">
+      <button class="active" onclick="go('dashboard',this)">لوحة التحكم</button>
+      <button onclick="go('patients',this)">المرضى</button>
+      <button onclick="go('appointments',this)">الجلسات</button>
+      <button onclick="goProtected('payments',this)">المدفوعات</button>
+      <button onclick="go('settings',this)">الإعدادات</button>
     </div>
-  </div>
+    <button class="logout" onclick="logout()">تسجيل خروج</button>
+  </aside>
 
-  <!-- APP -->
-  <div id="appView" class="app" style="display:none;">
-    <!-- CONTENT -->
-    <main class="content">
-      <div class="topbar">
-        <div class="page-head">
-          <h1 id="pageTitle">لوحة التحكم</h1>
-          <p id="pageSub">نظرة عامة على العيادة</p>
-        </div>
-        <div class="toast" id="toast">
-          <span class="dot"></span>
-          <div>
-            <div style="font-weight:800;">مرحباً بك</div>
-            <small>تم تسجيل الدخول بنجاح</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- DASHBOARD PAGE -->
-      <section id="page-dashboard">
-        <div class="grid-4">
-          <div class="card">
-            <div class="meta">
-              <div class="label">إجمالي المرضى</div>
-              <div class="value" id="statPatients">0</div>
-            </div>
-            <div class="badge b-blue">👥</div>
-          </div>
-
-          <div class="card">
-            <div class="meta">
-              <div class="label">إجمالي الجلسات</div>
-              <div class="value" id="statAppointments">0</div>
-            </div>
-            <div class="badge b-green">📅</div>
-          </div>
-
-          <div class="card">
-            <div class="meta">
-              <div class="label">الإيرادات الكلية</div>
-              <div class="value">₪ <span id="statRevenue">0</span></div>
-            </div>
-            <div class="badge b-green">💲</div>
-          </div>
-
-          <div class="card">
-            <div class="meta">
-              <div class="label">المدفوعات المعلقة</div>
-              <div class="value">₪ <span id="statPending">0</span></div>
-            </div>
-            <div class="badge b-orange">⏳</div>
-          </div>
-        </div>
-
-        <div class="grid-2">
-          <div class="big-card">
-            <div>
-              <h3>إيرادات هذا الشهر</h3>
-              <div class="big">₪ <span id="statMonthRevenue">0</span></div>
-              <div class="sub">من المدفوعات/الإيرادات المسجلة خلال هذا الشهر</div>
-            </div>
-            <div class="badge b-green" style="width:56px;height:56px;border-radius:16px;font-size:20px;">📈</div>
-          </div>
-
-          <div class="big-card">
-            <div>
-              <h3>جلسات هذا الشهر</h3>
-              <div class="big"><span id="statMonthAppointments">0</span></div>
-              <div class="sub">جلسة مسجّلة خلال هذا الشهر</div>
-            </div>
-            <div class="badge b-blue" style="width:56px;height:56px;border-radius:16px;font-size:20px;">🗓️</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PATIENTS PAGE -->
-      <section id="page-patients" style="display:none;">
-        <div class="panel">
-          <h2>المرضى</h2>
-          <div class="row">
-            <input id="patientName" class="in" placeholder="اسم المريض" />
-            <button class="btn-sm" onclick="addPatient()">إضافة مريض</button>
-            <input id="patientSearch" class="in" placeholder="بحث..." oninput="renderPatients()" />
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>قائمة المرضى (مربعات)</h2>
-          <div id="patientsGrid" class="cards"></div>
-        </div>
-      </section>
-
-      <!-- APPOINTMENTS PAGE -->
-      <section id="page-appointments" style="display:none;">
-        <div class="panel">
-          <h2>الجلسات</h2>
-          <div class="row">
-            <input id="appPatient" class="in" placeholder="اسم المريض" />
-            <input id="appDate" class="in" type="date" />
-            <button class="btn-sm" onclick="addAppointment()">إضافة جلسة</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>قائمة الجلسات</h2>
-          <div id="appointmentsList" class="list"></div>
-        </div>
-      </section>
-
-      <!-- PAYMENTS PAGE -->
-      <section id="page-payments" style="display:none;">
-        <div class="panel">
-          <h2>المدفوعات</h2>
-          <div class="row">
-            <input id="payPatient" class="in" placeholder="اسم المريض" />
-            <input id="payAmount" class="in" type="number" placeholder="المبلغ" />
-            <select id="payStatus" class="in">
-              <option value="paid">مدفوع</option>
-              <option value="pending">معلّق</option>
-            </select>
-            <button class="btn-sm" onclick="addPayment()">إضافة دفعة</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>قائمة المدفوعات</h2>
-          <div id="paymentsList" class="list"></div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="brand">
-        <div>
-          <div class="title">نظام العيادة</div>
-          <div class="tag">Admin Panel</div>
-        </div>
-        <div class="ico">🏥</div>
-      </div>
-
-      <div class="nav">
-        <button id="nav-dashboard" class="active" onclick="go('dashboard')">
-          <span class="left"><span class="ico">▦</span> لوحة التحكم</span>
-          <span style="color:var(--muted);font-size:12px;">›</span>
-        </button>
-
-        <button id="nav-patients" onclick="go('patients')">
-          <span class="left"><span class="ico">👥</span> المرضى</span>
-          <span style="color:var(--muted);font-size:12px;">›</span>
-        </button>
-
-        <button id="nav-appointments" onclick="go('appointments')">
-          <span class="left"><span class="ico">📅</span> الجلسات</span>
-          <span style="color:var(--muted);font-size:12px;">›</span>
-        </button>
-
-        <button id="nav-payments" onclick="go('payments')">
-          <span class="left"><span class="ico">💳</span> المدفوعات</span>
-          <span style="color:var(--muted);font-size:12px;">›</span>
-        </button>
-      </div>
-
-      <div class="side-footer">
-        <button class="logout" onclick="logout()">تسجيل خروج</button>
-      </div>
-    </aside>
-  </div>
+</div>
 
 <script>
-  // ====== STORAGE KEYS ======
-  const KEY_LOGIN = "loggedIn";
-  const KEY_PATIENTS = "patients";
-  const KEY_APPS = "appointments";
-  const KEY_REVS = "revenues";   // legacy from earlier steps
-  const KEY_PAYS = "payments";   // new
+/* ===== USERS ===== */
+const USERS_KEY="users";
+const CURR_KEY="currentUser";
+let users=JSON.parse(localStorage.getItem(USERS_KEY)||"[]");
 
-  // ====== STATE ======
-  let patients = read(KEY_PATIENTS, []);
-  let appointments = read(KEY_APPS, []);
-  let revenues = read(KEY_REVS, []);   // [{r, a, date?}] old
-  let payments = read(KEY_PAYS, []);   // [{patient, amount, status, date}]
+/* ===== DATA ===== */
+let patients=JSON.parse(localStorage.getItem("patients")||"[]");
+let apps=JSON.parse(localStorage.getItem("apps")||"[]");
+let pays=JSON.parse(localStorage.getItem("pays")||"[]");
 
-  // Seed some sample if empty (optional, safe)
-  if (patients.length === 0 && appointments.length === 0 && revenues.length === 0 && payments.length === 0) {
-    patients = ["أحمد علي", "سارة محمد"];
-    appointments = [{n:"أحمد علي", d: todayISO()}];
-    revenues = [{r:"جلسة", a:40, date: todayISO()}];
-    payments = [{patient:"أحمد علي", amount:40, status:"paid", date: todayISO()}];
-    write(KEY_PATIENTS, patients);
-    write(KEY_APPS, appointments);
-    write(KEY_REVS, revenues);
-    write(KEY_PAYS, payments);
+/* ===== REVENUE PASS ===== */
+if(!localStorage.getItem("revPass")) localStorage.setItem("revPass","rev123");
+
+/* ===== AUTH NAV ===== */
+function showRegister(){loginView.classList.add("hidden");registerView.classList.remove("hidden")}
+function showLogin(){registerView.classList.add("hidden");loginView.classList.remove("hidden")}
+
+/* ===== REGISTER ===== */
+function register(){
+  if(!regUser.value||!regPass.value){regMsg.innerHTML="<div class='err'>كل الحقول مطلوبة</div>";return;}
+  if(users.find(u=>u.u===regUser.value)){regMsg.innerHTML="<div class='err'>المستخدم موجود</div>";return;}
+  users.push({u:regUser.value,p:regPass.value});
+  localStorage.setItem(USERS_KEY,JSON.stringify(users));
+  regMsg.innerHTML="<div class='ok'>تم الإنشاء</div>";
+}
+
+/* ===== LOGIN ===== */
+function login(){
+  const u=users.find(x=>x.u===loginUser.value&&x.p===loginPass.value);
+  if(!u){loginErr.innerText="بيانات خاطئة";return;}
+  localStorage.setItem(CURR_KEY,u.u);
+  boot();
+}
+
+/* ===== BOOT ===== */
+function boot(){
+  loginView.classList.add("hidden");
+  registerView.classList.add("hidden");
+  appView.classList.remove("hidden");
+  go("dashboard",document.querySelector(".nav button"));
+}
+if(localStorage.getItem(CURR_KEY)) boot();
+
+/* ===== LOGOUT ===== */
+function logout(){localStorage.removeItem(CURR_KEY);location.reload();}
+
+/* ===== NAV ===== */
+function go(p,btn){
+  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById("page-"+p).classList.remove("hidden");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  refresh();
+  if(p==="patients") renderPatients();
+  if(p==="appointments") renderApps();
+  if(p==="payments") renderPays();
+}
+function goProtected(p,btn){
+  const pass=prompt("كلمة مرور المدفوعات:");
+  if(pass===localStorage.getItem("revPass")) go(p,btn);
+}
+
+/* ===== DASH ===== */
+function refresh(){
+  sPatients.innerText=patients.length;
+  sApps.innerText=apps.length;
+  sRev.innerText=pays.filter(p=>p.s==="paid").reduce((a,b)=>a+b.a,0);
+  sPend.innerText=pays.filter(p=>p.s==="pending").reduce((a,b)=>a+b.a,0);
+}
+
+/* ===== PATIENTS ===== */
+function addPatient(){
+  if(!pName.value)return;
+  patients.push(pName.value);
+  localStorage.setItem("patients",JSON.stringify(patients));
+  pName.value="";renderPatients();refresh();
+}
+function renderPatients(){
+  patientsGrid.innerHTML="";
+  patients.forEach((p,i)=>{
+    patientsGrid.innerHTML+=`
+      <div class="pcard">
+        <button onclick="patients.splice(${i},1);localStorage.setItem('patients',JSON.stringify(patients));renderPatients();refresh()">X</button>
+        <b>${p}</b>
+      </div>`;
+  });
+}
+
+/* ===== APPOINTMENTS ===== */
+function addApp(){
+  if(!aName.value||!aDate.value)return;
+  apps.push({n:aName.value,d:aDate.value});
+  localStorage.setItem("apps",JSON.stringify(apps));
+  aName.value="";aDate.value="";
+  renderApps();refresh();
+}
+function renderApps(){
+  appsList.innerHTML="";
+  apps.forEach((a,i)=>{
+    appsList.innerHTML+=`
+      <div class="item">${a.n} - ${a.d}
+        <button class="logout" onclick="apps.splice(${i},1);localStorage.setItem('apps',JSON.stringify(apps));renderApps();refresh()">حذف</button>
+      </div>`;
+  });
+}
+
+/* ===== PAYMENTS ===== */
+function addPayment(){
+  if(!payName.value||!payAmount.value)return;
+  pays.push({n:payName.value,a:Number(payAmount.value),s:payStatus.value});
+  localStorage.setItem("pays",JSON.stringify(pays));
+  payName.value="";payAmount.value="";
+  renderPays();refresh();
+}
+function renderPays(){
+  paymentsList.innerHTML="";
+  pays.forEach((p,i)=>{
+    paymentsList.innerHTML+=`
+      <div class="item">${p.n} - JD ${p.a} (${p.s})
+        <button class="logout" onclick="pays.splice(${i},1);localStorage.setItem('pays',JSON.stringify(pays));renderPays();refresh()">حذف</button>
+      </div>`;
+  });
+}
+
+/* ===== SETTINGS ===== */
+function changeUserPass(){
+  const u=localStorage.getItem(CURR_KEY);
+  const idx=users.findIndex(x=>x.u===u&&x.p===oldPass.value);
+  if(idx===-1){userPassMsg.innerHTML="<div class='err'>كلمة المرور الحالية خاطئة</div>";return;}
+  users[idx].p=newPass.value;
+  localStorage.setItem(USERS_KEY,JSON.stringify(users));
+  userPassMsg.innerHTML="<div class='ok'>تم التغيير</div>";
+}
+function changeRevPass(){
+  if(oldRev.value!==localStorage.getItem("revPass")){
+    revPassMsg.innerHTML="<div class='err'>كلمة المرور الحالية خاطئة</div>";return;
   }
-
-  // ====== AUTH ======
-  function login(){
-    const v = document.getElementById("pw").value;
-    if (v === "clinic123") {
-      localStorage.setItem(KEY_LOGIN, "true");
-      boot();
-    } else {
-      document.getElementById("loginErr").textContent = "كلمة المرور غير صحيحة";
-    }
-  }
-  function logout(){
-    localStorage.removeItem(KEY_LOGIN);
-    location.reload();
-  }
-
-  function boot(){
-    document.getElementById("loginView").style.display = "none";
-    document.getElementById("appView").style.display = "grid";
-    // Show toast briefly
-    const toast = document.getElementById("toast");
-    toast.style.display = "flex";
-    setTimeout(()=>toast.style.display="none", 2500);
-
-    go("dashboard");
-    refreshDashboard();
-  }
-
-  if (localStorage.getItem(KEY_LOGIN) === "true") {
-    boot();
-  }
-
-  // ====== NAVIGATION ======
-  function go(page){
-    // Active nav
-    ["dashboard","patients","appointments","payments"].forEach(p=>{
-      document.getElementById("nav-"+p).classList.toggle("active", p===page);
-      document.getElementById("page-"+p).style.display = (p===page) ? "block" : "none";
-    });
-
-    // Titles
-    const titleMap = {
-      dashboard:["لوحة التحكم","نظرة عامة على العيادة"],
-      patients:["المرضى","إدارة المرضى وإضافتهم"],
-      appointments:["الجلسات","إدارة جلسات العيادة"],
-      payments:["المدفوعات","إدارة الدفعات والمدفوعات المعلقة"]
-    };
-    document.getElementById("pageTitle").textContent = titleMap[page][0];
-    document.getElementById("pageSub").textContent = titleMap[page][1];
-
-    // Render when entering
-    if (page==="patients") renderPatients();
-    if (page==="appointments") renderAppointments();
-    if (page==="payments") renderPayments();
-
-    refreshDashboard();
-  }
-
-  // ====== DASHBOARD STATS ======
-  function refreshDashboard(){
-    // re-read in case other tabs changed
-    patients = read(KEY_PATIENTS, []);
-    appointments = read(KEY_APPS, []);
-    revenues = read(KEY_REVS, []);
-    payments = read(KEY_PAYS, []);
-
-    const totalPatients = patients.length;
-    const totalAppointments = appointments.length;
-
-    const totalRevenue = sumMoneyFromRevenuesAndPayments();
-    const pending = payments.filter(p=>p.status==="pending").reduce((s,p)=>s + Number(p.amount||0), 0);
-
-    const monthRevenue = sumThisMonth();
-    const monthAppointments = countAppointmentsThisMonth();
-
-    document.getElementById("statPatients").textContent = totalPatients;
-    document.getElementById("statAppointments").textContent = totalAppointments;
-    document.getElementById("statRevenue").textContent = totalRevenue;
-    document.getElementById("statPending").textContent = pending;
-
-    document.getElementById("statMonthRevenue").textContent = monthRevenue;
-    document.getElementById("statMonthAppointments").textContent = monthAppointments;
-  }
-
-  function sumMoneyFromRevenuesAndPayments(){
-    const revSum = (revenues||[]).reduce((s,r)=> s + Number(r.a||0), 0);
-    const paySum = (payments||[]).filter(p=>p.status==="paid").reduce((s,p)=> s + Number(p.amount||0), 0);
-    // if you want NOT to double count, choose one source.
-    // Here: we show combined, but you can set it to paySum only.
-    return revSum + paySum;
-  }
-
-  function sumThisMonth(){
-    const now = new Date();
-    const y = now.getFullYear(), m = now.getMonth();
-    const revSum = (revenues||[]).filter(r=>{
-      const d = parseISO(r.date) || null;
-      return d && d.getFullYear()===y && d.getMonth()===m;
-    }).reduce((s,r)=> s + Number(r.a||0), 0);
-
-    const paySum = (payments||[]).filter(p=>{
-      const d = parseISO(p.date) || null;
-      return d && d.getFullYear()===y && d.getMonth()===m && p.status==="paid";
-    }).reduce((s,p)=> s + Number(p.amount||0), 0);
-
-    return revSum + paySum;
-  }
-
-  function countAppointmentsThisMonth(){
-    const now = new Date();
-    const y = now.getFullYear(), m = now.getMonth();
-    return (appointments||[]).filter(a=>{
-      const d = parseISO(a.d);
-      return d && d.getFullYear()===y && d.getMonth()===m;
-    }).length;
-  }
-
-  // ====== PATIENTS ======
-  function addPatient(){
-    const inp = document.getElementById("patientName");
-    const name = (inp.value||"").trim();
-    if(!name) return;
-
-    patients.push(name);
-    write(KEY_PATIENTS, patients);
-
-    inp.value="";
-    renderPatients();
-    refreshDashboard();
-  }
-
-  function deletePatient(index){
-    patients.splice(index,1);
-    write(KEY_PATIENTS, patients);
-    renderPatients();
-    refreshDashboard();
-  }
-
-  function renderPatients(){
-    patients = read(KEY_PATIENTS, []);
-    const q = (document.getElementById("patientSearch").value||"").trim().toLowerCase();
-    const list = q ? patients.filter(p=>p.toLowerCase().includes(q)) : patients;
-
-    const grid = document.getElementById("patientsGrid");
-    grid.innerHTML = "";
-
-    if(list.length===0){
-      grid.innerHTML = `<div style="color:var(--muted);padding:8px;">لا يوجد مرضى بعد.</div>`;
-      return;
-    }
-
-    // Map filtered list to original index for delete
-    list.forEach(p=>{
-      const realIndex = patients.indexOf(p); // simple; if duplicates, deletes first match
-      const card = document.createElement("div");
-      card.className = "p-card";
-      card.innerHTML = `
-        <button class="x" title="حذف" onclick="deletePatient(${realIndex})">حذف</button>
-        <div class="name">${escapeHtml(p)}</div>
-        <div class="mini">ملف مريض</div>
-      `;
-      grid.appendChild(card);
-    });
-  }
-
-  // ====== APPOINTMENTS ======
-  function addAppointment(){
-    const n = (document.getElementById("appPatient").value||"").trim();
-    const d = document.getElementById("appDate").value;
-    if(!n || !d) return;
-
-    appointments.push({n, d});
-    write(KEY_APPS, appointments);
-
-    document.getElementById("appPatient").value="";
-    document.getElementById("appDate").value="";
-
-    renderAppointments();
-    refreshDashboard();
-  }
-
-  function deleteAppointment(i){
-    appointments.splice(i,1);
-    write(KEY_APPS, appointments);
-    renderAppointments();
-    refreshDashboard();
-  }
-
-  function renderAppointments(){
-    appointments = read(KEY_APPS, []);
-    const wrap = document.getElementById("appointmentsList");
-    wrap.innerHTML = "";
-
-    if(appointments.length===0){
-      wrap.innerHTML = `<div style="color:var(--muted);padding:8px;">لا توجد جلسات.</div>`;
-      return;
-    }
-
-    appointments
-      .slice()
-      .sort((a,b)=> (a.d||"").localeCompare(b.d||""))
-      .forEach((a, idx)=>{
-        const item = document.createElement("div");
-        item.className = "item";
-        item.innerHTML = `
-          <div class="t">
-            <strong>${escapeHtml(a.n)}</strong>
-            <span>${escapeHtml(a.d)}</span>
-          </div>
-          <div class="actions">
-            <button class="del" onclick="deleteAppointment(${idx})">حذف</button>
-          </div>
-        `;
-        wrap.appendChild(item);
-      });
-  }
-
-  // ====== PAYMENTS ======
-  function addPayment(){
-    const patient = (document.getElementById("payPatient").value||"").trim();
-    const amount = Number(document.getElementById("payAmount").value);
-    const status = document.getElementById("payStatus").value;
-    if(!patient || !amount) return;
-
-    payments.push({patient, amount, status, date: todayISO()});
-    write(KEY_PAYS, payments);
-
-    document.getElementById("payPatient").value="";
-    document.getElementById("payAmount").value="";
-    document.getElementById("payStatus").value="paid";
-
-    renderPayments();
-    refreshDashboard();
-  }
-
-  function togglePaymentStatus(i){
-    payments[i].status = (payments[i].status==="paid") ? "pending" : "paid";
-    write(KEY_PAYS, payments);
-    renderPayments();
-    refreshDashboard();
-  }
-
-  function deletePayment(i){
-    payments.splice(i,1);
-    write(KEY_PAYS, payments);
-    renderPayments();
-    refreshDashboard();
-  }
-
-  function renderPayments(){
-    payments = read(KEY_PAYS, []);
-    const wrap = document.getElementById("paymentsList");
-    wrap.innerHTML = "";
-
-    if(payments.length===0){
-      wrap.innerHTML = `<div style="color:var(--muted);padding:8px;">لا توجد مدفوعات.</div>`;
-      return;
-    }
-
-    payments.slice().reverse().forEach((p, idx)=>{
-      const statusText = p.status==="paid" ? "مدفوع" : "معلّق";
-      const statusColor = p.status==="paid" ? "var(--success)" : "var(--warn)";
-      const item = document.createElement("div");
-      item.className = "item";
-      item.innerHTML = `
-        <div class="t">
-          <strong>${escapeHtml(p.patient)} — ₪ ${escapeHtml(String(p.amount))}</strong>
-          <span>الحالة: <b style="color:${statusColor}">${statusText}</b> • ${escapeHtml(p.date||"")}</span>
-        </div>
-        <div class="actions">
-          <button class="btn-sm btn-ghost" onclick="togglePaymentStatus(${idx})">تبديل الحالة</button>
-          <button class="del" onclick="deletePayment(${idx})">حذف</button>
-        </div>
-      `;
-      wrap.appendChild(item);
-    });
-  }
-
-  // ====== HELPERS ======
-  function read(key, fallback){
-    try{
-      const v = localStorage.getItem(key);
-      return v ? JSON.parse(v) : fallback;
-    }catch(e){
-      return fallback;
-    }
-  }
-  function write(key, value){
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-  function todayISO(){
-    const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const dd = String(d.getDate()).padStart(2,"0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  function parseISO(s){
-    if(!s) return null;
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  function escapeHtml(str){
-    return String(str)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
+  localStorage.setItem("revPass",newRev.value);
+  revPassMsg.innerHTML="<div class='ok'>تم التغيير</div>";
+}
 </script>
+
 </body>
 </html>

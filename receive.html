@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>استلام المبالغ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{font-family:Arial;background:#f1f5f9;margin:0}
+header{background:#2563eb;color:#fff;padding:15px;text-align:center}
+.container{padding:25px;max-width:500px;margin:auto}
+form{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.1)}
+input,select,button{width:100%;padding:10px;margin-top:10px}
+button{background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer}
+a{display:block;margin-top:15px;text-align:center;color:#2563eb;text-decoration:none}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>💰 استلام مبلغ</h2>
+</header>
+
+<div class="container">
+
+<form id="receiveForm">
+  <label>المريض</label>
+  <select id="patientSelect" required></select>
+
+  <label>المبلغ المستلم</label>
+  <input type="number" id="amount" required>
+
+  <label>ملاحظة (اختياري)</label>
+  <input type="text" id="note" placeholder="مثال: دفعة جلسة">
+
+  <button type="submit">استلام المبلغ</button>
+</form>
+
+<a href="dashboard.html">⬅ رجوع للداش بورد</a>
+
+</div>
+
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/receive.js"></script>
+
+</body>
+</html>

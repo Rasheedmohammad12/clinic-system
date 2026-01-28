@@ -1,103 +1,57 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>إنشاء حساب | clinic-system </title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body{
-  margin:0;
-  font-family:Arial, Tahoma;
-  background:#f4f6f9;
-  display:grid;
-  place-items:center;
-  height:100vh;
-}
-.card{
-  background:#fff;
-  padding:25px;
-  width:360px;
-  border-radius:12px;
-  box-shadow:0 10px 25px rgba(0,0,0,.1);
-}
-h2{
-  text-align:center;
-  margin-top:0;
-}
-input,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:8px;
-  border:1px solid #d1d5db;
-  font-size:14px;
-}
-button{
-  background:#16a34a;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-.link{
-  text-align:center;
-  margin-top:12px;
-  color:#2563eb;
-  cursor:pointer;
-}
-.msg{
-  text-align:center;
-  margin-top:10px;
-  font-size:14px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>تسجيل مستخدم | Clinic System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body{font-family:Arial;background:#f4f6f8;margin:0}
+    .box{max-width:480px;margin:60px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+    h2{text-align:center;margin:0 0 15px}
+    input,select,button{width:100%;padding:10px;margin-top:10px}
+    button{background:#1e88e5;color:#fff;border:none;border-radius:6px;cursor:pointer}
+    a{display:block;text-align:center;margin-top:12px;color:#1e88e5;text-decoration:none}
+  </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h2>إنشاء حساب</h2>
+  <div class="box">
+    <h2>إنشاء حساب</h2>
 
-  <input id="user" placeholder="اسم المستخدم">
-  <input id="pass" type="password" placeholder="كلمة المرور">
+    <form id="regForm">
+      <input id="username" placeholder="اسم المستخدم" required />
+      <input id="password" type="password" placeholder="كلمة السر" required />
 
-  <button onclick="register()">إنشاء الحساب</button>
+      <select id="role" required>
+        <option value="reception">استقبال (Reception)</option>
+        <option value="doctor">طبيب (Doctor)</option>
+        <option value="admin">مدير (Admin)</option>
+      </select>
 
-  <div id="msg" class="msg"></div>
+      <button type="submit">تسجيل</button>
+    </form>
 
-  <div class="link" onclick="location.href='index.html'">
-    رجوع لتسجيل الدخول
+    <a href="index.html">رجوع لتسجيل الدخول</a>
   </div>
-</div>
 
-<script>
-let users = JSON.parse(localStorage.getItem("users") || "[]");
+  <script type="module">
+    import { registerUser } from "./assets/js/auth.js";
 
-function register(){
-  const u = user.value.trim();
-  const p = pass.value.trim();
-
-  if(!u || !p){
-    msg.innerHTML = "<span style='color:red'>جميع الحقول مطلوبة</span>";
-    return;
-  }
-
-  if(users.find(x => x.u === u)){
-    msg.innerHTML = "<span style='color:red'>اسم المستخدم موجود مسبقًا</span>";
-    return;
-  }
-
-  users.push({ u, p });
-  localStorage.setItem("users", JSON.stringify(users));
-
-  msg.innerHTML = "<span style='color:green'>تم إنشاء الحساب بنجاح</span>";
-
-  // تحويل تلقائي لتسجيل الدخول
-  setTimeout(() => {
-    location.href = "index.html";
-  }, 1200);
-}
-</script>
+    document.getElementById("regForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      try {
+        registerUser({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+          role: document.getElementById("role").value
+        });
+        alert("تم إنشاء الحساب ✅");
+        window.location.href = "index.html";
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+  </script>
 
 </body>
 </html>

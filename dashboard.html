@@ -1,253 +1,108 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>لوحة التحكم | clinic-system</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial;background:#f3f4f6;color:#111}
-.hidden{display:none}
+  <meta charset="UTF-8">
+  <title>Clinic System | Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* Layout */
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.sidebar{background:#fff;border-left:1px solid #e5e7eb;padding:20px}
-.brand{font-size:20px;font-weight:bold;margin-bottom:25px}
-.nav button{width:100%;border:none;background:transparent;padding:12px;border-radius:10px;text-align:right;cursor:pointer}
-.nav button.active,.nav button:hover{background:#eef2ff;color:#1d4ed8}
-.logout{margin-top:20px;background:#ef4444;color:#fff;border:none;padding:12px;border-radius:10px;width:100%}
-
-.content{padding:25px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.primary{background:#0d6efd;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer}
-
-.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
-.stat{background:#fff;padding:18px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
-.stat small{color:#6b7280}
-.stat .num{font-size:28px;font-weight:bold;margin-top:6px}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:15px}
-.card{background:#fff;padding:15px;border-radius:14px;box-shadow:0 6px 15px rgba(0,0,0,.08)}
-
-input,select,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db}
-.panel{background:#fff;padding:15px;border-radius:14px;margin-bottom:15px}
-
-/* Modal */
-.backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000}
-.modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-background:#fff;width:480px;max-width:95%;padding:20px;border-radius:14px;z-index:1001}
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1e88e5;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #555;
+    }
+    .card h3 {
+      margin-top: 10px;
+      font-size: 32px;
+      color: #1e88e5;
+    }
+    nav {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      background: #1e88e5;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    nav a:hover {
+      background: #1565c0;
+    }
+  </style>
 </head>
 
 <body>
 
-<script>
-if(!localStorage.getItem("currentUser")) location.href="index.html";
-if(!localStorage.getItem("paymentsPassword")){
-  localStorage.setItem("paymentsPassword","1234");
-}
-</script>
+<header>
+  <h1>نظام إدارة العيادة</h1>
+  <p>لوحة التحكم</p>
+</header>
 
-<div class="app">
+<div class="container">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="brand">clinic-system</div>
-  <div class="nav">
-    <button class="active" onclick="showPage('dashboard',this)">لوحة التحكم</button>
-    <button onclick="showPage('patients',this)">المرضى</button>
-    <button onclick="showPage('sessions',this)">الجلسات</button>
-    <button onclick="openPayments()">المدفوعات</button>
-    <button onclick="showPage('settings',this)">الإعدادات</button>
+  <!-- CARDS -->
+  <div class="cards">
+    <div class="card">
+      <h2>عدد المرضى</h2>
+      <h3 id="patientsCount">0</h3>
+    </div>
+
+    <div class="card">
+      <h2>عدد الجلسات</h2>
+      <h3 id="sessionsCount">0</h3>
+    </div>
+
+    <div class="card">
+      <h2>إجمالي المدفوعات</h2>
+      <h3 id="paymentsTotal">0 ₪</h3>
+    </div>
   </div>
-  <button class="logout" onclick="logout()">تسجيل خروج</button>
-</aside>
 
-<!-- CONTENT -->
-<main class="content">
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="patients.html">إضافة / عرض المرضى</a>
+    <a href="sessions.html">الجلسات والمواعيد</a>
+    <a href="payments.html">المدفوعات</a>
+    <a href="index.html">تسجيل خروج</a>
+  </nav>
 
-<div class="header">
-  <h2 id="pageTitle">لوحة التحكم</h2>
-  <button id="addBtn" class="primary hidden" onclick="openPatientModal()">+ إضافة مريض</button>
 </div>
 
-<!-- DASHBOARD -->
-<section id="dashboardPage">
-  <div class="stats">
-    <div class="stat"><small>عدد المرضى</small><div class="num" id="dPatients">0</div></div>
-    <div class="stat"><small>عدد الجلسات</small><div class="num" id="dSessions">0</div></div>
-    <div class="stat"><small>إجمالي المدفوعات</small><div class="num" id="dPaid">0</div></div>
-    <div class="stat"><small>المتبقي الكلي</small><div class="num" id="dRemain">0</div></div>
-  </div>
-</section>
-
-<!-- PATIENTS -->
-<section id="patientsPage" class="hidden">
-  <button class="primary" onclick="openPatientModal()">+ إضافة مريض</button>
-  <div id="patientsGrid" class="grid" style="margin-top:15px"></div>
-</section>
-
-<!-- SESSIONS -->
-<section id="sessionsPage" class="hidden">
-  <button class="primary" onclick="openSessionModal()">+ إضافة جلسة</button>
-  <div id="sessionsGrid" class="grid" style="margin-top:15px"></div>
-</section>
-
-<!-- PAYMENTS -->
-<section id="paymentsPage" class="hidden">
-  <div class="panel">
-    <h3>المدفوعات (من الجلسات)</h3>
-    <div id="paymentsList"></div>
-    <hr>
-    <b>المجموع الكلي: <span id="paymentsTotal">0</span></b>
-  </div>
-</section>
-
-<!-- SETTINGS -->
-<section id="settingsPage" class="hidden">
-  <div class="panel">
-    <h3>كلمة سر المدفوعات</h3>
-    <input id="newPass" placeholder="كلمة سر جديدة">
-    <button class="primary" onclick="changePassword()">حفظ</button>
-  </div>
-</section>
-
-</main>
-</div>
-
-<!-- Modals -->
-<div id="backdrop" class="backdrop"></div>
-
-<div id="patientModal" class="modal">
-  <h3>إضافة مريض</h3>
-  <input id="pName" placeholder="اسم المريض">
-  <input id="pPhone" placeholder="رقم الهاتف">
-  <input id="pTotal" type="number" placeholder="المبلغ الكلي">
-  <button class="primary" onclick="savePatient()">حفظ</button>
-</div>
-
-<div id="sessionModal" class="modal">
-  <h3>إضافة جلسة</h3>
-  <select id="sPatient"></select>
-  <input id="sDate" type="date">
-  <input id="sAmount" type="number" placeholder="المبلغ">
-  <button class="primary" onclick="saveSession()">حفظ</button>
-</div>
-
-<script>
-let patients = JSON.parse(localStorage.getItem("patients")||"[]");
-
-function showPage(page,btn){
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  pageTitle.innerText = btn.innerText;
-  addBtn.classList.toggle("hidden", page!=="patients");
-
-  dashboardPage.classList.toggle("hidden", page!=="dashboard");
-  patientsPage.classList.toggle("hidden", page!=="patients");
-  sessionsPage.classList.toggle("hidden", page!=="sessions");
-  settingsPage.classList.toggle("hidden", page!=="settings");
-  paymentsPage.classList.add("hidden");
-
-  if(page==="dashboard") renderDashboard();
-  if(page==="patients") renderPatients();
-  if(page==="sessions"){ fillPatients(); renderSessions(); }
-}
-
-function renderDashboard(){
-  let sessions=0, paid=0, remain=0;
-  patients.forEach(p=>{
-    sessions+=p.sessions.length;
-    paid+=p.sessions.reduce((a,s)=>a+s.amount,0);
-    remain+=p.total - p.sessions.reduce((a,s)=>a+s.amount,0);
-  });
-  dPatients.innerText=patients.length;
-  dSessions.innerText=sessions;
-  dPaid.innerText=paid;
-  dRemain.innerText=remain;
-}
-
-function openPatientModal(){backdrop.style.display="block";patientModal.style.display="block";}
-function openSessionModal(){backdrop.style.display="block";sessionModal.style.display="block";}
-function closeModals(){backdrop.style.display="none";patientModal.style.display="none";sessionModal.style.display="none";}
-
-function savePatient(){
-  patients.push({name:pName.value,phone:pPhone.value,total:+pTotal.value,sessions:[]});
-  localStorage.setItem("patients",JSON.stringify(patients));
-  closeModals();renderPatients();renderDashboard();
-}
-
-function fillPatients(){
-  sPatient.innerHTML="";
-  patients.forEach((p,i)=>sPatient.innerHTML+=`<option value="${i}">${p.name}</option>`);
-}
-
-function saveSession(){
-  patients[sPatient.value].sessions.push({date:sDate.value,amount:+sAmount.value});
-  localStorage.setItem("patients",JSON.stringify(patients));
-  closeModals();renderSessions();renderDashboard();
-}
-
-function renderPatients(){
-  patientsGrid.innerHTML="";
-  patients.forEach(p=>{
-    const paid=p.sessions.reduce((a,s)=>a+s.amount,0);
-    patientsGrid.innerHTML+=`
-      <div class="card">
-        <b>${p.name}</b><br>
-        الإجمالي: ${p.total}<br>
-        المدفوع: ${paid}<br>
-        المتبقي: ${p.total-paid}
-      </div>`;
-  });
-}
-
-function renderSessions(){
-  sessionsGrid.innerHTML="";
-  patients.forEach(p=>{
-    p.sessions.forEach(s=>{
-      sessionsGrid.innerHTML+=`
-        <div class="card">
-          <b>${p.name}</b><br>
-          ${s.date} – ${s.amount}
-        </div>`;
-    });
-  });
-}
-
-function openPayments(){
-  const pass=prompt("أدخل كلمة سر المدفوعات");
-  if(pass!==localStorage.getItem("paymentsPassword")) return alert("خطأ");
-  showPage('payments',{classList:{add(){}}});
-  paymentsPage.classList.remove("hidden");
-  renderPayments();
-}
-
-function renderPayments(){
-  paymentsList.innerHTML="";
-  let total=0;
-  patients.forEach(p=>p.sessions.forEach(s=>{
-    total+=s.amount;
-    paymentsList.innerHTML+=`<div class="card">${p.name} – ${s.amount}</div>`;
-  }));
-  paymentsTotal.innerText=total;
-}
-
-function changePassword(){
-  if(newPass.value){
-    localStorage.setItem("paymentsPassword",newPass.value);
-    alert("تم التغيير");
-    newPass.value="";
-  }
-}
-
-function logout(){
-  localStorage.removeItem("currentUser");
-  location.href="index.html";
-}
-
-renderDashboard();
-</script>
+<!-- JS FILES -->
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/dashboard.js"></script>
 
 </body>
 </html>

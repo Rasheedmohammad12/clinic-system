@@ -2,57 +2,84 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Clinic System - Login</title>
+    <title>Clinic System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f8;
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
-        .login-box {
+        .box {
             background: white;
             padding: 30px;
             border-radius: 8px;
-            width: 300px;
+            width: 320px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: center;
         }
-        input {
+        input, button {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-top: 10px;
         }
         button {
-            width: 100%;
-            padding: 10px;
             background: #007bff;
             color: white;
             border: none;
             cursor: pointer;
         }
+        .hidden {
+            display: none;
+        }
+        .logout {
+            background: #dc3545;
+        }
     </style>
 </head>
 <body>
 
-<div class="login-box">
+<div id="loginBox" class="box">
     <h2>Clinic Login</h2>
     <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <p id="error" style="color:red;"></p>
 </div>
 
+<div id="dashboard" class="box hidden">
+    <h2>Dashboard</h2>
+    <p>Welcome to Clinic System</p>
+    <button class="logout" onclick="logout()">Logout</button>
+</div>
+
 <script>
-function login() {
-    const pass = document.getElementById("password").value;
-    if (pass === "clinic123") {
-        alert("Login Successful");
-    } else {
-        document.getElementById("error").innerText = "Wrong password";
+    // Auto login
+    if (localStorage.getItem("loggedIn") === "true") {
+        showDashboard();
     }
-}
+
+    function login() {
+        const pass = document.getElementById("password").value;
+        if (pass === "clinic123") {
+            localStorage.setItem("loggedIn", "true");
+            showDashboard();
+        } else {
+            document.getElementById("error").innerText = "Wrong password";
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("loggedIn");
+        location.reload();
+    }
+
+    function showDashboard() {
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+    }
 </script>
 
 </body>

@@ -2,41 +2,50 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل الدخول</title>
+  <title>Clinic System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="assets/css/login.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
 </head>
 <body>
 
-  <div class="login-page">
-    <div class="login-box">
-      <h3>تسجيل الدخول</h3>
+<div class="auth-container">
+  <div class="auth-card">
 
-      <form id="loginForm">
-        <input
-          type="text"
-          id="username"
-          placeholder="اسم المستخدم"
-          required
-        >
+    <!-- LOGIN -->
+    <div class="form login-form active">
+      <h2>تسجيل الدخول</h2>
 
-        <input
-          type="password"
-          id="password"
-          placeholder="كلمة المرور"
-          required
-        >
+      <input type="text" id="loginUsername" placeholder="اسم المستخدم">
+      <input type="password" id="loginPassword" placeholder="كلمة المرور">
 
-        <button type="submit">دخول</button>
-      </form>
+      <button onclick="login()">دخول</button>
 
-      <p id="errorMessage" class="error"></p>
+      <p class="switch">
+        ما عندك حساب؟
+        <span onclick="showRegister()">إنشاء حساب</span>
+      </p>
     </div>
+
+    <!-- REGISTER -->
+    <div class="form register-form">
+      <h2>إنشاء حساب</h2>
+
+      <input type="text" id="regName" placeholder="الاسم الكامل">
+      <input type="text" id="regUsername" placeholder="اسم المستخدم">
+      <input type="password" id="regPassword" placeholder="كلمة المرور">
+
+      <button onclick="register()">تسجيل</button>
+
+      <p class="switch">
+        عندك حساب؟
+        <span onclick="showLogin()">تسجيل الدخول</span>
+      </p>
+    </div>
+
   </div>
+</div>
 
-  <script src="assets/js/storage.js"></script>
-  <script src="assets/js/auth.js"></script>
-
+<script src="assets/js/auth-ui.js"></script>
 </body>
 </html>

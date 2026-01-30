@@ -1,510 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>Clinic System | Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 🔐 AUTH CHECK (مهم جدًا) -->
+  <script>
+    if (localStorage.getItem("logged_in") !== "true") {
+      window.location.replace("index.html");
+    }
+  </script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --primary-2: #1e40af;
-      --border: rgba(15, 23, 42, 0.08);
-      --shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
-      --shadow2: 0 8px 20px rgba(2, 6, 23, 0.06);
-      --radius: 16px;
+      --bg:#f4f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;
+      --primary:#2563eb;--primary-2:#1e40af;
+      --border:rgba(15,23,42,.08);
+      --shadow:0 10px 30px rgba(2,6,23,.08);
+      --shadow2:0 8px 20px rgba(2,6,23,.06);
+      --radius:16px;
     }
-
     body.dark{
-      --bg: #0b1220;
-      --card: #0f1b32;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --primary: #60a5fa;
-      --primary-2: #3b82f6;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 12px 36px rgba(0,0,0,0.35);
-      --shadow2: 0 10px 24px rgba(0,0,0,0.28);
+      --bg:#0b1220;--card:#0f1b32;--text:#e5e7eb;--muted:#9ca3af;
+      --primary:#60a5fa;--primary-2:#3b82f6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 12px 36px rgba(0,0,0,.35);
+      --shadow2:0 10px 24px rgba(0,0,0,.28);
     }
-
-    *{ box-sizing: border-box; }
-    html, body { height: 100%; }
+    *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      margin:0;font-family:Segoe UI,Tahoma,Arial,sans-serif;
+      background:var(--bg);color:var(--text)
     }
 
-    /* Topbar */
     .topbar{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff;
-      padding: 14px 18px;
-      box-shadow: var(--shadow2);
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      color:#fff;padding:14px 18px;box-shadow:var(--shadow2)
     }
     .topbar-inner{
-      max-width: 1200px;
-      margin: 0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+      max-width:1200px;margin:auto;
+      display:flex;justify-content:space-between;align-items:center
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-    }
+    .brand{display:flex;gap:10px;align-items:center}
     .brand-badge{
-      width:40px;height:40px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 18px;
-    }
-    .brand h1{
-      margin:0;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
-    .brand p{
-      margin:0;
-      font-size: 12px;
-      opacity: .9;
+      width:40px;height:40px;border-radius:14px;
+      background:rgba(255,255,255,.18);
+      display:flex;align-items:center;justify-content:center
     }
 
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap: wrap;
-    }
+    .actions{display:flex;gap:10px;align-items:center}
     .user-chip{
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-    .chip-dot{
-      width:10px;height:10px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+      background:rgba(255,255,255,.16);
+      padding:8px 12px;border-radius:999px;font-size:13px
     }
     .btn{
-      border: none;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      background: rgba(255,255,255,0.16);
-      color: #fff;
-      transition: .18s;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      white-space: nowrap;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.24); transform: translateY(-1px); }
-    .btn:active{ transform: translateY(0px); }
-
-    /* Layout */
-    .wrap{
-      max-width: 1200px;
-      margin: 18px auto 36px;
-      padding: 0 18px;
+      background:rgba(255,255,255,.16);
+      border:none;color:#fff;padding:8px 12px;
+      border-radius:12px;cursor:pointer
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    /* Cards */
+    .wrap{max-width:1200px;margin:20px auto;padding:0 16px}
     .card{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
+      background:var(--card);border-radius:16px;
+      border:1px solid var(--border);box-shadow:var(--shadow)
     }
     .card-head{
-      padding: 16px 16px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .card-title{
-      margin:0;
-      font-size: 14px;
-      color: var(--muted);
-      font-weight: 700;
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-    .pill{
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 12px;
-      background: rgba(2,6,23,0.02);
-    }
-    body.dark .pill{ background: rgba(255,255,255,0.04); }
-
-    /* Stats */
-    .stats{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      padding: 16px;
-    }
-    @media (max-width: 720px){
-      .stats{ grid-template-columns: 1fr; }
-    }
-    .stat{
-      background: rgba(2,6,23,0.02);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      position: relative;
-      overflow:hidden;
-    }
-    body.dark .stat{ background: rgba(255,255,255,0.03); }
-    .stat .label{
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .stat .value{
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-    .stat .sub{
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    /* Quick nav */
-    .nav{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding: 16px;
-    }
-    @media (max-width: 520px){
-      .nav{ grid-template-columns: 1fr; }
-    }
-    .nav a{
-      text-decoration:none;
-      color: var(--text);
-      background: rgba(2,6,23,0.02);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      transition: .18s;
-    }
-    body.dark .nav a{ background: rgba(255,255,255,0.03); }
-    .nav a:hover{
-      transform: translateY(-2px);
-      box-shadow: var(--shadow2);
-      border-color: rgba(37,99,235,0.35);
-    }
-    .nav .left{
-      display:flex; align-items:center; gap:12px;
-    }
-    .nav .icon{
-      width:40px;height:40px;
-      border-radius: 14px;
-      background: rgba(37,99,235,0.14);
-      display:flex; align-items:center; justify-content:center;
-      font-size: 18px;
-      color: var(--primary);
-    }
-    .nav .text{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .nav .text b{
-      font-size: 14px;
-    }
-    .nav .text small{
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .nav .arrow{
-      color: var(--muted);
-      font-size: 16px;
-    }
-
-    /* Chart */
-    .chart-wrap{
-      padding: 12px 16px 16px;
-    }
-    .chart-wrap canvas{
-      width: 100% !important;
-      height: 320px !important;
-    }
-    @media (max-width: 720px){
-      .chart-wrap canvas{ height: 260px !important; }
-    }
-
-    /* Right column */
-    .side{
-      display:flex;
-      flex-direction:column;
-      gap: 18px;
-    }
-
-    .mini{
-      padding: 16px;
-    }
-
-    .row{
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 12px 0;
-      border-bottom: 1px dashed var(--border);
-      gap: 10px;
-    }
-    .row:last-child{ border-bottom: none; }
-    .row .k{
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .row .v{
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .hint{
-      padding: 12px 16px 16px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
+      padding:16px;border-bottom:1px solid var(--border)
     }
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-badge">🏥</div>
-        <div>
-          <h1 id="uiTitle">Clinic System</h1>
-          <p id="uiSub">Dashboard</p>
-        </div>
-      </div>
 
-      <div class="actions">
-        <div class="user-chip" title="Current user">
-          <span class="chip-dot"></span>
-          <span id="uiUser">—</span>
-        </div>
-
-        <button class="btn" id="btnLang" title="Toggle Language">🌐 <span id="uiLang">AR</span></button>
-        <button class="btn" id="btnTheme" title="Toggle Theme">🌓 <span id="uiTheme">Light</span></button>
-        <button class="btn" id="btnLogout" title="Logout">🚪 <span id="uiLogout">Logout</span></button>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge">🏥</div>
+      <div>
+        <b>Clinic System</b>
+        <div style="font-size:12px">Dashboard</div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
-    <div class="grid">
-
-      <!-- Left: Stats + Chart -->
-      <div class="card">
-        <div class="card-head">
-          <h3 class="card-title">📊 <span id="uiOverview">Overview</span></h3>
-          <span class="pill" id="uiCurrencyPill">JOD</span>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="label">👥 <span id="uiPatients">Patients</span></div>
-            <div class="value" id="patientsCount">0</div>
-            <div class="sub" id="uiPatientsSub">Total registered</div>
-          </div>
-
-          <div class="stat">
-            <div class="label">📅 <span id="uiSessions">Sessions</span></div>
-            <div class="value" id="sessionsCount">0</div>
-            <div class="sub" id="uiSessionsSub">All sessions</div>
-          </div>
-
-          <div class="stat">
-            <div class="label">💳 <span id="uiPayments">Payments</span></div>
-            <div class="value" id="paymentsTotal">0</div>
-            <div class="sub" id="uiPaymentsSub">Total collected</div>
-          </div>
-        </div>
-
-        <div class="chart-wrap">
-          <div class="card-head" style="border:0; padding: 0 0 10px; margin: 0 16px;">
-            <h3 class="card-title">📈 <span id="uiChartTitle">Payments (Last 6 months)</span></h3>
-            <span class="pill" id="uiChartHint">Auto</span>
-          </div>
-          <canvas id="paymentsChart"></canvas>
-        </div>
-
-        <div class="hint" id="uiHint">
-          Tip: Use “Receive Payment” to quickly add receipts. Payments are shown in reports and charts automatically.
-        </div>
+    <div class="actions">
+      <div class="user-chip">
+        👤 <span id="uiUser">—</span>
       </div>
-
-      <!-- Right: Quick actions -->
-      <div class="side">
-
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">⚡ <span id="uiQuick">Quick Actions</span></h3>
-            <span class="pill" id="uiSecure">Secure</span>
-          </div>
-
-          <div class="nav">
-            <a href="patients.html">
-              <div class="left">
-                <div class="icon">👥</div>
-                <div class="text">
-                  <b id="navPatients">Patients</b>
-                  <small id="navPatientsSub">Add / search</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="sessions.html">
-              <div class="left">
-                <div class="icon">📅</div>
-                <div class="text">
-                  <b id="navSessions">Sessions</b>
-                  <small id="navSessionsSub">Schedule</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <!-- Payments: protected by PIN on click -->
-            <a href="#" id="navPaymentsLink">
-              <div class="left">
-                <div class="icon">💳</div>
-                <div class="text">
-                  <b id="navPayments">Payments</b>
-                  <small id="navPaymentsSub">PIN protected</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="receive.html">
-              <div class="left">
-                <div class="icon">💰</div>
-                <div class="text">
-                  <b id="navReceive">Receive</b>
-                  <small id="navReceiveSub">Add receipt</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="patient-report.html">
-              <div class="left">
-                <div class="icon">📄</div>
-                <div class="text">
-                  <b id="navReport">Report</b>
-                  <small id="navReportSub">Patient statement</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="settings.html">
-              <div class="left">
-                <div class="icon">⚙️</div>
-                <div class="text">
-                  <b id="navSettings">Settings</b>
-                  <small id="navSettingsSub">Language / theme</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="users.html">
-              <div class="left">
-                <div class="icon">👤</div>
-                <div class="text">
-                  <b id="navUsers">Users</b>
-                  <small id="navUsersSub">Admin</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-          </div>
-        </div>
-
-        <div class="card mini">
-          <div class="row">
-            <div class="k" id="uiMiniPatients">Patients</div>
-            <div class="v" id="miniPatients">0</div>
-          </div>
-          <div class="row">
-            <div class="k" id="uiMiniSessions">Sessions</div>
-            <div class="v" id="miniSessions">0</div>
-          </div>
-          <div class="row">
-            <div class="k" id="uiMiniTotal">Total</div>
-            <div class="v" id="miniTotal">0</div>
-          </div>
-        </div>
-
-      </div>
-
+      <button class="btn" id="btnLogout">🚪 Logout</button>
     </div>
   </div>
+</div>
 
-  <!-- Dependencies -->
-  <script src="assets/js/storage.js"></script>
-  <script src="assets/js/settings-system.js"></script>
+<div class="wrap">
+  <div class="card">
+    <div class="card-head">
+      🎉 مرحبًا بك في لوحة التحكم
+    </div>
+    <div style="padding:16px">
+      الداشبورد شغالة ✔️  
+      تسجيل الدخول شغال ✔️  
+    </div>
+  </div>
+</div>
 
-  <!-- Dashboard Module -->
-  <script type="module" src="assets/js/dashboard.module.js"></script>
+<!-- JS FILES -->
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/settings-system.js"></script>
+<script type="module" src="assets/js/dashboard.module.js"></script>
+
+<!-- 👤 USER + LOGOUT -->
+<script>
+  const user = JSON.parse(localStorage.getItem("current_user") || "null");
+  if (user && user.username) {
+    document.getElementById("uiUser").textContent = user.username;
+  }
+
+  document.getElementById("btnLogout").onclick = () => {
+    localStorage.removeItem("logged_in");
+    localStorage.removeItem("current_user");
+    window.location.replace("index.html");
+  };
+</script>
+
 </body>
 </html>

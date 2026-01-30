@@ -4,71 +4,60 @@
 <meta charset="UTF-8">
 <title>Clinic System | Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-html,body{
-  width:100%;
-  height:100%;
-  margin:0;
-  font-family:"Segoe UI",Tahoma,Arial,sans-serif;
-}
 body{
-  background:
-    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-    url("https://i.imgur.com/BGlU7or.png");
-  background-size:cover;
+  margin:0;
+  height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
+  background:#eee;
+  font-family:Segoe UI,Tahoma;
 }
-.login-card{
-  width:100%;
-  max-width:420px;
+.box{
   background:#fff;
-  border-radius:20px;
-  padding:40px;
-  box-shadow:0 30px 70px rgba(0,0,0,.45);
+  padding:30px;
+  width:320px;
+  border-radius:12px;
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
 }
-input{
+input,button{
   width:100%;
   padding:12px;
-  margin:8px 0;
+  margin-top:10px;
 }
 button{
-  width:100%;
-  padding:14px;
   background:#8b6f2d;
   color:#fff;
   border:none;
-  border-radius:10px;
   cursor:pointer;
 }
+a{display:block;text-align:center;margin-top:10px;}
 </style>
 </head>
 
 <body>
-
-<div class="login-card">
-  <h2 style="text-align:center">Clinic System</h2>
+<div class="box">
+  <h3 style="text-align:center">Clinic System</h3>
 
   <form onsubmit="login(event)">
-    <input id="username" required placeholder="Username">
-    <input id="password" type="password" required placeholder="Password">
-    <button type="submit">تسجيل الدخول</button>
+    <input id="username" placeholder="Username" required>
+    <input id="password" type="password" placeholder="Password" required>
+    <button>تسجيل الدخول</button>
   </form>
+
+  <a href="register.html">إنشاء حساب</a>
 </div>
 
 <script>
-function login(event){
-  event.preventDefault();
+function login(e){
+  e.preventDefault();
 
-  const username=document.getElementById("username").value.trim();
-  const password=document.getElementById("password").value;
+  const u = username.value.trim();
+  const p = password.value;
 
-  const users=JSON.parse(localStorage.getItem("users")||"[]");
-  const user=users.find(
-    u => u.username===username && u.password===password
-  );
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const user = users.find(x => x.username===u && x.password===p);
 
   if(!user){
     alert("بيانات غير صحيحة");
@@ -78,10 +67,8 @@ function login(event){
   localStorage.setItem("logged_in","true");
   localStorage.setItem("current_user",JSON.stringify(user));
 
-  /* ✅ الحل هنا */
   window.location.replace("dashboard.html");
 }
 </script>
-
 </body>
 </html>

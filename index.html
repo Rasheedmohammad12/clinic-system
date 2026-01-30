@@ -2,46 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Clinic System | Login</title>
+  <title>Clinic System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-  <div class="login-container">
-    <h2>Clinic System</h2>
-    <p class="subtitle">Login to your account</p>
+  <h2>Clinic System</h2>
+  <p>Login to your account</p>
 
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username" 
-          placeholder="Enter username"
-          required
-        >
-      </div>
+  <form id="loginForm">
+    <div>
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Enter username" required>
+    </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          placeholder="Enter password"
-          required
-        >
-      </div>
+    <br>
 
-      <button type="submit">Login</button>
+    <div>
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter password" required>
+    </div>
 
-      <p id="errorMessage" class="error-message"></p>
-    </form>
-  </div>
+    <br>
 
-  <!-- JS -->
+    <button type="submit">Login</button>
+  </form>
+
+  <p id="errorMessage" style="color:red;"></p>
+
   <script src="assets/js/storage.js"></script>
   <script src="assets/js/auth.js"></script>
 

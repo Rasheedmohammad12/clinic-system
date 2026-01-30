@@ -1,57 +1,193 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <title>تسجيل مستخدم | Clinic System</title>
+  <title>Clinic System | Register</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
-    body{font-family:Arial;background:#f4f6f8;margin:0}
-    .box{max-width:480px;margin:60px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-    h2{text-align:center;margin:0 0 15px}
-    input,select,button{width:100%;padding:10px;margin-top:10px}
-    button{background:#1e88e5;color:#fff;border:none;border-radius:6px;cursor:pointer}
-    a{display:block;text-align:center;margin-top:12px;color:#1e88e5;text-decoration:none}
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      font-family:"Segoe UI", Tahoma, Arial, sans-serif;
+      background:#f4f7fb;
+      min-height:100vh;
+    }
+
+    .register-container{
+      display:flex;
+      min-height:100vh;
+    }
+
+    /* ===== الفورم ===== */
+    .register-form{
+      flex:1;
+      background:#ffffff;
+      padding:70px 60px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .register-form h1{
+      margin:0 0 10px 0;
+      color:#2563eb;
+      font-size:32px;
+    }
+
+    .register-form p{
+      margin:0 0 40px 0;
+      color:#64748b;
+      font-size:15px;
+    }
+
+    .register-form label{
+      font-size:13px;
+      color:#475569;
+      margin-bottom:6px;
+    }
+
+    .register-form input{
+      padding:12px;
+      margin-bottom:18px;
+      border:1px solid #c7d2fe;
+      border-radius:8px;
+      font-size:14px;
+      outline:none;
+    }
+
+    .register-form input:focus{
+      border-color:#2563eb;
+    }
+
+    .register-form button{
+      padding:13px;
+      margin-top:10px;
+      background:#2563eb;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .register-form button:hover{
+      background:#1e40af;
+    }
+
+    .register-footer{
+      margin-top:25px;
+      font-size:12px;
+      color:#94a3b8;
+    }
+
+    .register-footer a{
+      color:#2563eb;
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    /* ===== الصورة ===== */
+    .register-image{
+      flex:1;
+      background:#eef2ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+    }
+
+    .register-image img{
+      width:100%;
+      max-width:520px;
+    }
+
+    /* ===== موبايل ===== */
+    @media (max-width: 900px){
+      .register-image{
+        display:none;
+      }
+
+      .register-form{
+        padding:50px 30px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="box">
-    <h2>إنشاء حساب</h2>
+<div class="register-container">
 
-    <form id="regForm">
-      <input id="username" placeholder="اسم المستخدم" required />
-      <input id="password" type="password" placeholder="كلمة السر" required />
+  <!-- الفورم -->
+  <div class="register-form">
+    <h1>Clinic System</h1>
+    <p>إنشاء حساب جديد</p>
 
-      <select id="role" required>
-        <option value="reception">استقبال (Reception)</option>
-        <option value="doctor">طبيب (Doctor)</option>
-        <option value="admin">مدير (Admin)</option>
-      </select>
+    <label>اسم المستخدم</label>
+    <input type="text" id="username" placeholder="Username">
 
-      <button type="submit">تسجيل</button>
-    </form>
+    <label>كلمة المرور</label>
+    <input type="password" id="password" placeholder="Password">
 
-    <a href="index.html">رجوع لتسجيل الدخول</a>
+    <label>تأكيد كلمة المرور</label>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+    <button onclick="register()">إنشاء الحساب</button>
+
+    <div class="register-footer">
+      لديك حساب؟ <a href="index.html">تسجيل الدخول</a>
+    </div>
   </div>
 
-  <script type="module">
-    import { registerUser } from "./assets/js/auth.js";
+  <!-- الصورة -->
+  <div class="register-image">
+    <img src="https://i.imgur.com/BGlU7or.png" alt="Clinic Illustration">
+  </div>
 
-    document.getElementById("regForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      try {
-        registerUser({
-          username: document.getElementById("username").value,
-          password: document.getElementById("password").value,
-          role: document.getElementById("role").value
-        });
-        alert("تم إنشاء الحساب ✅");
-        window.location.href = "index.html";
-      } catch (err) {
-        alert(err.message);
-      }
+</div>
+
+<script>
+  function register(){
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    if(!username || !password || !confirm){
+      alert("الرجاء تعبئة جميع الحقول");
+      return;
+    }
+
+    if(password !== confirm){
+      alert("كلمتا المرور غير متطابقتين");
+      return;
+    }
+
+    // تخزين المستخدم (بسيط)
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    if(users.find(u => u.username === username)){
+      alert("اسم المستخدم موجود مسبقًا");
+      return;
+    }
+
+    users.push({
+      username,
+      password,
+      role: "admin"
     });
-  </script>
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("تم إنشاء الحساب بنجاح");
+    window.location.href = "index.html";
+  }
+</script>
 
 </body>
 </html>

@@ -1,59 +1,49 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>تسجيل الدخول | Clinic System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body{font-family:Arial;background:#f4f6f8;margin:0}
-    .box{max-width:420px;margin:60px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-    h2{text-align:center;margin:0 0 15px}
-    input,button{width:100%;padding:10px;margin-top:10px}
-    button{background:#1e88e5;color:#fff;border:none;border-radius:6px;cursor:pointer}
-    .row{display:flex;gap:10px;margin-top:10px}
-    a{display:block;text-align:center;margin-top:12px;color:#1e88e5;text-decoration:none}
-    small{display:block;color:#666;margin-top:10px;line-height:1.6}
-  </style>
+  <meta charset="UTF-8">
+  <title>Clinic System | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-  <div class="box">
-    <h2>تسجيل الدخول</h2>
+  <div class="login-container">
+    <h2>Clinic System</h2>
+    <p class="subtitle">Login to your account</p>
 
     <form id="loginForm">
-      <input id="username" placeholder="اسم المستخدم" required />
-      <input id="password" type="password" placeholder="كلمة السر" required />
-      <button type="submit">دخول</button>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          placeholder="Enter username"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          placeholder="Enter password"
+          required
+        >
+      </div>
+
+      <button type="submit">Login</button>
+
+      <p id="errorMessage" class="error-message"></p>
     </form>
-
-    <a href="register.html">إنشاء حساب جديد</a>
-
-    <small>
-      حساب Admin افتراضي (أول مرة فقط):<br>
-      username: <b>admin</b><br>
-      password: <b>admin123</b>
-    </small>
   </div>
 
-  <script type="module">
-    import { loginUser, getCurrentUser } from "./assets/js/auth.js";
+  <!-- JS -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/auth.js"></script>
 
-    // إذا عامل login مسبقاً
-    const u = getCurrentUser();
-    if (u) window.location.href = "dashboard.html";
-
-    document.getElementById("loginForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      try {
-        loginUser({
-          username: document.getElementById("username").value,
-          password: document.getElementById("password").value
-        });
-        window.location.href = "dashboard.html";
-      } catch (err) {
-        alert(err.message);
-      }
-    });
-  </script>
 </body>
 </html>

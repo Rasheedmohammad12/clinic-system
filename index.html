@@ -13,44 +13,65 @@
 
     body{
       margin:0;
-      background:#f4f7fb;
       min-height:100vh;
-    }
-
-    .login-container{
+      background:
+        linear-gradient(
+          rgba(0,0,0,0.45),
+          rgba(0,0,0,0.45)
+        ),
+        url("https://i.imgur.com/BGlU7or.png");
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
       display:flex;
-      min-height:100vh;
-    }
-
-    /* ===== الفورم ===== */
-    .login-form{
-      flex:1;
-      background:#ffffff;
-      padding:70px 60px;
-      display:flex;
-      flex-direction:column;
+      align-items:center;
       justify-content:center;
     }
 
-    .login-form h1{
-      margin:0 0 10px 0;
+    .login-box{
+      width:100%;
+      max-width:420px;
+      background:#ffffff;
+      border-radius:16px;
+      padding:40px 35px;
+      box-shadow:0 25px 60px rgba(0,0,0,0.35);
+      animation:fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn{
+      from{
+        opacity:0;
+        transform:translateY(20px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .login-box h1{
+      margin:0 0 8px 0;
       color:#2563eb;
-      font-size:32px;
+      font-size:30px;
+      text-align:center;
     }
 
-    .login-form p{
-      margin:0 0 40px 0;
+    .login-box p{
+      margin:0 0 30px 0;
       color:#64748b;
-      font-size:15px;
+      font-size:14px;
+      text-align:center;
     }
 
-    .login-form label{
+    .login-box label{
       font-size:13px;
       color:#475569;
       margin-bottom:6px;
+      display:block;
     }
 
-    .login-form input{
+    .login-box input{
+      width:100%;
       padding:12px;
       margin-bottom:18px;
       border:1px solid #c7d2fe;
@@ -59,29 +80,29 @@
       outline:none;
     }
 
-    .login-form input:focus{
+    .login-box input:focus{
       border-color:#2563eb;
     }
 
-    .login-form button{
+    .login-box button{
+      width:100%;
       padding:13px;
-      margin-top:10px;
       background:#2563eb;
       color:#fff;
       border:none;
-      border-radius:8px;
+      border-radius:10px;
       font-size:15px;
       font-weight:600;
       cursor:pointer;
       transition:0.2s;
     }
 
-    .login-form button:hover{
+    .login-box button:hover{
       background:#1e40af;
     }
 
     .register-link{
-      margin-top:16px;
+      margin-top:18px;
       font-size:13px;
       text-align:center;
       color:#64748b;
@@ -94,33 +115,17 @@
     }
 
     .login-footer{
-      margin-top:30px;
-      font-size:12px;
+      margin-top:22px;
+      font-size:11px;
+      text-align:center;
       color:#94a3b8;
     }
 
-    /* ===== الصورة ===== */
-    .login-image{
-      flex:1;
-      background:#eef2ff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:40px;
-    }
-
-    .login-image img{
-      width:100%;
-      max-width:520px;
-    }
-
-    /* ===== موبايل ===== */
-    @media (max-width: 900px){
-      .login-image{
-        display:none;
-      }
-      .login-form{
-        padding:50px 30px;
+    /* موبايل */
+    @media (max-width:480px){
+      .login-box{
+        margin:0 15px;
+        padding:35px 25px;
       }
     }
   </style>
@@ -128,10 +133,7 @@
 
 <body>
 
-<div class="login-container">
-
-  <!-- الفورم -->
-  <div class="login-form">
+  <div class="login-box">
     <h1>Clinic System</h1>
     <p>تسجيل الدخول إلى نظام العيادة</p>
 
@@ -143,7 +145,6 @@
 
     <button onclick="login()">تسجيل الدخول</button>
 
-    <!-- زر إنشاء حساب -->
     <div class="register-link">
       ليس لديك حساب؟
       <a href="register.html">إنشاء حساب</a>
@@ -153,13 +154,6 @@
       © 2026 Clinic System
     </div>
   </div>
-
-  <!-- الصورة -->
-  <div class="login-image">
-    <img src="https://i.imgur.com/BGlU7or.png" alt="Clinic Illustration">
-  </div>
-
-</div>
 
 <script>
   function login(){

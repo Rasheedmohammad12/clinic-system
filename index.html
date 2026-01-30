@@ -88,13 +88,16 @@ button{
   <h1>Clinic System</h1>
   <p>تسجيل الدخول إلى نظام العيادة</p>
 
-  <label>اسم المستخدم</label>
-  <input id="username" placeholder="Username">
+  <!-- ✅ FORM -->
+  <form onsubmit="login(event)">
+    <label>اسم المستخدم</label>
+    <input id="username" placeholder="Username">
 
-  <label>كلمة المرور</label>
-  <input type="password" id="password" placeholder="Password">
+    <label>كلمة المرور</label>
+    <input type="password" id="password" placeholder="Password">
 
-  <button onclick="login()">تسجيل الدخول</button>
+    <button type="submit">تسجيل الدخول</button>
+  </form>
 
   <div class="register">
     ليس لديك حساب؟
@@ -103,7 +106,9 @@ button{
 </div>
 
 <script>
-function login(){
+function login(event){
+  event.preventDefault(); // ⛔ يمنع إعادة تحميل الصفحة
+
   const username=document.getElementById("username").value.trim();
   const password=document.getElementById("password").value;
 
@@ -113,7 +118,9 @@ function login(){
   }
 
   const users=JSON.parse(localStorage.getItem("users")||"[]");
-  const user=users.find(u=>u.username===username && u.password===password);
+  const user=users.find(
+    u => u.username === username && u.password === password
+  );
 
   if(!user){
     alert("بيانات غير صحيحة");

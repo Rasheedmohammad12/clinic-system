@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Clinic System | Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     *{
-      box-sizing: border-box;
+      box-sizing:border-box;
+      font-family:"Segoe UI", Tahoma, Arial, sans-serif;
     }
 
     body{
       margin:0;
-      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
       background:#f4f7fb;
       min-height:100vh;
     }
@@ -22,7 +22,7 @@
       min-height:100vh;
     }
 
-    /* ====== الفورم ====== */
+    /* ===== الفورم ===== */
     .login-form{
       flex:1;
       background:#ffffff;
@@ -80,13 +80,26 @@
       background:#1e40af;
     }
 
+    .register-link{
+      margin-top:16px;
+      font-size:13px;
+      text-align:center;
+      color:#64748b;
+    }
+
+    .register-link a{
+      color:#2563eb;
+      font-weight:600;
+      text-decoration:none;
+    }
+
     .login-footer{
-      margin-top:25px;
+      margin-top:30px;
       font-size:12px;
       color:#94a3b8;
     }
 
-    /* ====== الصورة ====== */
+    /* ===== الصورة ===== */
     .login-image{
       flex:1;
       background:#eef2ff;
@@ -101,12 +114,11 @@
       max-width:520px;
     }
 
-    /* ====== موبايل ====== */
+    /* ===== موبايل ===== */
     @media (max-width: 900px){
       .login-image{
         display:none;
       }
-
       .login-form{
         padding:50px 30px;
       }
@@ -124,12 +136,18 @@
     <p>تسجيل الدخول إلى نظام العيادة</p>
 
     <label>اسم المستخدم</label>
-    <input type="text" id="username" placeholder="Username" />
+    <input type="text" id="username" placeholder="Username">
 
     <label>كلمة المرور</label>
-    <input type="password" id="password" placeholder="Password" />
+    <input type="password" id="password" placeholder="Password">
 
     <button onclick="login()">تسجيل الدخول</button>
+
+    <!-- زر إنشاء حساب -->
+    <div class="register-link">
+      ليس لديك حساب؟
+      <a href="register.html">إنشاء حساب</a>
+    </div>
 
     <div class="login-footer">
       © 2026 Clinic System
@@ -143,20 +161,26 @@
 
 </div>
 
-<!-- JS -->
 <script>
   function login(){
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
 
-    if(!user || !pass){
+    if(!username || !password){
       alert("الرجاء إدخال اسم المستخدم وكلمة المرور");
       return;
     }
 
-    // مثال بسيط (اربطه لاحقًا مع auth.js)
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if(!user){
+      alert("بيانات الدخول غير صحيحة");
+      return;
+    }
+
     localStorage.setItem("logged_in", "true");
-    localStorage.setItem("current_user", user);
+    localStorage.setItem("current_user", JSON.stringify(user));
 
     window.location.href = "dashboard.html";
   }

@@ -1,53 +1,43 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>المرضى</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{font-family:Arial;background:#f4f6f8;margin:0}
-header{background:#1e88e5;color:#fff;padding:15px;text-align:center}
-.container{padding:20px}
-input,button{padding:10px;width:100%;margin-top:10px}
-button{background:#1e88e5;color:#fff;border:none;cursor:pointer}
-table{width:100%;background:#fff;margin-top:20px;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #ddd;text-align:center}
-.back{color:#1e88e5;text-decoration:none}
-.action-btn{cursor:pointer}
-</style>
+  <meta charset="UTF-8" />
+  <title>المرضى</title>
 </head>
-
 <body>
-<header><h2>إدارة المرضى</h2></header>
 
-<div class="container">
-<a class="back" href="dashboard.html">⬅ رجوع</a>
+<h2>إضافة مريض</h2>
 
 <form id="patientForm">
-<h3>إضافة / تعديل مريض</h3>
-<input id="patientName" placeholder="اسم المريض" required>
-<input id="patientPhone" placeholder="رقم الهاتف" required>
-<button type="submit">حفظ</button>
+  <input id="patientName" placeholder="اسم المريض" required />
+  <input id="patientFile" placeholder="رقم الملف" />
+  <button type="submit">إضافة مريض</button>
 </form>
 
-<input id="searchInput" placeholder="🔍 بحث عن مريض">
+<hr>
 
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>الاسم</th>
-<th>الهاتف</th>
-<th>تعديل</th>
-<th>حذف</th>
-</tr>
-</thead>
-<tbody id="patientsTable"></tbody>
+<h2>جدول المرضى</h2>
+
+<table border="1" width="100%">
+  <thead>
+    <tr>
+      <th>الاسم</th>
+      <th>نوع الجلسة</th>
+      <th>المدفوع</th>
+      <th>المتبقي</th>
+      <th>رقم الملف</th>
+      <th>عدد الجلسات</th>
+      <th>طريقة الدفع</th>
+      <th>ملاحظة</th>
+      <th>مسك الجلسة</th>
+    </tr>
+  </thead>
+  <tbody id="patientsTableBody"></tbody>
 </table>
-</div>
 
-<script src="assets/js/storage.js"></script>
-<script src="assets/js/patients.js"></script>
+<!-- JS -->
+<script type="module" src="assets/js/patients.js"></script>
+<script type="module" src="assets/js/patient-tables.js"></script>
+
 </body>
 </html>

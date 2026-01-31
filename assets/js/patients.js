@@ -1,58 +1,45 @@
-import { getCurrentUser, requireAuth } from "./auth.js";
+const tbody = document.getElementById("patientsBody");
 
-requireAuth();
-const user = getCurrentUser();
+function renderPatients(){
+  const patients = getPatients();
+  tbody.innerHTML = "";
 
-const PATIENTS_KEY = `patients_${user.id}`;
-const TABLE_KEY = `patient_table_${user.id}`;
+  patients.forEach(p=>{
+    const paid = getTotalPaidForPatient(p.id);
+    const remaining = Math.max(0,(p.totalAmount||0)-paid);
 
-const form = document.getElementById("patientForm");
-const nameInput = document.getElementById("patientName");
-const fileInput = document.getElementById("patientFile");
-
-let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
-let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
-
-function saveAll() {
-  localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients));
-  localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.name}</td>
+      <td>${p.phone}</td>
+      <td>
+        <input type="number" value="${p.totalAmount||0}"
+          onchange="updateTotal(${p.id},this.value)">
+      </td>
+      <td>${paid}</td>
+      <td>${remaining}</td>
+      <td class="actions">
+        <button class="btn-del" onclick="deletePatient(${p.id})">حذف</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-form.addEventListener("submit", e => {
-  e.preventDefault();
+function updateTotal(id,val){
+  const db=JSON.parse(localStorage.getItem("clinic_system_db"));
+  const p=db.patients.find(x=>x.id===id);
+  p.totalAmount=Number(val)||0;
+  localStorage.setItem("clinic_system_db",JSON.stringify(db));
+  renderPatients();
+}
 
-  const name = nameInput.value.trim();
-  const fileNumber = fileInput.value.trim();
+function deletePatient(id){
+  if(!confirm("حذف المريض؟"))return;
+  const db=JSON.parse(localStorage.getItem("clinic_system_db"));
+  db.patients=db.patients.filter(p=>p.id!==id);
+  localStorage.setItem("clinic_system_db",JSON.stringify(db));
+  renderPatients();
+}
 
-  if (!name) {
-    alert("اسم المريض مطلوب");
-    return;
-  }
-
-  const patient = {
-    id: Date.now(),
-    name,
-    fileNumber
-  };
-
-  patients.push(patient);
-
-  rows.push({
-    patientId: patient.id,
-    name: patient.name,
-    fileNumber: patient.fileNumber,
-    sessionType: "",
-    paidAmount: 0,
-    totalAmount: 0,
-    sessionsCount: "",
-    paymentMethod: "",
-    note: "",
-    sessionHandler: ""
-  });
-
-  saveAll();
-  form.reset();
-
-  // تحديث الجدول فورًا
-  window.dispatchEvent(new Event("storage"));
-});
+document.addEventListener("DOMContentLoaded",renderPatients);

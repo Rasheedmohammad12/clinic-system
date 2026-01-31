@@ -8,8 +8,6 @@ function saveAll(){
 
 function render(filter = ""){
   const tbody = document.getElementById("patientsTableBody");
-  const searchInput = document.getElementById("searchInput");
-
   tbody.innerHTML = "";
 
   patients
@@ -56,7 +54,7 @@ function render(filter = ""){
         if(confirm("هل أنت متأكد من الحذف؟")){
           patients.splice(index, 1);
           saveAll();
-          render(searchInput.value);
+          render(document.getElementById("searchInput").value);
         }
       };
 
@@ -64,7 +62,7 @@ function render(filter = ""){
     });
 }
 
-// ✅ هذه أهم دالة – صارت global
+/* ➕ إضافة صف جديد */
 function addRow(){
   patients.push({
     name: "",
@@ -81,7 +79,7 @@ function addRow(){
   render(document.getElementById("searchInput").value);
 }
 
-// 🔍 بحث
+/* 🔍 بحث */
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   searchInput.addEventListener("input", e => {
@@ -90,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   render();
 });
 
-// ⬇️ تنزيل الجدول
+/* ⬇️ تنزيل الجدول كصورة */
 function downloadTable(){
   html2canvas(document.getElementById("tableArea")).then(canvas => {
     const link = document.createElement("a");

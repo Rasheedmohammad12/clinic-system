@@ -72,25 +72,14 @@ tbody tr {
 tbody tr:hover {
   background:#f1f5f9;
 }
-td[contenteditable] {
-  background:#f9fafb;
-  border-radius:8px;
-  outline:none;
-}
-td[contenteditable]:focus {
-  background:#e0f2fe;
-  box-shadow:inset 0 0 0 2px #2563eb;
-}
-.btn {
-  padding:6px 10px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  font-size:13px;
-}
+
 .btn-pay {
   background:#16a34a;
   color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:6px 10px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -104,7 +93,7 @@ td[contenteditable]:focus {
   <h2>➕ إضافة مريض</h2>
   <form id="patientForm" class="form-row">
     <input id="patientName" placeholder="اسم المريض" required>
-    <input id="patientFile" placeholder="رقم الملف">
+    <input id="patientFile" placeholder="رقم الملف / الهاتف">
     <button type="submit">إضافة</button>
   </form>
 </div>
@@ -117,14 +106,9 @@ td[contenteditable]:focus {
     <thead>
       <tr>
         <th>الاسم</th>
-        <th>نوع الجلسة</th>
-        <th>المدفوع</th>
-        <th>المتبقي</th>
         <th>رقم الملف</th>
-        <th>عدد الجلسات</th>
-        <th>طريقة الدفع</th>
-        <th>ملاحظة</th>
-        <th>مسك الجلسة</th>
+        <th>المدفوع</th>
+        <th>إجراءات</th>
       </tr>
     </thead>
     <tbody id="patientsTableBody"></tbody>
@@ -133,11 +117,11 @@ td[contenteditable]:focus {
 
 </div>
 
-<!-- JS -->
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/storage.js"></script>
+<!-- JS (مهم: Module) -->
+<script type="module">
+import { requireAuth } from "./assets/js/auth.js";
+import "./assets/js/storage.js";
 
-<script>
 requireAuth();
 
 const form = document.getElementById("patientForm");
@@ -153,27 +137,18 @@ function renderTable(){
 
   patients.forEach(p=>{
     const paid = payments
-      .filter(x=>x.patientId==p.id)
+      .filter(x => x.patientId == p.id)
       .reduce((s,x)=>s+Number(x.amount),0);
-
-    const remaining = Math.max(0,(p.totalAmount||0)-paid);
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${p.name}</td>
-      <td contenteditable>${p.sessionType||""}</td>
+      <td>${p.phone || ""}</td>
       <td>${paid}</td>
-      <td contenteditable onblur="updateTotal(${p.id},this.innerText)">
-        ${p.totalAmount||0}
-      </td>
-      <td>${p.phone||""}</td>
-      <td contenteditable>${p.sessionsCount||""}</td>
-      <td contenteditable>${p.paymentMethod||""}</td>
-      <td contenteditable>${p.note||""}</td>
       <td>
-        <button class="btn btn-pay"
+        <button class="btn-pay"
           onclick="location.href='receive.html?patientId=${p.id}'">
-          استلام
+          استلام مبلغ
         </button>
       </td>
     `;
@@ -181,22 +156,14 @@ function renderTable(){
   });
 }
 
-function updateTotal(id,val){
-  const db = JSON.parse(localStorage.getItem("clinic_system_db"));
-  const p = db.patients.find(x=>x.id===id);
-  p.totalAmount = Number(val)||0;
-  localStorage.setItem("clinic_system_db",JSON.stringify(db));
-  renderTable();
-}
-
-form.addEventListener("submit",e=>{
+form.addEventListener("submit", e => {
   e.preventDefault();
-  addPatient(nameInput.value,fileInput.value);
+  addPatient(nameInput.value, fileInput.value);
   form.reset();
   renderTable();
 });
 
-document.addEventListener("DOMContentLoaded",renderTable);
+document.addEventListener("DOMContentLoaded", renderTable);
 </script>
 
 </body>

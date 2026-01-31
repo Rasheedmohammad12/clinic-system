@@ -10,21 +10,21 @@
       --gold:#b59a3a;
       --gold-dark:#8f7a2a;
       --card:#ffffff;
-      --text:#1f2937;
+      --text:#111827;
       --muted:#6b7280;
       --radius:22px;
-      --shadow:0 40px 80px rgba(0,0,0,.35);
+      --shadow:0 40px 80px rgba(0,0,0,.45);
     }
 
     *{box-sizing:border-box}
 
     body{
       margin:0;
-      height:100vh;
+      min-height:100vh;
       font-family:"Segoe UI",Tahoma,Arial;
       background:
         linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
-        url("assets/img/revan-bg.jpg") center/cover no-repeat;
+        url("https://i.imgur.com/uU4MBQP.jpeg") center / cover no-repeat fixed;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -41,25 +41,15 @@
     }
 
     .logo{
-      width:90px;
-      height:90px;
-      border-radius:50%;
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin:0 auto 18px;
-    }
-
-    .logo img{
-      width:70px;
+      margin-bottom:16px;
+      font-weight:800;
+      letter-spacing:1px;
     }
 
     h1{
       margin:0;
       font-size:22px;
       color:var(--text);
-      letter-spacing:.5px;
     }
 
     p{
@@ -124,9 +114,7 @@
 <body>
 
   <div class="card">
-    <div class="logo">
-      <img src="assets/img/revan-logo.png" alt="REVAN">
-    </div>
+    <div class="logo">REVAN</div>
 
     <h1>REVAN Beauty Clinic</h1>
     <p>Login to your dashboard</p>

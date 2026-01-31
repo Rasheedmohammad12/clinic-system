@@ -74,24 +74,25 @@ if (registerForm) {
 
     const users = getUsers();
 
-    const exists = users.some(u => u.email === email);
-    if (exists) {
-      alert("هذا البريد الإلكتروني مستخدم بالفعل");
+    if (users.some(u => u.email === email)) {
+      alert("هذا البريد مستخدم");
       return;
     }
+
+    const isFirstUser = users.length === 0;
 
     const newUser = {
       id: Date.now(),
       username: name,
       email,
       password,
-      role: "user"
+      role: isFirstUser ? "admin" : "user"
     };
 
     users.push(newUser);
     saveUsers(users);
 
-    alert("تم إنشاء الحساب بنجاح، يمكنك تسجيل الدخول الآن");
+    alert("تم إنشاء الحساب");
     window.location.href = "index.html";
   });
 }

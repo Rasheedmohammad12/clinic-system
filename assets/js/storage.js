@@ -1,7 +1,10 @@
-const DB_KEY = "clinic_system_db";
+import { getCurrentUser } from "./auth.js";
 
-function getDB() {
-  const data = localStorage.getItem(DB_KEY);
+function getDB(){
+  const user = getCurrentUser();
+  const KEY = `clinic_system_db_${user.id}`;
+
+  const data = localStorage.getItem(KEY);
   if (data) return JSON.parse(data);
 
   const init = {
@@ -9,50 +12,29 @@ function getDB() {
     sessions: [],
     payments: []
   };
-  localStorage.setItem(DB_KEY, JSON.stringify(init));
+  localStorage.setItem(KEY, JSON.stringify(init));
   return init;
 }
 
-function saveDB(db) {
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
+function saveDB(db){
+  const user = getCurrentUser();
+  const KEY = `clinic_system_db_${user.id}`;
+  localStorage.setItem(KEY, JSON.stringify(db));
 }
 
 /* ========= المرضى ========= */
-function addPatient(name, phone) {
+function addPatient(name, phone=""){
   const db = getDB();
-  const patient = {
-    id: Date.now(),
-    name,
-    phone,
-    totalAmount: 0   // ⬅ المبلغ الإجمالي (تحدده انت)
-  };
-  db.patients.push(patient);
+  db.patients.push({ id: Date.now(), name, phone });
   saveDB(db);
 }
 
-function getPatients() {
+function getPatients(){
   return getDB().patients;
 }
 
-/* ========= الجلسات ========= */
-function addSession(patientId, date, cost, status = "محجوز") {
-  const db = getDB();
-  db.sessions.push({
-    id: Date.now(),
-    patientId,
-    date,
-    cost: Number(cost),
-    status
-  });
-  saveDB(db);
-}
-
-function getSessions() {
-  return getDB().sessions;
-}
-
 /* ========= المدفوعات ========= */
-function addPayment(patientId, amount, note = "") {
+function addPayment(patientId, amount, note=""){
   const db = getDB();
   db.payments.push({
     id: Date.now(),
@@ -64,43 +46,16 @@ function addPayment(patientId, amount, note = "") {
   saveDB(db);
 }
 
-function getPayments() {
+function getPayments(){
   return getDB().payments;
 }
 
-/* ========= حساب المدفوع لمريض ========= */
-function getTotalPaidForPatient(patientId) {
-  const db = getDB();
-  return db.payments
-    .filter(p => p.patientId == patientId)
-    .reduce((sum, p) => sum + Number(p.amount), 0);
-}
-
 /* ========= Dashboard ========= */
-function getDashboardStats() {
+function getDashboardStats(){
   const db = getDB();
   return {
     patients: db.patients.length,
     sessions: db.sessions.length,
-    totalPayments: db.payments.reduce((s, p) => s + p.amount, 0)
-  };
-}
-
-/* ========= كشف حساب ========= */
-function getPatientReport(patientId) {
-  const db = getDB();
-
-  const sessions = db.sessions.filter(s => s.patientId == patientId);
-  const payments = db.payments.filter(p => p.patientId == patientId);
-
-  const totalSessionsCost = sessions.reduce((s, x) => s + x.cost, 0);
-  const totalPaid = payments.reduce((s, x) => s + x.amount, 0);
-
-  return {
-    sessions,
-    payments,
-    totalSessionsCost,
-    totalPaid,
-    remaining: totalSessionsCost - totalPaid
+    totalPayments: db.payments.reduce((s,p)=>s+p.amount,0)
   };
 }

@@ -1,57 +1,82 @@
 import { getCurrentUser, requireAuth } from "./auth.js";
 
+/* =====================
+   AUTH
+===================== */
 requireAuth();
 const user = getCurrentUser();
+if (!user) {
+  alert("يجب تسجيل الدخول");
+  window.location.href = "index.html";
+}
 
-const PATIENTS_KEY = `patients_${user.id}`;
+/* =====================
+   STORAGE
+===================== */
 const TABLE_KEY = `patient_table_${user.id}`;
-
-const form = document.getElementById("patientForm");
-
-let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
 let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
 
-function saveAll() {
-  localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients));
+function saveRows() {
   localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
 }
 
-form.addEventListener("submit", e => {
-  e.preventDefault();
+/* =====================
+   RENDER TABLE
+===================== */
+function renderTable() {
+  const tbody = document.getElementById("patientsTableBody");
+  if (!tbody) return;
 
-  const name = document.getElementById("patientName").value.trim();
-  const fileNumber = document.getElementById("patientFile").value.trim();
+  tbody.innerHTML = "";
 
-  if (!name) {
-    alert("اسم المريض مطلوب");
-    return;
-  }
+  rows.forEach((r, index) => {
+    const remaining =
+      (Number(r.totalAmount) || 0) - (Number(r.paidAmount) || 0);
 
-  const patient = {
-    id: Date.now(),
-    name,
-    fileNumber
-  };
+    const tr = document.createElement("tr");
 
-  patients.push(patient);
+    tr.innerHTML = `
+      <td>${r.name || ""}</td>
+      <td contenteditable data-field="sessionType">${r.sessionType || ""}</td>
+      <td contenteditable data-field="paidAmount">${r.paidAmount || 0}</td>
+      <td>${remaining}</td>
+      <td>${r.fileNumber || ""}</td>
+      <td contenteditable data-field="sessionsCount">${r.sessionsCount || ""}</td>
+      <td contenteditable data-field="paymentMethod">${r.paymentMethod || ""}</td>
+      <td contenteditable data-field="note">${r.note || ""}</td>
+      <td contenteditable data-field="sessionHandler">${r.sessionHandler || ""}</td>
+    `;
 
-  // ➕ صف تلقائي
-  rows.push({
-    patientId: patient.id,
-    name: patient.name,
-    fileNumber: patient.fileNumber,
-    sessionType: "",
-    paidAmount: 0,
-    totalAmount: 0,
-    sessionsCount: "",
-    paymentMethod: "",
-    note: "",
-    sessionHandler: ""
+    // ✏️ تعديل مباشر
+    tr.querySelectorAll("[contenteditable]").forEach(cell => {
+      cell.addEventListener("input", () => {
+        const field = cell.dataset.field;
+        let value = cell.innerText.trim();
+
+        if (field === "paidAmount" || field === "totalAmount") {
+          value = Number(value) || 0;
+        }
+
+        r[field] = value;
+        saveRows();
+        renderTable(); // لتحديث المبلغ المتبقي
+      });
+    });
+
+    tbody.appendChild(tr);
   });
+}
 
-  saveAll();
-  form.reset();
-
-  // إعادة تحميل الجدول
-  window.dispatchEvent(new Event("storage"));
+/* =====================
+   LISTEN FOR NEW ROWS
+===================== */
+// 🔁 لما ينضاف مريض من ملف patients.js
+window.addEventListener("storage", () => {
+  rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
+  renderTable();
 });
+
+/* =====================
+   INIT
+===================== */
+document.addEventListener("DOMContentLoaded", renderTable);

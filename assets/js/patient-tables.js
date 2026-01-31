@@ -5,12 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let patients = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-  function save() {
+  function save(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
   }
 
-  function render() {
+  function render(){
     tbody.innerHTML = "";
+
+    if (!patients.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9">لا يوجد مرضى</td>
+        </tr>
+      `;
+      return;
+    }
 
     patients.forEach((p, index) => {
 
@@ -21,18 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
-        <td contenteditable data-field="name">${p.name || ""}</td>
-        <td contenteditable data-field="sessionType">${p.sessionType || ""}</td>
-        <td contenteditable data-field="paidAmount">${paid}</td>
+        <td contenteditable="true" data-field="name">${p.name || ""}</td>
+        <td contenteditable="true" data-field="sessionType">${p.sessionType || ""}</td>
+        <td contenteditable="true" data-field="paidAmount">${paid}</td>
         <td>${remaining}</td>
-        <td contenteditable data-field="fileNumber">${p.fileNumber || ""}</td>
-        <td contenteditable data-field="sessionsCount">${p.sessionsCount || ""}</td>
-        <td contenteditable data-field="paymentMethod">${p.paymentMethod || ""}</td>
-        <td contenteditable data-field="note">${p.note || ""}</td>
-        <td contenteditable data-field="sessionHandler">${p.sessionHandler || ""}</td>
+        <td contenteditable="true" data-field="fileNumber">${p.fileNumber || ""}</td>
+        <td contenteditable="true" data-field="sessionsCount">${p.sessionsCount || ""}</td>
+        <td contenteditable="true" data-field="paymentMethod">${p.paymentMethod || ""}</td>
+        <td contenteditable="true" data-field="note">${p.note || ""}</td>
+        <td contenteditable="true" data-field="sessionHandler">${p.sessionHandler || ""}</td>
       `;
 
-      // حفظ التعديل عند الخروج من الخلية
       tr.querySelectorAll("[contenteditable]").forEach(cell => {
         cell.addEventListener("blur", () => {
           const field = cell.dataset.field;

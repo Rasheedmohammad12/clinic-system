@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Clinic System | Login</title>
@@ -7,15 +7,13 @@
 
   <style>
     :root{
-      --primary:#2563eb;        /* نفس لون اللوقو */
+      --primary:#2563eb;
       --primary-dark:#1e40af;
-      --bg1:#f4f7fb;
-      --bg2:#e0e7ff;
       --card:#ffffff;
       --text:#0f172a;
       --muted:#64748b;
-      --radius:18px;
-      --shadow:0 20px 40px rgba(0,0,0,.12);
+      --radius:20px;
+      --shadow:0 30px 60px rgba(0,0,0,.15);
     }
 
     *{box-sizing:border-box}
@@ -24,19 +22,17 @@
       margin:0;
       height:100vh;
       font-family:"Segoe UI",Tahoma,Arial;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background:
+        linear-gradient(rgba(255,255,255,.85), rgba(255,255,255,.85)),
+        url("https://imgur.com/uU4MBQP") center/cover no-repeat;
       display:flex;
       align-items:center;
       justify-content:center;
     }
 
-    .login-wrapper{
+    .card{
       width:100%;
       max-width:420px;
-      padding:20px;
-    }
-
-    .login-card{
       background:var(--card);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -44,11 +40,10 @@
       text-align:center;
     }
 
-    /* Logo */
     .logo{
-      width:70px;
-      height:70px;
-      border-radius:20px;
+      width:72px;
+      height:72px;
+      border-radius:22px;
       background:linear-gradient(135deg,var(--primary),var(--primary-dark));
       display:flex;
       align-items:center;
@@ -64,36 +59,34 @@
       color:var(--text);
     }
 
-    p.sub{
+    p{
       margin:6px 0 26px;
       font-size:13px;
       color:var(--muted);
     }
 
-    /* Form */
-    .form-group{
-      margin-bottom:16px;
+    .group{
       text-align:left;
+      margin-bottom:16px;
     }
 
-    .form-group label{
+    .group label{
       font-size:13px;
       color:var(--muted);
       margin-bottom:6px;
       display:block;
     }
 
-    .form-group input{
+    .group input{
       width:100%;
       padding:12px 14px;
       border-radius:12px;
       border:1px solid #e5e7eb;
       font-size:14px;
       outline:none;
-      transition:.2s;
     }
 
-    .form-group input:focus{
+    .group input:focus{
       border-color:var(--primary);
       box-shadow:0 0 0 3px rgba(37,99,235,.15);
     }
@@ -108,22 +101,16 @@
       font-size:15px;
       font-weight:700;
       cursor:pointer;
-      transition:.2s;
       margin-top:10px;
     }
 
-    button:hover{
-      transform:translateY(-1px);
-      box-shadow:0 10px 20px rgba(37,99,235,.35);
-    }
-
-    .register{
+    .link{
       margin-top:18px;
       font-size:13px;
       color:var(--muted);
     }
 
-    .register a{
+    .link a{
       color:var(--primary);
       font-weight:700;
       text-decoration:none;
@@ -133,32 +120,28 @@
 
 <body>
 
-  <div class="login-wrapper">
-    <div class="login-card">
+  <div class="card">
+    <div class="logo">🏥</div>
+    <h1>Clinic System</h1>
+    <p>Login to your dashboard</p>
 
-      <div class="logo">🏥</div>
-      <h1>Clinic System</h1>
-      <p class="sub">Login to your dashboard</p>
-
-      <form id="loginForm">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="email" required>
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="password" required>
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
-
-      <div class="register">
-        ما عندك حساب؟
-        <a href="register.html">إنشاء حساب</a>
+    <form id="loginForm">
+      <div class="group">
+        <label>Email</label>
+        <input type="email" id="email" required>
       </div>
 
+      <div class="group">
+        <label>Password</label>
+        <input type="password" id="password" required>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="link">
+      ما عندك حساب؟
+      <a href="register.html">إنشاء حساب</a>
     </div>
   </div>
 

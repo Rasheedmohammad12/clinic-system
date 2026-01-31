@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,158 +36,553 @@
     }
 
     *{ box-sizing: border-box; }
+    html, body { height: 100%; }
     body{
       margin:0;
       font-family: "Segoe UI", Tahoma, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
     }
+
+    /* Topbar */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+      padding: 14px 18px;
+      box-shadow: var(--shadow2);
+    }
+    .topbar-inner{
+      max-width: 1200px;
+      margin: 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .brand-badge{
+      width:40px;height:40px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 18px;
+    }
+    .brand h1{
+      margin:0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .brand p{
+      margin:0;
+      font-size: 12px;
+      opacity: .9;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+    .user-chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .chip-dot{
+      width:10px;height:10px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+    }
+    .btn{
+      border: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      transition: .18s;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space: nowrap;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.24); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px); }
+
+    /* Layout */
+    .wrap{
+      max-width: 1200px;
+      margin: 18px auto 36px;
+      padding: 0 18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-head{
+      padding: 16px 16px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-title{
+      margin:0;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .pill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      background: rgba(2,6,23,0.02);
+    }
+    body.dark .pill{ background: rgba(255,255,255,0.04); }
+
+    /* Stats */
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding: 16px;
+    }
+    @media (max-width: 720px){
+      .stats{ grid-template-columns: 1fr; }
+    }
+    .stat{
+      background: rgba(2,6,23,0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      position: relative;
+      overflow:hidden;
+    }
+    body.dark .stat{ background: rgba(255,255,255,0.03); }
+    .stat .label{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .stat .value{
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .stat .sub{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Quick nav */
+    .nav{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 16px;
+    }
+    @media (max-width: 520px){
+      .nav{ grid-template-columns: 1fr; }
+    }
+    .nav a{
+      text-decoration:none;
+      color: var(--text);
+      background: rgba(2,6,23,0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      transition: .18s;
+    }
+    body.dark .nav a{ background: rgba(255,255,255,0.03); }
+    .nav a:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow2);
+      border-color: rgba(37,99,235,0.35);
+    }
+    .nav .left{
+      display:flex; align-items:center; gap:12px;
+    }
+    .nav .icon{
+      width:40px;height:40px;
+      border-radius: 14px;
+      background: rgba(37,99,235,0.14);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    .nav .text{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .nav .text b{
+      font-size: 14px;
+    }
+    .nav .text small{
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .nav .arrow{
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    /* Chart */
+    .chart-wrap{
+      padding: 12px 16px 16px;
+    }
+    .chart-wrap canvas{
+      width: 100% !important;
+      height: 320px !important;
+    }
+    @media (max-width: 720px){
+      .chart-wrap canvas{ height: 260px !important; }
+    }
+
+    /* Right column */
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+    }
+
+    .mini{
+      padding: 16px;
+    }
+
+    .row{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+      gap: 10px;
+    }
+    .row:last-child{ border-bottom: none; }
+    .row .k{
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .row .v{
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .hint{
+      padding: 12px 16px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 
 <body>
-
-<!-- ================= TOPBAR ================= -->
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-badge">🏥</div>
-      <div>
-        <h1 id="uiTitle">Clinic System</h1>
-        <p id="uiSub">Dashboard</p>
-      </div>
-    </div>
-
-    <div class="actions">
-      <div class="user-chip">
-        <span class="chip-dot"></span>
-        <span id="uiUser">Admin</span>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">🏥</div>
+        <div>
+          <h1 id="uiTitle">Clinic System</h1>
+          <p id="uiSub">Dashboard</p>
+        </div>
       </div>
 
-      <button class="btn" id="btnLang">🌐 <span id="uiLang">EN</span></button>
-      <button class="btn" id="btnTheme">🌓 <span id="uiTheme">Light</span></button>
-      <button class="btn" id="btnLogout">🚪 Logout</button>
+      <div class="actions">
+        <div class="user-chip" title="Current user">
+          <span class="chip-dot"></span>
+          <span id="uiUser">—</span>
+        </div>
+
+        <button class="btn" id="btnLang" title="Toggle Language">🌐 <span id="uiLang">AR</span></button>
+        <button class="btn" id="btnTheme" title="Toggle Theme">🌓 <span id="uiTheme">Light</span></button>
+        <button class="btn" id="btnLogout" title="Logout">🚪 <span id="uiLogout">Logout</span></button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ================= DASHBOARD CONTENT (كما هو) ================= -->
-<div class="wrap">
-  <div class="grid">
+  <div class="wrap">
+    <div class="grid">
 
-    <!-- LEFT -->
-    <div class="card">
-      <div class="card-head">
-        <h3 class="card-title">📊 Overview</h3>
-        <span class="pill">JOD</span>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="label">👥 Patients</div>
-          <div class="value">0</div>
-          <div class="sub">Total registered</div>
-        </div>
-
-        <div class="stat">
-          <div class="label">📅 Sessions</div>
-          <div class="value">0</div>
-          <div class="sub">All sessions</div>
-        </div>
-
-        <div class="stat">
-          <div class="label">💳 Payments</div>
-          <div class="value">0</div>
-          <div class="sub">Total collected</div>
-        </div>
-      </div>
-
-      <div class="chart-wrap">
-        <h3 class="card-title">📈 Payments (Last 6 months)</h3>
-        <canvas id="paymentsChart"></canvas>
-      </div>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="side">
+      <!-- Left: Stats + Chart -->
       <div class="card">
         <div class="card-head">
-          <h3 class="card-title">⚡ Quick Actions</h3>
-          <span class="pill">Secure</span>
+          <h3 class="card-title">📊 <span id="uiOverview">Overview</span></h3>
+          <span class="pill" id="uiCurrencyPill">JOD</span>
         </div>
 
-        <div class="nav">
-          <a href="patients.html">👥 Patients</a>
-          <a href="sessions.html">📅 Sessions</a>
-          <a href="#" id="navPaymentsLink">💳 Payments (PIN protected)</a>
-          <a href="receive.html">💰 Receive</a>
-          <a href="patient-report.html">📄 Report</a>
-          <a href="settings.html">⚙️ Settings</a>
-          <a href="users.html">👤 Users</a>
+        <div class="stats">
+          <div class="stat">
+            <div class="label">👥 <span id="uiPatients">Patients</span></div>
+            <div class="value" id="patientsCount">0</div>
+            <div class="sub" id="uiPatientsSub">Total registered</div>
+          </div>
+
+          <div class="stat">
+            <div class="label">📅 <span id="uiSessions">Sessions</span></div>
+            <div class="value" id="sessionsCount">0</div>
+            <div class="sub" id="uiSessionsSub">All sessions</div>
+          </div>
+
+          <div class="stat">
+            <div class="label">💳 <span id="uiPayments">Payments</span></div>
+            <div class="value" id="paymentsTotal">0</div>
+            <div class="sub" id="uiPaymentsSub">Total collected</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="card-head" style="border:0; padding: 0 0 10px; margin: 0 16px;">
+            <h3 class="card-title">📈 <span id="uiChartTitle">Payments (Last 6 months)</span></h3>
+            <span class="pill" id="uiChartHint">Auto</span>
+          </div>
+          <canvas id="paymentsChart"></canvas>
+        </div>
+
+        <div class="hint" id="uiHint">
+          Tip: Use “Receive Payment” to quickly add receipts. Payments are shown in reports and charts automatically.
         </div>
       </div>
+
+      <!-- Right: Quick actions -->
+      <div class="side">
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">⚡ <span id="uiQuick">Quick Actions</span></h3>
+            <span class="pill" id="uiSecure">Secure</span>
+          </div>
+
+          <div class="nav">
+            <a href="patients.html">
+              <div class="left">
+                <div class="icon">👥</div>
+                <div class="text">
+                  <b id="navPatients">Patients</b>
+                  <small id="navPatientsSub">Add / search</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+
+            <a href="sessions.html">
+              <div class="left">
+                <div class="icon">📅</div>
+                <div class="text">
+                  <b id="navSessions">Sessions</b>
+                  <small id="navSessionsSub">Schedule</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+
+            <!-- Payments: protected by PIN on click -->
+            <a href="#" id="navPaymentsLink">
+              <div class="left">
+                <div class="icon">💳</div>
+                <div class="text">
+                  <b id="navPayments">Payments</b>
+                  <small id="navPaymentsSub">PIN protected</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+
+            <a href="receive.html">
+              <div class="left">
+                <div class="icon">💰</div>
+                <div class="text">
+                  <b id="navReceive">Receive</b>
+                  <small id="navReceiveSub">Add receipt</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+
+            <a href="patient-report.html">
+              <div class="left">
+                <div class="icon">📄</div>
+                <div class="text">
+                  <b id="navReport">Report</b>
+                  <small id="navReportSub">Patient statement</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+
+            <a href="settings.html">
+              <div class="left">
+                <div class="icon">⚙️</div>
+                <div class="text">
+                  <b id="navSettings">Settings</b>
+                  <small id="navSettingsSub">Language / theme</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+
+            <a href="users.html">
+              <div class="left">
+                <div class="icon">👤</div>
+                <div class="text">
+                  <b id="navUsers">Users</b>
+                  <small id="navUsersSub">Admin</small>
+                </div>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="card mini">
+          <div class="row">
+            <div class="k" id="uiMiniPatients">Patients</div>
+            <div class="v" id="miniPatients">0</div>
+          </div>
+          <div class="row">
+            <div class="k" id="uiMiniSessions">Sessions</div>
+            <div class="v" id="miniSessions">0</div>
+          </div>
+          <div class="row">
+            <div class="k" id="uiMiniTotal">Total</div>
+            <div class="v" id="miniTotal">0</div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<!-- ================= ORIGINAL SCRIPTS ================= -->
-<script src="assets/js/storage.js"></script>
-<script src="assets/js/settings-system.js"></script>
-<script type="module" src="assets/js/dashboard.module.js"></script>
+  <!-- Dependencies -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/settings-system.js"></script>
 
-<!-- ================= FUNCTIONALITY SCRIPT ================= -->
-<script>
-/* ===== THEME ===== */
+  <!-- Dashboard Module -->
+  <script type="module" src="assets/js/dashboard.module.js"></script>
+  <script>
+/* =====================
+   THEME: Light / Dark
+===================== */
 const btnTheme = document.getElementById("btnTheme");
 const uiTheme  = document.getElementById("uiTheme");
 
 function applyTheme(theme){
   document.body.classList.toggle("dark", theme === "dark");
-  uiTheme.textContent = theme === "dark" ? "Dark" : "Light";
+  if (uiTheme) uiTheme.textContent = theme === "dark" ? "Dark" : "Light";
   localStorage.setItem("theme", theme);
 }
-applyTheme(localStorage.getItem("theme") || "light");
-btnTheme.onclick = () => {
-  applyTheme(document.body.classList.contains("dark") ? "light" : "dark");
-};
 
-/* ===== LANGUAGE ===== */
+// تحميل الثيم المحفوظ
+applyTheme(localStorage.getItem("theme") || "light");
+
+btnTheme && btnTheme.addEventListener("click", () => {
+  const next = document.body.classList.contains("dark") ? "light" : "dark";
+  applyTheme(next);
+});
+
+
+/* =====================
+   LANGUAGE: AR / EN
+===================== */
 const btnLang = document.getElementById("btnLang");
 const uiLang  = document.getElementById("uiLang");
 
 function applyLang(lang){
-  uiLang.textContent = lang.toUpperCase();
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  if (uiLang) uiLang.textContent = lang.toUpperCase();
   localStorage.setItem("lang", lang);
 }
+
+// تحميل اللغة المحفوظة
 applyLang(localStorage.getItem("lang") || "en");
-btnLang.onclick = () => {
-  applyLang(localStorage.getItem("lang") === "en" ? "ar" : "en");
-};
 
-/* ===== LOGOUT ===== */
-document.getElementById("btnLogout").onclick = () => {
+btnLang && btnLang.addEventListener("click", () => {
+  const current = localStorage.getItem("lang") || "en";
+  applyLang(current === "en" ? "ar" : "en");
+});
+
+
+/* =====================
+   LOGOUT
+===================== */
+const btnLogout = document.getElementById("btnLogout");
+
+btnLogout && btnLogout.addEventListener("click", () => {
   localStorage.removeItem("loggedIn");
-  location.href = "index.html";
-};
+  window.location.href = "index.html";
+});
 
-/* ===== PAYMENTS PIN ===== */
-document.getElementById("navPaymentsLink").onclick = (e) => {
+
+/* =====================
+   PAYMENTS PIN
+===================== */
+const paymentsLink = document.getElementById("navPaymentsLink");
+
+paymentsLink && paymentsLink.addEventListener("click", (e) => {
   e.preventDefault();
-  const pin = localStorage.getItem("paymentPin");
-  if(!pin){
-    alert("لم يتم تعيين PIN بعد من الإعدادات");
+
+  const savedPin = localStorage.getItem("paymentPin");
+  if (!savedPin) {
+    alert("يرجى تعيين PIN من الإعدادات أولاً");
     return;
   }
-  const entered = prompt("أدخل PIN المدفوعات");
-  if(entered === pin){
-    location.href = "payments.html";
-  }else{
+
+  const enteredPin = prompt("أدخل PIN");
+  if (enteredPin === savedPin) {
+    window.location.href = "payments.html";
+  } else {
     alert("PIN غير صحيح");
   }
-};
+});
 </script>
 
 </body>
-</html>
+</html>  

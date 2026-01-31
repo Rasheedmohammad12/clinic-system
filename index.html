@@ -1,74 +1,24 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Clinic System | Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#eee;
-  font-family:Segoe UI,Tahoma;
-}
-.box{
-  background:#fff;
-  padding:30px;
-  width:320px;
-  border-radius:12px;
-  box-shadow:0 20px 40px rgba(0,0,0,.2);
-}
-input,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-}
-button{
-  background:#8b6f2d;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-a{display:block;text-align:center;margin-top:10px;}
-</style>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
-
 <body>
-<div class="box">
-  <h3 style="text-align:center">Clinic System</h3>
 
-  <form onsubmit="login(event)">
-    <input id="username" placeholder="Username" required>
-    <input id="password" type="password" placeholder="Password" required>
-    <button>تسجيل الدخول</button>
-  </form>
+  <div class="auth-container">
+    <h2>Login</h2>
 
-  <a href="register.html">إنشاء حساب</a>
-</div>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
 
-<script>
-function login(e){
-  e.preventDefault();
+    <p>ما عندك حساب؟ <a href="register.html">إنشاء حساب</a></p>
+  </div>
 
-  const u = username.value.trim();
-  const p = password.value;
-
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  const user = users.find(x => x.username===u && x.password===p);
-
-  if(!user){
-    alert("بيانات غير صحيحة");
-    return;
-  }
-
-  localStorage.setItem("logged_in","true");
-  localStorage.setItem("current_user",JSON.stringify(user));
-
-  window.location.replace("dashboard.html");
-}
-</script>
+  <script src="assets/js/auth.js"></script>
 </body>
 </html>

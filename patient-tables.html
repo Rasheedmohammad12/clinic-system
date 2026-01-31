@@ -28,7 +28,7 @@
       flex-wrap:wrap;
       align-items:center;
       position:relative;
-      z-index:10; /* ✅ حل مشكلة عدم الكبس */
+      z-index:9999; /* ✅ الحل النهائي */
     }
 
     .toolbar input{
@@ -56,6 +56,8 @@
       background:#fff;
       border-radius:14px;
       box-shadow:0 10px 25px rgba(0,0,0,0.08);
+      position:relative;
+      z-index:1; /* ✅ */
     }
 
     table{
@@ -71,12 +73,10 @@
       min-width:110px;
     }
 
+    /* ❌ لا sticky هنا */
     th{
       background:#2563eb;
       color:#fff;
-      position:sticky;
-      top:0;
-      z-index:1; /* ✅ مهم */
     }
 
     tr:nth-child(even){

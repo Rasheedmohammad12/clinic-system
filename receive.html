@@ -3,20 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <title>استلام المبالغ</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f1f5f9;
+}
+
+.dark{
+  background:#0f172a;
+  color:#fff;
+}
+
+.receive-wrapper{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.receive-card{
+  background:#fff;
+  width:100%;
+  max-width:420px;
+  padding:28px;
+  border-radius:20px;
+  box-shadow:0 30px 70px rgba(0,0,0,.15);
+}
+
+.dark .receive-card{
+  background:#1e293b;
+}
+
+.receive-card h2{
+  text-align:center;
+  margin-bottom:22px;
+  font-size:22px;
+}
+
+.form-group{
+  margin-bottom:16px;
+}
+
+.form-group label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  opacity:.8;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+}
+
+.dark .form-group input,
+.dark .form-group select{
+  background:#0f172a;
+  border-color:#334155;
+  color:#fff;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:22px;
+}
+
+.actions button{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  padding:12px 22px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.actions button:hover{
+  background:#1d4ed8;
+}
+
+.actions a{
+  text-decoration:none;
+  font-size:14px;
+  color:#64748b;
+}
+
+.actions a:hover{
+  color:#2563eb;
+}
+</style>
 </head>
 
 <body>
 
-<h2 id="title"></h2>
+<div class="receive-wrapper">
+  <div class="receive-card">
 
-<form id="receiveForm">
-  <select id="patientSelect"></select>
-  <input type="number" id="amount" placeholder="Amount">
-  <input type="text" id="note" placeholder="Note">
-  <button type="submit">Save</button>
-</form>
+    <h2 id="title"></h2>
 
-<a href="dashboard.html">⬅ Back</a>
+    <form id="receiveForm">
+
+      <div class="form-group">
+        <label>المريض</label>
+        <select id="patientSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <label>المبلغ</label>
+        <input type="number" id="amount" placeholder="0">
+      </div>
+
+      <div class="form-group">
+        <label>ملاحظة</label>
+        <input type="text" id="note" placeholder="ملاحظة (اختياري)">
+      </div>
+
+      <div class="actions">
+        <button type="submit">💾 حفظ</button>
+        <a href="dashboard.html">↩ رجوع</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
 
 <script src="assets/js/settings-system.js"></script>
 <script src="assets/js/storage.js"></script>
@@ -24,6 +143,7 @@
 
 <script>
 document.getElementById("title").innerText = t("receive");
+applySystem();
 </script>
 
 </body>

@@ -23,13 +23,14 @@
       gap:10px;
       margin-bottom:15px;
       flex-wrap:wrap;
+      align-items:center;
     }
 
     .toolbar input{
       padding:8px 10px;
       border-radius:8px;
       border:1px solid #ccc;
-      min-width:200px;
+      min-width:220px;
     }
 
     .toolbar button{
@@ -39,7 +40,11 @@
       cursor:pointer;
       background:#2563eb;
       color:#fff;
+      font-size:13px;
     }
+
+    .toolbar .add{ background:#16a34a; }
+    .toolbar .download{ background:#1d4ed8; }
 
     .table-wrap{
       overflow-x:auto;
@@ -94,7 +99,8 @@
 
 <div class="toolbar">
   <input type="text" id="searchInput" placeholder="بحث عن مريض..." />
-  <button onclick="downloadTable()">⬇️ تنزيل صورة</button>
+  <button class="add" onclick="addRow()">➕ إضافة جدول جديد</button>
+  <button class="download" onclick="downloadTable()">⬇️ تنزيل الجدول</button>
 </div>
 
 <div class="table-wrap" id="tableArea">

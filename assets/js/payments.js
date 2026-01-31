@@ -1,27 +1,57 @@
-const tableBody = document.getElementById("paymentsTable");
+import { requireAuth, getCurrentUser } from "./auth.js";
+import { formatCurrency, t } from "./settings-system.js";
+
+requireAuth();
+const user = getCurrentUser();
+
+/* ===== حماية الصفحة ===== */
+const PIN_KEY = `payments_pin_${user.id}`;
+
+if (sessionStorage.getItem("payments_access") !== "true") {
+  const savedPin = localStorage.getItem(PIN_KEY);
+
+  if (!savedPin) {
+    alert("يرجى تعيين رمز سري للمدفوعات من الإعدادات");
+    window.location.href = "settings.html";
+  }
+
+  const entered = prompt(t("enterPin"));
+  if (entered !== savedPin) {
+    alert(t("wrongPin"));
+    window.location.href = "dashboard.html";
+  } else {
+    sessionStorage.setItem("payments_access", "true");
+  }
+}
+
+/* ===== عرض المدفوعات ===== */
+const tbody = document.getElementById("paymentsBody");
+const totalBox = document.getElementById("totalPayments");
 
 function renderPayments() {
   const payments = getPayments();
   const patients = getPatients();
 
-  tableBody.innerHTML = "";
+  tbody.innerHTML = "";
+  let total = 0;
 
-  if (payments.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5">—</td></tr>`;
-    return;
-  }
+  payments.forEach(p => {
+    const patient = patients.find(x => x.id == p.patientId);
+    const tr = document.createElement("tr");
 
-  payments.forEach((p, i) => {
-    const patient = patients.find(pt => pt.id == p.patientId);
-    tableBody.innerHTML += `
-      <tr>
-        <td>${i + 1}</td>
-        <td>${patient ? patient.name : "-"}</td>
-        <td>${formatCurrency(p.amount)}</td>
-        <td>${p.note || "-"}</td>
-        <td>${new Date(p.date).toLocaleDateString()}</td>
-      </tr>`;
+    tr.innerHTML = `
+      <td>${patient ? patient.name : "-"}</td>
+      <td class="amount">${formatCurrency(p.amount)}</td>
+      <td>${p.note || "-"}</td>
+      <td>${new Date(p.date).toLocaleDateString()}</td>
+    `;
+
+    total += p.amount;
+    tbody.appendChild(tr);
   });
+
+  totalBox.textContent =
+    (t("totalPayments") || "الإجمالي") + ": " + formatCurrency(total);
 }
 
 document.addEventListener("DOMContentLoaded", renderPayments);

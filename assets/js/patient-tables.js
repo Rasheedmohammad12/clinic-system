@@ -3,45 +3,55 @@ import { getCurrentUser, requireAuth } from "./auth.js";
 requireAuth();
 const user = getCurrentUser();
 
+const PATIENTS_KEY = `patients_${user.id}`;
 const TABLE_KEY = `patient_table_${user.id}`;
+
+const form = document.getElementById("patientForm");
+
+let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
 let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
 
-function saveRows() {
+function saveAll() {
+  localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients));
   localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
 }
 
-function renderTable() {
-  const tbody = document.getElementById("patientsTableBody");
-  tbody.innerHTML = "";
+form.addEventListener("submit", e => {
+  e.preventDefault();
 
-  rows.forEach((r, index) => {
-    const remaining = (r.totalAmount || 0) - (r.paidAmount || 0);
+  const name = document.getElementById("patientName").value.trim();
+  const fileNumber = document.getElementById("patientFile").value.trim();
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${r.name}</td>
-      <td contenteditable data-field="sessionType">${r.sessionType}</td>
-      <td contenteditable data-field="paidAmount">${r.paidAmount}</td>
-      <td>${remaining}</td>
-      <td>${r.fileNumber}</td>
-      <td contenteditable data-field="sessionsCount">${r.sessionsCount}</td>
-      <td contenteditable data-field="paymentMethod">${r.paymentMethod}</td>
-      <td contenteditable data-field="note">${r.note}</td>
-      <td contenteditable data-field="sessionHandler">${r.sessionHandler}</td>
-    `;
+  if (!name) {
+    alert("اسم المريض مطلوب");
+    return;
+  }
 
-    tr.querySelectorAll("[contenteditable]").forEach(cell => {
-      cell.addEventListener("input", () => {
-        const field = cell.dataset.field;
-        let value = cell.innerText.trim();
-        if (field.includes("Amount")) value = Number(value) || 0;
-        r[field] = value;
-        saveRows();
-      });
-    });
+  const patient = {
+    id: Date.now(),
+    name,
+    fileNumber
+  };
 
-    tbody.appendChild(tr);
+  patients.push(patient);
+
+  // ➕ صف تلقائي
+  rows.push({
+    patientId: patient.id,
+    name: patient.name,
+    fileNumber: patient.fileNumber,
+    sessionType: "",
+    paidAmount: 0,
+    totalAmount: 0,
+    sessionsCount: "",
+    paymentMethod: "",
+    note: "",
+    sessionHandler: ""
   });
-}
 
-document.addEventListener("DOMContentLoaded", renderTable);
+  saveAll();
+  form.reset();
+
+  // إعادة تحميل الجدول
+  window.dispatchEvent(new Event("storage"));
+});

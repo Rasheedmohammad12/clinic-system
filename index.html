@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Clinic System | Login</title>
+  <title>REVAN Beauty Clinic | Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     :root{
-      --primary:#2563eb;
-      --primary-dark:#1e40af;
+      --gold:#b59a3a;
+      --gold-dark:#8f7a2a;
       --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --radius:20px;
-      --shadow:0 30px 60px rgba(0,0,0,.15);
+      --text:#1f2937;
+      --muted:#6b7280;
+      --radius:22px;
+      --shadow:0 40px 80px rgba(0,0,0,.35);
     }
 
     *{box-sizing:border-box}
@@ -23,8 +23,8 @@
       height:100vh;
       font-family:"Segoe UI",Tahoma,Arial;
       background:
-        linear-gradient(rgba(255,255,255,.85), rgba(255,255,255,.85)),
-        url("https://imgur.com/uU4MBQP") center/cover no-repeat;
+        linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+        url("assets/img/revan-bg.jpg") center/cover no-repeat;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -36,31 +36,34 @@
       background:var(--card);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:36px 32px;
+      padding:40px 34px;
       text-align:center;
     }
 
     .logo{
-      width:72px;
-      height:72px;
-      border-radius:22px;
-      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      background:#fff;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:34px;
-      color:#fff;
-      margin:0 auto 14px;
+      margin:0 auto 18px;
+    }
+
+    .logo img{
+      width:70px;
     }
 
     h1{
       margin:0;
       font-size:22px;
       color:var(--text);
+      letter-spacing:.5px;
     }
 
     p{
-      margin:6px 0 26px;
+      margin:6px 0 28px;
       font-size:13px;
       color:var(--muted);
     }
@@ -79,24 +82,24 @@
 
     .group input{
       width:100%;
-      padding:12px 14px;
-      border-radius:12px;
+      padding:13px 15px;
+      border-radius:14px;
       border:1px solid #e5e7eb;
       font-size:14px;
       outline:none;
     }
 
     .group input:focus{
-      border-color:var(--primary);
-      box-shadow:0 0 0 3px rgba(37,99,235,.15);
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(181,154,58,.25);
     }
 
     button{
       width:100%;
-      padding:13px;
+      padding:14px;
       border:none;
-      border-radius:14px;
-      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      border-radius:16px;
+      background:linear-gradient(135deg,var(--gold),var(--gold-dark));
       color:#fff;
       font-size:15px;
       font-weight:700;
@@ -105,13 +108,13 @@
     }
 
     .link{
-      margin-top:18px;
+      margin-top:20px;
       font-size:13px;
       color:var(--muted);
     }
 
     .link a{
-      color:var(--primary);
+      color:var(--gold);
       font-weight:700;
       text-decoration:none;
     }
@@ -121,8 +124,11 @@
 <body>
 
   <div class="card">
-    <div class="logo">🏥</div>
-    <h1>Clinic System</h1>
+    <div class="logo">
+      <img src="assets/img/revan-logo.png" alt="REVAN">
+    </div>
+
+    <h1>REVAN Beauty Clinic</h1>
     <p>Login to your dashboard</p>
 
     <form id="loginForm">

@@ -1,149 +1,125 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>استلام المبالغ</title>
+  <meta charset="UTF-8">
+  <title>استلام المبالغ</title>
 
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#f1f5f9;
-}
+  <!-- ===== ستايل مرتب وفخم ===== -->
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      background:#f1f5f9;
+      font-family:"Segoe UI",Tahoma,Arial;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
-.dark{
-  background:#0f172a;
-  color:#fff;
-}
+    .card{
+      background:#fff;
+      width:100%;
+      max-width:420px;
+      border-radius:22px;
+      box-shadow:0 30px 60px rgba(0,0,0,.12);
+      padding:30px;
+    }
 
-.receive-wrapper{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
+    h2{
+      margin:0 0 20px;
+      color:#1e3a8a;
+      text-align:center;
+    }
 
-.receive-card{
-  background:#fff;
-  width:100%;
-  max-width:420px;
-  padding:28px;
-  border-radius:20px;
-  box-shadow:0 30px 70px rgba(0,0,0,.15);
-}
+    .group{
+      margin-bottom:16px;
+    }
 
-.dark .receive-card{
-  background:#1e293b;
-}
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:13px;
+      color:#475569;
+    }
 
-.receive-card h2{
-  text-align:center;
-  margin-bottom:22px;
-  font-size:22px;
-}
+    select,input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #d1d5db;
+      font-size:14px;
+      outline:none;
+    }
 
-.form-group{
-  margin-bottom:16px;
-}
+    select:focus,input:focus{
+      border-color:#2563eb;
+      box-shadow:0 0 0 3px rgba(37,99,235,.25);
+    }
 
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  font-size:13px;
-  opacity:.8;
-}
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:10px;
+    }
 
-.form-group input,
-.form-group select{
-  width:100%;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-}
-
-.dark .form-group input,
-.dark .form-group select{
-  background:#0f172a;
-  border-color:#334155;
-  color:#fff;
-}
-
-.actions{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:22px;
-}
-
-.actions button{
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  padding:12px 22px;
-  border-radius:14px;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.actions button:hover{
-  background:#1d4ed8;
-}
-
-.actions a{
-  text-decoration:none;
-  font-size:14px;
-  color:#64748b;
-}
-
-.actions a:hover{
-  color:#2563eb;
-}
-</style>
+    .back{
+      display:block;
+      margin-top:16px;
+      text-align:center;
+      text-decoration:none;
+      color:#2563eb;
+      font-size:14px;
+      font-weight:600;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="receive-wrapper">
-  <div class="receive-card">
+<div class="card">
 
-    <h2 id="title"></h2>
+  <h2 id="title">استلام المبالغ</h2>
 
-    <form id="receiveForm">
+  <form id="receiveForm">
 
-      <div class="form-group">
-        <label>المريض</label>
-        <select id="patientSelect"></select>
-      </div>
+    <div class="group">
+      <label>المريض</label>
+      <select id="patientSelect">
+        <option value="">-- اختر مريض --</option>
+      </select>
+    </div>
 
-      <div class="form-group">
-        <label>المبلغ</label>
-        <input type="number" id="amount" placeholder="0">
-      </div>
+    <div class="group">
+      <label>المبلغ</label>
+      <input type="number" id="amount" placeholder="0" required>
+    </div>
 
-      <div class="form-group">
-        <label>ملاحظة</label>
-        <input type="text" id="note" placeholder="ملاحظة (اختياري)">
-      </div>
+    <div class="group">
+      <label>ملاحظة</label>
+      <input type="text" id="note" placeholder="ملاحظة (اختياري)">
+    </div>
 
-      <div class="actions">
-        <button type="submit">💾 حفظ</button>
-        <a href="dashboard.html">↩ رجوع</a>
-      </div>
+    <button type="submit">💾 حفظ</button>
+  </form>
 
-    </form>
+  <a href="dashboard.html" class="back">⬅ الرجوع للوحة التحكم</a>
 
-  </div>
 </div>
 
+<!-- ===== JS ===== -->
 <script src="assets/js/settings-system.js"></script>
 <script src="assets/js/storage.js"></script>
-<script src="assets/js/receive.js"></script>
+<script type="module" src="assets/js/receive.js"></script>
 
 <script>
-document.getElementById("title").innerText = t("receive");
-applySystem();
+  document.getElementById("title").innerText = t("receive");
 </script>
 
 </body>

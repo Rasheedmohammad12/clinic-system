@@ -1,9 +1,15 @@
 import { requireAuth, logout, getCurrentUser } from "./auth.js";
+import {
+  getSettings,
+  saveSettings,
+  t,
+  formatCurrency
+} from "./settings-system.js";
 
 // ---------- Auth Guard ----------
 requireAuth();
 
-// 👇 المستخدم الحالي (مهم)
+// ---------- Current User ----------
 const currentUser = getCurrentUser();
 
 // ---------- Helpers ----------
@@ -13,7 +19,6 @@ function safeNumber(x) {
 }
 
 function monthKey(date) {
-  // YYYY-MM
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   return `${y}-${m}`;
@@ -36,46 +41,70 @@ function monthLabel(date, lang) {
   return date.toLocaleString(loc, { month: "short", year: "numeric" });
 }
 
-// ---------- UI Text ----------
+// ---------- UI Text (LANG FIX) ----------
 function applyDashboardTexts() {
   const s = getSettings();
-  const isAr = s.lang === "ar";
 
-  document.getElementById("uiTitle").textContent = isAr ? "نظام العيادة" : "Clinic System";
-  document.getElementById("uiSub").textContent = isAr ? "لوحة التحكم" : "Dashboard";
+  document.getElementById("uiTitle").textContent =
+    s.lang === "ar" ? "نظام العيادة" : "Clinic System";
 
-  document.getElementById("uiOverview").textContent = isAr ? "نظرة عامة" : "Overview";
-  document.getElementById("uiQuick").textContent = isAr ? "إجراءات سريعة" : "Quick Actions";
-  document.getElementById("uiSecure").textContent = isAr ? "محمي" : "Secure";
+  document.getElementById("uiSub").textContent = t("dashboard");
+  document.getElementById("uiOverview").textContent =
+    s.lang === "ar" ? "نظرة عامة" : "Overview";
 
-  document.getElementById("uiPatients").textContent = isAr ? "المرضى" : "Patients";
-  document.getElementById("uiSessions").textContent = isAr ? "الجلسات" : "Sessions";
-  document.getElementById("uiPayments").textContent = isAr ? "المدفوعات" : "Payments";
+  document.getElementById("uiQuick").textContent =
+    s.lang === "ar" ? "إجراءات سريعة" : "Quick Actions";
 
-  document.getElementById("uiPatientsSub").textContent = isAr ? "إجمالي المسجلين" : "Total registered";
-  document.getElementById("uiSessionsSub").textContent = isAr ? "كل الجلسات" : "All sessions";
-  document.getElementById("uiPaymentsSub").textContent = isAr ? "إجمالي المقبوضات" : "Total collected";
+  document.getElementById("uiSecure").textContent =
+    s.lang === "ar" ? "محمي" : "Secure";
+
+  document.getElementById("uiPatients").textContent = t("patients");
+  document.getElementById("uiSessions").textContent = t("sessions");
+  document.getElementById("uiPayments").textContent = t("payments");
+
+  document.getElementById("uiPatientsSub").textContent =
+    s.lang === "ar" ? "إجمالي المسجلين" : "Total registered";
+
+  document.getElementById("uiSessionsSub").textContent =
+    s.lang === "ar" ? "كل الجلسات" : "All sessions";
+
+  document.getElementById("uiPaymentsSub").textContent =
+    s.lang === "ar" ? "إجمالي المقبوضات" : "Total collected";
 
   document.getElementById("uiChartTitle").textContent =
-    isAr ? "المدفوعات (آخر 6 أشهر)" : "Payments (Last 6 months)";
+    s.lang === "ar"
+      ? "المدفوعات (آخر 6 أشهر)"
+      : "Payments (Last 6 months)";
 
-  document.getElementById("uiCurrencyPill").textContent = getSettings().currency || "JOD";
+  document.getElementById("uiCurrencyPill").textContent =
+    s.currency || "JOD";
+
+  // NAV
+  document.getElementById("navPatients").textContent = t("patients");
+  document.getElementById("navSessions").textContent = t("sessions");
+  document.getElementById("navPayments").textContent = t("payments");
+  document.getElementById("navReceive").textContent = t("receive");
+  document.getElementById("navSettings").textContent = t("settings");
+  document.getElementById("navUsers").textContent = t("users");
+  document.getElementById("uiLogout").textContent = t("logout");
 }
 
 // ---------- Stats ----------
 function renderStats() {
-  const stats = getDashboardStats(currentUser); // 👈 تمرير المستخدم
+  const stats = getDashboardStats(currentUser);
   const patients = safeNumber(stats.patients ?? getPatients(currentUser).length);
   const sessions = safeNumber(stats.sessions ?? getSessions(currentUser).length);
   const totalPayments = safeNumber(stats.totalPayments ?? 0);
 
   document.getElementById("patientsCount").textContent = patients;
   document.getElementById("sessionsCount").textContent = sessions;
-  document.getElementById("paymentsTotal").textContent = formatCurrency(totalPayments);
+  document.getElementById("paymentsTotal").textContent =
+    formatCurrency(totalPayments);
 
   document.getElementById("miniPatients").textContent = patients;
   document.getElementById("miniSessions").textContent = sessions;
-  document.getElementById("miniTotal").textContent = formatCurrency(totalPayments);
+  document.getElementById("miniTotal").textContent =
+    formatCurrency(totalPayments);
 }
 
 // ---------- Chart ----------
@@ -89,10 +118,10 @@ function renderChart() {
   }));
 
   const buckets = new Map();
-  for (const p of payments) {
+  payments.forEach(p => {
     const k = monthKey(p.date);
     buckets.set(k, (buckets.get(k) || 0) + p.amount);
-  }
+  });
 
   const months = lastNMonths(6);
   const labels = months.map(m => monthLabel(m, s.lang));
@@ -108,7 +137,7 @@ function renderChart() {
     data: {
       labels,
       datasets: [{
-        label: s.lang === "ar" ? "المدفوعات" : "Payments",
+        label: t("payments"),
         data
       }]
     },
@@ -120,29 +149,29 @@ function renderChart() {
   });
 }
 
-// ---------- Payments PIN (per user) ----------
+// ---------- Payments PIN ----------
 function setupPaymentsGate() {
   const link = document.getElementById("navPaymentsLink");
   if (!link) return;
 
-  const PIN_KEY = `payments_pin_${currentUser.email}`;
+  const PIN_KEY = `payments_pin_${currentUser.id}`;
 
-  link.addEventListener("click", (e) => {
+  link.addEventListener("click", e => {
     e.preventDefault();
 
     const savedPin = localStorage.getItem(PIN_KEY);
     if (!savedPin) {
-      alert("لم يتم تعيين رمز سري للمدفوعات");
+      alert(t("payments") + ": PIN not set");
       window.location.href = "settings.html";
       return;
     }
 
-    const entered = prompt("أدخل الرمز السري للمدفوعات:");
+    const entered = prompt(t("enterPin"));
     if (entered === savedPin) {
       sessionStorage.setItem("payments_access", "true");
       window.location.href = "payments.html";
     } else {
-      alert("الرمز غير صحيح");
+      alert(t("wrongPin"));
     }
   });
 }

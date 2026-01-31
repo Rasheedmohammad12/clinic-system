@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
         `;
 
+        // تعديل الخلايا
         tr.querySelectorAll("[contenteditable]").forEach(cell => {
           cell.addEventListener("input", () => {
             const field = cell.dataset.field;
@@ -48,11 +49,13 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
 
+        // حفظ
         tr.querySelector(".save").onclick = () => {
           saveAll();
           alert("تم الحفظ");
         };
 
+        // حذف
         tr.querySelector(".delete").onclick = () => {
           if(confirm("هل أنت متأكد من الحذف؟")){
             patients.splice(index, 1);

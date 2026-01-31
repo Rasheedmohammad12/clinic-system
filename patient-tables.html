@@ -1,3 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>جداول المرضى</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body{
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background:#f4f7fb;
+      margin:0;
+      padding:20px;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    .table-wrap{
+      overflow-x:auto;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .patients-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+
+    .patients-table th,
+    .patients-table td{
+      border:1px solid #ddd;
+      padding:10px;
+      text-align:center;
+      min-width:120px;
+    }
+
+    .patients-table th{
+      background:#2563eb;
+      color:#fff;
+      font-weight:600;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    .patients-table tr:nth-child(even){
+      background:#f9fafb;
+    }
+
+    .patients-table td[contenteditable="true"]{
+      background:#fffbe6;
+      cursor:text;
+    }
+
+    .patients-table td:focus{
+      outline:2px solid #2563eb;
+      background:#fff;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>جداول المرضى</h2>
+
 <div class="table-wrap">
   <table class="patients-table">
     <thead>
@@ -16,3 +85,7 @@
     <tbody id="patientsTableBody"></tbody>
   </table>
 </div>
+
+<script src="assets/js/patient-tables.js"></script>
+</body>
+</html>

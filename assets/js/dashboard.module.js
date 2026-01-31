@@ -3,6 +3,9 @@ import { requireAuth, logout, getCurrentUser } from "./auth.js";
 // ---------- Auth Guard ----------
 requireAuth();
 
+// 👇 المستخدم الحالي (مهم)
+const currentUser = getCurrentUser();
+
 // ---------- Helpers ----------
 function safeNumber(x) {
   const n = Number(x);
@@ -29,17 +32,15 @@ function lastNMonths(n = 6) {
 }
 
 function monthLabel(date, lang) {
-  // short month names
   const loc = lang === "ar" ? "ar-JO" : "en-US";
   return date.toLocaleString(loc, { month: "short", year: "numeric" });
 }
 
-// ---------- UI Text (minimal, safe) ----------
+// ---------- UI Text ----------
 function applyDashboardTexts() {
   const s = getSettings();
   const isAr = s.lang === "ar";
 
-  // Top
   document.getElementById("uiTitle").textContent = isAr ? "نظام العيادة" : "Clinic System";
   document.getElementById("uiSub").textContent = isAr ? "لوحة التحكم" : "Dashboard";
 
@@ -55,56 +56,17 @@ function applyDashboardTexts() {
   document.getElementById("uiSessionsSub").textContent = isAr ? "كل الجلسات" : "All sessions";
   document.getElementById("uiPaymentsSub").textContent = isAr ? "إجمالي المقبوضات" : "Total collected";
 
-  document.getElementById("uiChartTitle").textContent = isAr ? "المدفوعات (آخر 6 أشهر)" : "Payments (Last 6 months)";
-  document.getElementById("uiChartHint").textContent = isAr ? "تلقائي" : "Auto";
+  document.getElementById("uiChartTitle").textContent =
+    isAr ? "المدفوعات (آخر 6 أشهر)" : "Payments (Last 6 months)";
 
-  document.getElementById("uiHint").textContent = isAr
-    ? "ملاحظة: استخدم “استلام المبالغ” لإضافة قبض سريع. المدفوعات تظهر تلقائيًا في التقارير والرسم."
-    : "Tip: Use “Receive Payment” to quickly add receipts. Payments are shown in reports and charts automatically.";
-
-  // Nav labels
-  document.getElementById("navPatients").textContent = isAr ? "المرضى" : "Patients";
-  document.getElementById("navPatientsSub").textContent = isAr ? "إضافة / بحث" : "Add / search";
-
-  document.getElementById("navSessions").textContent = isAr ? "الجلسات" : "Sessions";
-  document.getElementById("navSessionsSub").textContent = isAr ? "جدولة" : "Schedule";
-
-  document.getElementById("navPayments").textContent = isAr ? "المدفوعات" : "Payments";
-  document.getElementById("navPaymentsSub").textContent = isAr ? "برمز سري" : "PIN protected";
-
-  document.getElementById("navReceive").textContent = isAr ? "استلام" : "Receive";
-  document.getElementById("navReceiveSub").textContent = isAr ? "إضافة قبض" : "Add receipt";
-
-  document.getElementById("navReport").textContent = isAr ? "كشف حساب" : "Report";
-  document.getElementById("navReportSub").textContent = isAr ? "كشف مريض" : "Patient statement";
-
-  document.getElementById("navSettings").textContent = isAr ? "الإعدادات" : "Settings";
-  document.getElementById("navSettingsSub").textContent = isAr ? "لغة / ثيم" : "Language / theme";
-
-  document.getElementById("navUsers").textContent = isAr ? "المستخدمين" : "Users";
-  document.getElementById("navUsersSub").textContent = isAr ? "أدمن" : "Admin";
-
-  // Mini labels
-  document.getElementById("uiMiniPatients").textContent = isAr ? "المرضى" : "Patients";
-  document.getElementById("uiMiniSessions").textContent = isAr ? "الجلسات" : "Sessions";
-  document.getElementById("uiMiniTotal").textContent = isAr ? "الإجمالي" : "Total";
-
-  // Buttons
-  document.getElementById("uiLogout").textContent = isAr ? "خروج" : "Logout";
-  document.getElementById("uiLang").textContent = isAr ? "AR" : "EN";
-  document.getElementById("uiTheme").textContent = (getSettings().theme === "dark")
-    ? (isAr ? "داكن" : "Dark")
-    : (isAr ? "فاتح" : "Light");
-
-  // Currency pill
   document.getElementById("uiCurrencyPill").textContent = getSettings().currency || "JOD";
 }
 
 // ---------- Stats ----------
 function renderStats() {
-  const stats = getDashboardStats();
-  const patients = safeNumber(stats.patients ?? stats.totalPatients ?? getPatients().length);
-  const sessions = safeNumber(stats.sessions ?? stats.totalSessions ?? getSessions().length);
+  const stats = getDashboardStats(currentUser); // 👈 تمرير المستخدم
+  const patients = safeNumber(stats.patients ?? getPatients(currentUser).length);
+  const sessions = safeNumber(stats.sessions ?? getSessions(currentUser).length);
   const totalPayments = safeNumber(stats.totalPayments ?? 0);
 
   document.getElementById("patientsCount").textContent = patients;
@@ -116,17 +78,16 @@ function renderStats() {
   document.getElementById("miniTotal").textContent = formatCurrency(totalPayments);
 }
 
-// ---------- Chart (Last 6 months) ----------
+// ---------- Chart ----------
 let chartInstance = null;
 
 function renderChart() {
   const s = getSettings();
-  const payments = (getPayments() || []).map(p => ({
+  const payments = (getPayments(currentUser) || []).map(p => ({
     amount: safeNumber(p.amount),
     date: p.date ? new Date(p.date) : new Date(p.id || Date.now())
   }));
 
-  // bucket sums by YYYY-MM
   const buckets = new Map();
   for (const p of payments) {
     const k = monthKey(p.date);
@@ -140,10 +101,7 @@ function renderChart() {
   const ctx = document.getElementById("paymentsChart");
   if (!ctx || !window.Chart) return;
 
-  if (chartInstance) {
-    chartInstance.destroy();
-    chartInstance = null;
-  }
+  if (chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(ctx, {
     type: "bar",
@@ -157,55 +115,43 @@ function renderChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
 
-// ---------- Payments PIN gate ----------
+// ---------- Payments PIN (per user) ----------
 function setupPaymentsGate() {
   const link = document.getElementById("navPaymentsLink");
   if (!link) return;
 
+  const PIN_KEY = `payments_pin_${currentUser.email}`;
+
   link.addEventListener("click", (e) => {
     e.preventDefault();
 
-    const savedPin = localStorage.getItem("payments_pin");
+    const savedPin = localStorage.getItem(PIN_KEY);
     if (!savedPin) {
-      alert(getSettings().lang === "ar"
-        ? "لم يتم تعيين رمز سري للمدفوعات بعد"
-        : "Payments PIN is not set yet");
+      alert("لم يتم تعيين رمز سري للمدفوعات");
       window.location.href = "settings.html";
       return;
     }
 
-    const entered = prompt(getSettings().lang === "ar"
-      ? "أدخل الرمز السري للمدفوعات:"
-      : "Enter Payments PIN:");
-
+    const entered = prompt("أدخل الرمز السري للمدفوعات:");
     if (entered === savedPin) {
       sessionStorage.setItem("payments_access", "true");
       window.location.href = "payments.html";
     } else {
-      alert(getSettings().lang === "ar" ? "الرمز غير صحيح" : "Wrong PIN");
+      alert("الرمز غير صحيح");
     }
   });
 }
 
-// ---------- Topbar actions ----------
+// ---------- Topbar ----------
 function setupTopbar() {
-  // user chip
-  const u = getCurrentUser();
-  document.getElementById("uiUser").textContent = u
-    ? `${u.username} • ${u.role}`
-    : "—";
+  document.getElementById("uiUser").textContent =
+    `${currentUser.username} • ${currentUser.role}`;
 
-  // language toggle
   document.getElementById("btnLang").addEventListener("click", () => {
     const s = getSettings();
     s.lang = s.lang === "ar" ? "en" : "ar";
@@ -213,7 +159,6 @@ function setupTopbar() {
     location.reload();
   });
 
-  // theme toggle
   document.getElementById("btnTheme").addEventListener("click", () => {
     const s = getSettings();
     s.theme = s.theme === "dark" ? "light" : "dark";
@@ -221,7 +166,6 @@ function setupTopbar() {
     location.reload();
   });
 
-  // logout
   document.getElementById("btnLogout").addEventListener("click", () => {
     sessionStorage.removeItem("payments_access");
     logout();
@@ -230,8 +174,6 @@ function setupTopbar() {
 
 // ---------- Boot ----------
 document.addEventListener("DOMContentLoaded", () => {
-  // apply direction + theme from settings-system.js (already does applySystem on DOMContentLoaded)
-  // but we also update button labels, etc.
   applyDashboardTexts();
   setupTopbar();
   setupPaymentsGate();

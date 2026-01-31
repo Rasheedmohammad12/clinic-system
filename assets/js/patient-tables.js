@@ -3,39 +3,55 @@ document.addEventListener("DOMContentLoaded", () => {
   const body = document.getElementById("patientsTableBody");
 
   // نفس التخزين المستخدم في النظام
-  const patients =
-    JSON.parse(localStorage.getItem("patients")) ||
-    JSON.parse(localStorage.getItem("clinic_patients")) ||
-    [];
+  const STORAGE_KEY = "patients";
 
-  if (!patients.length) {
-    body.innerHTML = `
-      <tr>
-        <td colspan="9" style="text-align:center;">لا يوجد مرضى</td>
-      </tr>
-    `;
-    return;
+  let patients = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+  function save(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
   }
 
-  patients.forEach(p => {
+  function render(){
+    body.innerHTML = "";
 
-    const paid = Number(p.paidAmount || 0);
-    const total = Number(p.totalAmount || 0);
-    const remaining = total - paid;
+    if(!patients.length){
+      body.innerHTML = `
+        <tr>
+          <td colspan="9">لا يوجد مرضى</td>
+        </tr>
+      `;
+      return;
+    }
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${p.name || ""}</td>
-      <td>${p.sessionType || ""}</td>
-      <td>${paid}</td>
-      <td>${remaining}</td>
-      <td>${p.fileNumber || ""}</td>
-      <td>${p.sessionsCount || ""}</td>
-      <td>${p.paymentMethod || ""}</td>
-      <td>${p.note || ""}</td>
-      <td>${p.sessionHandler || ""}</td>
-    `;
+    patients.forEach((p, index) => {
 
-    body.appendChild(tr);
-  });
+      const paid = Number(p.paidAmount || 0);
+      const total = Number(p.totalAmount || 0);
+      const remaining = total - paid;
+
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td contenteditable onblur="update(${index}, 'name', this.innerText)">${p.name || ""}</td>
+        <td contenteditable onblur="update(${index}, 'sessionType', this.innerText)">${p.sessionType || ""}</td>
+        <td contenteditable onblur="update(${index}, 'paidAmount', this.innerText)">${paid}</td>
+        <td>${remaining}</td>
+        <td contenteditable onblur="update(${index}, 'fileNumber', this.innerText)">${p.fileNumber || ""}</td>
+        <td contenteditable onblur="update(${index}, 'sessionsCount', this.innerText)">${p.sessionsCount || ""}</td>
+        <td contenteditable onblur="update(${index}, 'paymentMethod', this.innerText)">${p.paymentMethod || ""}</td>
+        <td contenteditable onblur="update(${index}, 'note', this.innerText)">${p.note || ""}</td>
+        <td contenteditable onblur="update(${index}, 'sessionHandler', this.innerText)">${p.sessionHandler || ""}</td>
+      `;
+
+      body.appendChild(tr);
+    });
+  }
+
+  window.update = function(index, field, value){
+    patients[index][field] = value.trim();
+    save();
+    render();
+  };
+
+  render();
 });

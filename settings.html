@@ -3,32 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <title>Settings</title>
+
 <style>
-body{font-family:Arial;margin:0;background:#f1f5f9}
-.dark{background:#0f172a;color:#fff}
-form{background:#fff;padding:20px;max-width:420px;margin:40px auto;border-radius:12px}
+body{
+  font-family: Arial;
+  margin: 0;
+  background: #f1f5f9;
+}
+.dark{
+  background:#0f172a;
+  color:#fff;
+}
+form{
+  background:#fff;
+  padding:20px;
+  max-width:420px;
+  margin:40px auto;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
 .dark form{background:#1e293b}
-select,button{width:100%;padding:10px;margin-top:10px}
-button{background:#2563eb;color:#fff;border:none}
+
+h3{
+  margin-top:0;
+  margin-bottom:15px;
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  font-size:14px;
+}
+
+input, select, button{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  font-size:14px;
+}
+
+button{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.pin-box{
+  margin-top:25px;
+  padding-top:15px;
+  border-top:1px dashed #cbd5e1;
+}
 </style>
 </head>
+
 <body>
 
 <form>
-  <h3>System Settings</h3>
 
+  <h3>⚙️ System Settings</h3>
+
+  <!-- LANGUAGE -->
   <label>Language</label>
   <select id="lang">
     <option value="ar">العربية</option>
     <option value="en">English</option>
   </select>
 
+  <!-- THEME -->
   <label>Theme</label>
   <select id="theme">
     <option value="light">Light</option>
     <option value="dark">Dark</option>
   </select>
 
+  <!-- CURRENCY -->
   <label>Currency</label>
   <select id="currency">
     <option value="JOD">JOD</option>
@@ -36,23 +88,74 @@ button{background:#2563eb;color:#fff;border:none}
     <option value="ILS">ILS</option>
   </select>
 
-  <button type="button" id="save">Save</button>
+  <!-- PAYMENTS PIN -->
+  <div class="pin-box">
+    <h3>🔐 Payments PIN</h3>
+
+    <label>Account Password</label>
+    <input type="password" id="accountPassword" placeholder="كلمة مرور الحساب">
+
+    <label>New Payments PIN</label>
+    <input type="password" id="paymentsPin" placeholder="رمز سري (4 أرقام أو أكثر)">
+  </div>
+
+  <button type="button" id="save">Save Settings</button>
+
 </form>
 
-<script src="assets/js/settings-system.js"></script>
-<script>
-const s=getSettings();
-lang.value=s.lang;
-theme.value=s.theme;
-currency.value=s.currency;
+<!-- SYSTEM SETTINGS -->
+<script type="module">
+  import {
+    getSettings,
+    saveSettings,
+    setPaymentsPIN
+  } from "./assets/js/settings-system.js";
 
-save.onclick=()=>{
-  s.lang=lang.value;
-  s.theme=theme.value;
-  s.currency=currency.value;
-  saveSettings(s);
-  location.reload();
-};
+  import { getCurrentUser, requireAuth } from "./assets/js/auth.js";
+
+  requireAuth();
+  const user = getCurrentUser();
+
+  const lang = document.getElementById("lang");
+  const theme = document.getElementById("theme");
+  const currency = document.getElementById("currency");
+  const saveBtn = document.getElementById("save");
+
+  const accountPassword = document.getElementById("accountPassword");
+  const paymentsPin = document.getElementById("paymentsPin");
+
+  // تحميل الإعدادات
+  const s = getSettings();
+  lang.value = s.lang;
+  theme.value = s.theme;
+  currency.value = s.currency;
+
+  saveBtn.onclick = () => {
+    // حفظ الإعدادات العامة
+    s.lang = lang.value;
+    s.theme = theme.value;
+    s.currency = currency.value;
+    saveSettings(s);
+
+    // تغيير PIN (إذا انكتب)
+    if (paymentsPin.value) {
+      if (accountPassword.value !== user.password) {
+        alert("كلمة مرور الحساب غير صحيحة");
+        return;
+      }
+
+      if (paymentsPin.value.length < 4) {
+        alert("الرمز يجب أن يكون 4 أرقام أو أكثر");
+        return;
+      }
+
+      setPaymentsPIN(paymentsPin.value);
+      alert("تم حفظ رمز المدفوعات بنجاح");
+    }
+
+    location.reload();
+  };
 </script>
+
 </body>
 </html>

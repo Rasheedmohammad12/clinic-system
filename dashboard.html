@@ -532,21 +532,101 @@ btnTheme && btnTheme.addEventListener("click", () => {
 /* =====================
    LANGUAGE: AR / EN
 ===================== */
+<script>
+/* =====================
+   LANGUAGE FULL SWITCH
+===================== */
+const translations = {
+  en: {
+    uiTitle: "Clinic System",
+    uiSub: "Dashboard",
+    uiOverview: "Overview",
+    uiPatients: "Patients",
+    uiPatientsSub: "Total registered",
+    uiSessions: "Sessions",
+    uiSessionsSub: "All sessions",
+    uiPayments: "Payments",
+    uiPaymentsSub: "Total collected",
+    uiChartTitle: "Payments (Last 6 months)",
+    uiHint: "Tip: Use “Receive Payment” to quickly add receipts.",
+    uiQuick: "Quick Actions",
+    navPatients: "Patients",
+    navPatientsSub: "Add / search",
+    navSessions: "Sessions",
+    navSessionsSub: "Schedule",
+    navPayments: "Payments",
+    navPaymentsSub: "PIN protected",
+    navReceive: "Receive",
+    navReceiveSub: "Add receipt",
+    navReport: "Report",
+    navReportSub: "Patient statement",
+    navSettings: "Settings",
+    navSettingsSub: "Language / theme",
+    navUsers: "Users",
+    navUsersSub: "Admin",
+    uiMiniPatients: "Patients",
+    uiMiniSessions: "Sessions",
+    uiMiniTotal: "Total",
+    uiLogout: "Logout"
+  },
+  ar: {
+    uiTitle: "نظام العيادة",
+    uiSub: "لوحة التحكم",
+    uiOverview: "نظرة عامة",
+    uiPatients: "المرضى",
+    uiPatientsSub: "إجمالي المسجلين",
+    uiSessions: "الجلسات",
+    uiSessionsSub: "كل الجلسات",
+    uiPayments: "المدفوعات",
+    uiPaymentsSub: "إجمالي المقبوضات",
+    uiChartTitle: "المدفوعات (آخر 6 أشهر)",
+    uiHint: "نصيحة: استخدم استلام دفعة لإضافة إيصال بسرعة.",
+    uiQuick: "إجراءات سريعة",
+    navPatients: "المرضى",
+    navPatientsSub: "إضافة / بحث",
+    navSessions: "الجلسات",
+    navSessionsSub: "جدولة",
+    navPayments: "المدفوعات",
+    navPaymentsSub: "محمي برمز",
+    navReceive: "استلام",
+    navReceiveSub: "إضافة إيصال",
+    navReport: "تقرير",
+    navReportSub: "كشف مريض",
+    navSettings: "الإعدادات",
+    navSettingsSub: "اللغة / المظهر",
+    navUsers: "المستخدمون",
+    navUsersSub: "إدارة",
+    uiMiniPatients: "المرضى",
+    uiMiniSessions: "الجلسات",
+    uiMiniTotal: "الإجمالي",
+    uiLogout: "تسجيل الخروج"
+  }
+};
+
 const btnLang = document.getElementById("btnLang");
 const uiLang  = document.getElementById("uiLang");
 
 function applyLang(lang){
+  const dict = translations[lang];
+  Object.keys(dict).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = dict[id];
+  });
+
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  if (uiLang) uiLang.textContent = lang.toUpperCase();
+  uiLang.textContent = lang.toUpperCase();
   localStorage.setItem("lang", lang);
 }
 
-// تحميل اللغة المحفوظة
+// تحميل اللغة
 applyLang(localStorage.getItem("lang") || "en");
 
-btnLang && btnLang.addEventListener("click", () => {
+btnLang.addEventListener("click", () => {
   const current = localStorage.getItem("lang") || "en";
   applyLang(current === "en" ? "ar" : "en");
+});
+</script>
+
 });
 
 

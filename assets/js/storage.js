@@ -1,61 +1,68 @@
 import { getCurrentUser } from "./auth.js";
 
-function getDB(){
-  const user = getCurrentUser();
-  const KEY = `clinic_system_db_${user.id}`;
+/* ===============================
+   STORAGE (PER USER)
+================================ */
 
-  const data = localStorage.getItem(KEY);
-  if (data) return JSON.parse(data);
-
-  const init = {
-    patients: [],
-    sessions: [],
-    payments: []
-  };
-  localStorage.setItem(KEY, JSON.stringify(init));
-  return init;
+function getUser() {
+  const u = getCurrentUser();
+  if (!u) throw new Error("User not logged in");
+  return u;
 }
 
-function saveDB(db){
-  const user = getCurrentUser();
-  const KEY = `clinic_system_db_${user.id}`;
-  localStorage.setItem(KEY, JSON.stringify(db));
+/* ====== PATIENTS ====== */
+export function getPatients() {
+  const user = getUser();
+  return JSON.parse(localStorage.getItem(`patients_${user.id}`)) || [];
 }
 
-/* ========= المرضى ========= */
-function addPatient(name, phone=""){
-  const db = getDB();
-  db.patients.push({ id: Date.now(), name, phone });
-  saveDB(db);
+export function savePatients(patients) {
+  const user = getUser();
+  localStorage.setItem(`patients_${user.id}`, JSON.stringify(patients));
 }
 
-function getPatients(){
-  return getDB().patients;
+export function addPatient(name, fileNumber = "") {
+  const patients = getPatients();
+  patients.push({
+    id: Date.now(),
+    name,
+    fileNumber
+  });
+  savePatients(patients);
 }
 
-/* ========= المدفوعات ========= */
-function addPayment(patientId, amount, note=""){
-  const db = getDB();
-  db.payments.push({
+/* ====== PAYMENTS ====== */
+export function getPayments() {
+  const user = getUser();
+  return JSON.parse(localStorage.getItem(`payments_${user.id}`)) || [];
+}
+
+export function savePayments(payments) {
+  const user = getUser();
+  localStorage.setItem(`payments_${user.id}`, JSON.stringify(payments));
+}
+
+export function addPayment(patientId, amount, note = "") {
+  const payments = getPayments();
+
+  payments.push({
     id: Date.now(),
     patientId,
     amount: Number(amount),
     note,
     date: new Date().toISOString()
   });
-  saveDB(db);
+
+  savePayments(payments);
 }
 
-function getPayments(){
-  return getDB().payments;
-}
+/* ====== DASHBOARD ====== */
+export function getDashboardStats() {
+  const patients = getPatients();
+  const payments = getPayments();
 
-/* ========= Dashboard ========= */
-function getDashboardStats(){
-  const db = getDB();
   return {
-    patients: db.patients.length,
-    sessions: db.sessions.length,
-    totalPayments: db.payments.reduce((s,p)=>s+p.amount,0)
+    patients: patients.length,
+    totalPayments: payments.reduce((s, p) => s + p.amount, 0)
   };
 }

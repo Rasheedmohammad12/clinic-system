@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.innerHTML = "";
 
     patients
-      .filter(p => p.name?.includes(filter))
+      .filter(p => (p.name || "").includes(filter))
       .forEach((p, index) => {
 
         const paid = Number(p.paidAmount || 0);
@@ -65,15 +65,34 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  // ➕ إضافة صف جديد
+  window.addRow = function(){
+    patients.push({
+      name: "",
+      sessionType: "",
+      paidAmount: 0,
+      totalAmount: 0,
+      fileNumber: "",
+      sessionsCount: "",
+      paymentMethod: "",
+      note: "",
+      sessionHandler: ""
+    });
+    saveAll();
+    render(searchInput.value);
+  };
+
+  // 🔍 بحث
   searchInput.addEventListener("input", e => {
     render(e.target.value);
   });
 
-  window.downloadTable = () => {
+  // ⬇️ تنزيل الجدول كصورة
+  window.downloadTable = function(){
     html2canvas(document.getElementById("tableArea")).then(canvas => {
       const link = document.createElement("a");
       link.download = "patients-table.png";
-      link.href = canvas.toDataURL();
+      link.href = canvas.toDataURL("image/png");
       link.click();
     });
   };

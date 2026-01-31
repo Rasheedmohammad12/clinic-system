@@ -5,6 +5,9 @@
   <title>جداول المرضى</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- html2canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     body{
       font-family: "Segoe UI", Tahoma, Arial, sans-serif;
@@ -13,8 +16,29 @@
       padding:20px;
     }
 
-    h2{
-      margin-bottom:20px;
+    h2{ margin-bottom:10px; }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      margin-bottom:15px;
+      flex-wrap:wrap;
+    }
+
+    .toolbar input{
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      min-width:200px;
+    }
+
+    .toolbar button{
+      padding:8px 14px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      background:#2563eb;
+      color:#fff;
     }
 
     .table-wrap{
@@ -34,30 +58,33 @@
       border:1px solid #ddd;
       padding:10px;
       text-align:center;
-      min-width:120px;
+      min-width:110px;
     }
 
     th{
       background:#2563eb;
       color:#fff;
-      font-weight:600;
       position:sticky;
       top:0;
     }
 
-    tr:nth-child(even){
-      background:#f9fafb;
-    }
+    tr:nth-child(even){ background:#f9fafb; }
 
     td[contenteditable="true"]{
       background:#fffbe6;
-      cursor:text;
     }
 
-    td:focus{
-      outline:2px solid #2563eb;
-      background:#fff;
+    .actions button{
+      margin:2px;
+      padding:6px 8px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:12px;
     }
+
+    .save{ background:#22c55e; color:#fff; }
+    .delete{ background:#ef4444; color:#fff; }
   </style>
 </head>
 
@@ -65,7 +92,12 @@
 
 <h2>جداول المرضى</h2>
 
-<div class="table-wrap">
+<div class="toolbar">
+  <input type="text" id="searchInput" placeholder="بحث عن مريض..." />
+  <button onclick="downloadTable()">⬇️ تنزيل صورة</button>
+</div>
+
+<div class="table-wrap" id="tableArea">
   <table>
     <thead>
       <tr>
@@ -78,6 +110,7 @@
         <th>طريقة الدفع</th>
         <th>ملاحظة</th>
         <th>مسك الجلسة</th>
+        <th>إجراءات</th>
       </tr>
     </thead>
     <tbody id="patientsTableBody"></tbody>

@@ -1,5 +1,5 @@
 /* ===============================
-   STORAGE SYSTEM (MODULE)
+   STORAGE SYSTEM (STABLE)
 ================================ */
 
 function getUserId() {
@@ -7,17 +7,17 @@ function getUserId() {
 }
 
 /* ====== PATIENTS ====== */
-export function getPatients() {
+function getPatients() {
   const uid = getUserId();
   return JSON.parse(localStorage.getItem(`patients_${uid}`)) || [];
 }
 
-export function savePatients(patients) {
+function savePatients(patients) {
   const uid = getUserId();
   localStorage.setItem(`patients_${uid}`, JSON.stringify(patients));
 }
 
-export function addPatient(name, fileNumber = "") {
+function addPatient(name, fileNumber = "") {
   const patients = getPatients();
   patients.push({
     id: Date.now(),
@@ -28,17 +28,17 @@ export function addPatient(name, fileNumber = "") {
 }
 
 /* ====== PAYMENTS ====== */
-export function getPayments() {
+function getPayments() {
   const uid = getUserId();
   return JSON.parse(localStorage.getItem(`payments_${uid}`)) || [];
 }
 
-export function savePayments(payments) {
+function savePayments(payments) {
   const uid = getUserId();
   localStorage.setItem(`payments_${uid}`, JSON.stringify(payments));
 }
 
-export function addPayment(patientId, amount, note = "") {
+function addPayment(patientId, amount, note = "") {
   const payments = getPayments();
   payments.push({
     id: Date.now(),
@@ -51,7 +51,7 @@ export function addPayment(patientId, amount, note = "") {
 }
 
 /* ====== DASHBOARD ====== */
-export function getDashboardStats() {
+function getDashboardStats() {
   const patients = getPatients();
   const payments = getPayments();
   return {

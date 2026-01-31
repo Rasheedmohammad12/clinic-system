@@ -1,57 +1,23 @@
-import { requireAuth, getCurrentUser } from "./auth.js";
+import { getCurrentUser, requireAuth } from "./auth.js";
 
-// ---------- Auth ----------
 requireAuth();
-const currentUser = getCurrentUser();
-const USER_KEY = currentUser.email;
+const user = getCurrentUser();
 
-// ---------- Storage Keys ----------
-const DB_KEY = `clinic_system_db_${USER_KEY}`;
-const TABLE_KEY = `patient_table_rows_${USER_KEY}`;
-
-// ---------- Load Data ----------
-const db = JSON.parse(localStorage.getItem(DB_KEY)) || { patients: [] };
-let patients = db.patients || [];
+const TABLE_KEY = `patient_table_${user.id}`;
 let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
 
-// ---------- Sync: each patient must have a row ----------
-patients.forEach(p => {
-  const exists = rows.find(r => r.patientId === p.id);
-  if (!exists) {
-    rows.push({
-      patientId: p.id,
-      name: p.name,
-      fileNumber: p.fileNumber || "",
-      sessionType: "",
-      paidAmount: 0,
-      totalAmount: 0,
-      sessionsCount: "",
-      paymentMethod: "",
-      note: "",
-      sessionHandler: ""
-    });
-  }
-});
-
-saveRows();
-
-// ---------- Save ----------
 function saveRows() {
   localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
 }
 
-// ---------- Render ----------
-function render() {
+function renderTable() {
   const tbody = document.getElementById("patientsTableBody");
-  if (!tbody) return;
-
   tbody.innerHTML = "";
 
-  rows.forEach(r => {
+  rows.forEach((r, index) => {
     const remaining = (r.totalAmount || 0) - (r.paidAmount || 0);
 
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${r.name}</td>
       <td contenteditable data-field="sessionType">${r.sessionType}</td>
@@ -68,12 +34,9 @@ function render() {
       cell.addEventListener("input", () => {
         const field = cell.dataset.field;
         let value = cell.innerText.trim();
-
-        if (field === "paidAmount") value = Number(value) || 0;
+        if (field.includes("Amount")) value = Number(value) || 0;
         r[field] = value;
-
         saveRows();
-        render();
       });
     });
 
@@ -81,5 +44,4 @@ function render() {
   });
 }
 
-// ---------- Init ----------
-document.addEventListener("DOMContentLoaded", render);
+document.addEventListener("DOMContentLoaded", renderTable);

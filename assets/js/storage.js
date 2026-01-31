@@ -20,7 +20,13 @@ function saveDB(db) {
 /* ========= المرضى ========= */
 function addPatient(name, phone) {
   const db = getDB();
-  db.patients.push({ id: Date.now(), name, phone });
+  const patient = {
+    id: Date.now(),
+    name,
+    phone,
+    totalAmount: 0   // ⬅ المبلغ الإجمالي (تحدده انت)
+  };
+  db.patients.push(patient);
   saveDB(db);
 }
 
@@ -45,7 +51,7 @@ function getSessions() {
   return getDB().sessions;
 }
 
-/* ========= المدفوعات (تشمل استلام المبالغ) ========= */
+/* ========= المدفوعات ========= */
 function addPayment(patientId, amount, note = "") {
   const db = getDB();
   db.payments.push({
@@ -60,6 +66,14 @@ function addPayment(patientId, amount, note = "") {
 
 function getPayments() {
   return getDB().payments;
+}
+
+/* ========= حساب المدفوع لمريض ========= */
+function getTotalPaidForPatient(patientId) {
+  const db = getDB();
+  return db.payments
+    .filter(p => p.patientId == patientId)
+    .reduce((sum, p) => sum + Number(p.amount), 0);
 }
 
 /* ========= Dashboard ========= */

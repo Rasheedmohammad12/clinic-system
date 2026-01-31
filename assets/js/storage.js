@@ -1,27 +1,23 @@
-import { getCurrentUser } from "./auth.js";
-
 /* ===============================
-   STORAGE (PER USER)
+   STORAGE SYSTEM (STABLE)
 ================================ */
 
-function getUser() {
-  const u = getCurrentUser();
-  if (!u) throw new Error("User not logged in");
-  return u;
+function getUserId() {
+  return localStorage.getItem("loggedInUser");
 }
 
 /* ====== PATIENTS ====== */
-export function getPatients() {
-  const user = getUser();
-  return JSON.parse(localStorage.getItem(`patients_${user.id}`)) || [];
+function getPatients() {
+  const uid = getUserId();
+  return JSON.parse(localStorage.getItem(`patients_${uid}`)) || [];
 }
 
-export function savePatients(patients) {
-  const user = getUser();
-  localStorage.setItem(`patients_${user.id}`, JSON.stringify(patients));
+function savePatients(patients) {
+  const uid = getUserId();
+  localStorage.setItem(`patients_${uid}`, JSON.stringify(patients));
 }
 
-export function addPatient(name, fileNumber = "") {
+function addPatient(name, fileNumber = "") {
   const patients = getPatients();
   patients.push({
     id: Date.now(),
@@ -32,19 +28,18 @@ export function addPatient(name, fileNumber = "") {
 }
 
 /* ====== PAYMENTS ====== */
-export function getPayments() {
-  const user = getUser();
-  return JSON.parse(localStorage.getItem(`payments_${user.id}`)) || [];
+function getPayments() {
+  const uid = getUserId();
+  return JSON.parse(localStorage.getItem(`payments_${uid}`)) || [];
 }
 
-export function savePayments(payments) {
-  const user = getUser();
-  localStorage.setItem(`payments_${user.id}`, JSON.stringify(payments));
+function savePayments(payments) {
+  const uid = getUserId();
+  localStorage.setItem(`payments_${uid}`, JSON.stringify(payments));
 }
 
-export function addPayment(patientId, amount, note = "") {
+function addPayment(patientId, amount, note = "") {
   const payments = getPayments();
-
   payments.push({
     id: Date.now(),
     patientId,
@@ -52,15 +47,13 @@ export function addPayment(patientId, amount, note = "") {
     note,
     date: new Date().toISOString()
   });
-
   savePayments(payments);
 }
 
 /* ====== DASHBOARD ====== */
-export function getDashboardStats() {
+function getDashboardStats() {
   const patients = getPatients();
   const payments = getPayments();
-
   return {
     patients: patients.length,
     totalPayments: payments.reduce((s, p) => s + p.amount, 0)

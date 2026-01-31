@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>جداول المرضى</title>
@@ -20,43 +20,41 @@
     .table-wrap{
       overflow-x:auto;
       background:#fff;
-      border-radius:12px;
-      box-shadow:0 8px 20px rgba(0,0,0,0.08);
+      border-radius:14px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
     }
 
-    .patients-table{
+    table{
       width:100%;
       border-collapse:collapse;
       font-size:14px;
     }
 
-    .patients-table th,
-    .patients-table td{
+    th, td{
       border:1px solid #ddd;
       padding:10px;
       text-align:center;
       min-width:120px;
     }
 
-    .patients-table th{
+    th{
       background:#2563eb;
       color:#fff;
       font-weight:600;
       position:sticky;
       top:0;
-      z-index:1;
     }
 
-    .patients-table tr:nth-child(even){
+    tr:nth-child(even){
       background:#f9fafb;
     }
 
-    .patients-table td[contenteditable="true"]{
+    td[contenteditable="true"]{
       background:#fffbe6;
       cursor:text;
     }
 
-    .patients-table td:focus{
+    td:focus{
       outline:2px solid #2563eb;
       background:#fff;
     }
@@ -68,7 +66,7 @@
 <h2>جداول المرضى</h2>
 
 <div class="table-wrap">
-  <table class="patients-table">
+  <table>
     <thead>
       <tr>
         <th>الاسم</th>

@@ -7,7 +7,8 @@ const PATIENTS_KEY = `patients_${user.id}`;
 const TABLE_KEY = `patient_table_${user.id}`;
 
 const form = document.getElementById("patientForm");
-const table = document.getElementById("patientsTable");
+const nameInput = document.getElementById("patientName");
+const fileInput = document.getElementById("patientFile");
 
 let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
 let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
@@ -17,25 +18,16 @@ function saveAll() {
   localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
 }
 
-function renderPatients() {
-  table.innerHTML = "";
-  patients.forEach((p, i) => {
-    table.innerHTML += `
-      <tr>
-        <td>${i + 1}</td>
-        <td>${p.name}</td>
-        <td>${p.fileNumber}</td>
-      </tr>
-    `;
-  });
-}
-
-form.onsubmit = e => {
+form.addEventListener("submit", e => {
   e.preventDefault();
 
-  const name = patientName.value.trim();
-  const fileNumber = patientFile.value.trim();
-  if (!name) return;
+  const name = nameInput.value.trim();
+  const fileNumber = fileInput.value.trim();
+
+  if (!name) {
+    alert("اسم المريض مطلوب");
+    return;
+  }
 
   const patient = {
     id: Date.now(),
@@ -45,7 +37,6 @@ form.onsubmit = e => {
 
   patients.push(patient);
 
-  // ➕ صف تلقائي في الجدول
   rows.push({
     patientId: patient.id,
     name: patient.name,
@@ -61,7 +52,7 @@ form.onsubmit = e => {
 
   saveAll();
   form.reset();
-  renderPatients();
-};
 
-document.addEventListener("DOMContentLoaded", renderPatients);
+  // تحديث الجدول فورًا
+  window.dispatchEvent(new Event("storage"));
+});

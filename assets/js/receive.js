@@ -1,10 +1,7 @@
-import { getCurrentUser, requireAuth } from "./auth.js";
-
-requireAuth();
-const user = getCurrentUser();
-
-/* 🔑 نفس مفتاح المرضى */
-const PATIENTS_KEY = `patients_${user.id}`;
+// حماية الصفحة
+if (localStorage.getItem("loggedIn") !== "true") {
+  window.location.href = "index.html";
+}
 
 /* عناصر الصفحة */
 const form = document.getElementById("receiveForm");
@@ -14,7 +11,7 @@ const noteInput = document.getElementById("note");
 
 /* تحميل المرضى */
 function loadPatients() {
-  const patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
+  const patients = getPatients(); // من storage.js (global)
 
   patientSelect.innerHTML = `<option value="">-- اختر مريض --</option>`;
 
@@ -26,22 +23,23 @@ function loadPatients() {
   });
 }
 
-/* حفظ الدفع */
+/* حفظ استلام المبلغ */
 form.addEventListener("submit", e => {
   e.preventDefault();
 
-  if (!patientSelect.value || !amountInput.value) {
-    alert("يرجى اختيار مريض وإدخال مبلغ");
+  const patientId = patientSelect.value;
+  const amount = amountInput.value;
+
+  if (!patientId || !amount) {
+    alert("يرجى اختيار مريض وإدخال المبلغ");
     return;
   }
 
-  addPayment(
-    patientSelect.value,
-    Number(amountInput.value),
-    noteInput.value
-  );
+  // ✅ الحفظ الفعلي
+  addPayment(patientId, Number(amount), noteInput.value);
 
-  alert("تم حفظ المبلغ بنجاح");
+  alert("✅ تم حفظ المبلغ بنجاح");
+
   form.reset();
 });
 

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>استلام المبالغ</title>
 
-  <!-- ===== ستايل مرتب وفخم ===== -->
   <style>
     body{
       margin:0;
@@ -31,9 +30,7 @@
       text-align:center;
     }
 
-    .group{
-      margin-bottom:16px;
-    }
+    .group{ margin-bottom:16px; }
 
     label{
       display:block;
@@ -49,11 +46,6 @@
       border:1px solid #d1d5db;
       font-size:14px;
       outline:none;
-    }
-
-    select:focus,input:focus{
-      border-color:#2563eb;
-      box-shadow:0 0 0 3px rgba(37,99,235,.25);
     }
 
     button{
@@ -73,10 +65,9 @@
       display:block;
       margin-top:16px;
       text-align:center;
-      text-decoration:none;
       color:#2563eb;
-      font-size:14px;
       font-weight:600;
+      text-decoration:none;
     }
   </style>
 </head>
@@ -110,17 +101,12 @@
   </form>
 
   <a href="dashboard.html" class="back">⬅ الرجوع للوحة التحكم</a>
-
 </div>
 
-<!-- ✅ ملاحظة مهمة:
-     settings-system.js عادي
-     storage.js ❌ لا يتم تحميله هنا
-     receive.js هو module ويستورد storage داخليًا
--->
-
+<!-- ✅ الترتيب الصحيح -->
 <script src="assets/js/settings-system.js"></script>
-<script type="module" src="assets/js/receive.js"></script>
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/receive.js"></script>
 
 <script>
   document.getElementById("title").innerText = t("receive");

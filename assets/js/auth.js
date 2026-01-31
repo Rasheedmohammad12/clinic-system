@@ -1,37 +1,37 @@
-// REGISTER
-document.getElementById("registerForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
 
-  const user = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    password: document.getElementById("password").value
-  };
+  const form = document.getElementById("loginForm");
 
-  localStorage.setItem("user", JSON.stringify(user));
-  localStorage.setItem("loggedIn", "true");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  window.location.href = "dashboard.html";
-});
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-// LOGIN
-document.getElementById("loginForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
+    if (!email || !password) {
+      alert("يرجى إدخال البريد الإلكتروني وكلمة المرور");
+      return;
+    }
 
-  const savedUser = JSON.parse(localStorage.getItem("user"));
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+    // 🔐 جلب المستخدمين المسجلين
+    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  if (savedUser && email === savedUser.email && password === savedUser.password) {
+    // 🔎 البحث عن المستخدم
+    const user = users.find(
+      u => u.email === email && u.password === password
+    );
+
+    if (!user) {
+      alert("بيانات الدخول غير صحيحة");
+      return;
+    }
+
+    // ✅ تسجيل الدخول
+    localStorage.setItem("loggedInUser", user.email);
     localStorage.setItem("loggedIn", "true");
-    window.location.href = "dashboard.html";
-  } else {
-    alert("بيانات الدخول غير صحيحة");
-  }
-});
 
-// LOGOUT (اختياري)
-function logout() {
-  localStorage.removeItem("loggedIn");
-  window.location.href = "index.html";
-}
+    // تحويل للداشبورد
+    window.location.href = "dashboard.html";
+  });
+
+});

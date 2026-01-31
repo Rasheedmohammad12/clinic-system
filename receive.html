@@ -91,7 +91,7 @@
 
     <div class="group">
       <label>المريض</label>
-      <select id="patientSelect">
+      <select id="patientSelect" required>
         <option value="">-- اختر مريض --</option>
       </select>
     </div>
@@ -113,9 +113,13 @@
 
 </div>
 
-<!-- ===== JS ===== -->
+<!-- ✅ ملاحظة مهمة:
+     settings-system.js عادي
+     storage.js ❌ لا يتم تحميله هنا
+     receive.js هو module ويستورد storage داخليًا
+-->
+
 <script src="assets/js/settings-system.js"></script>
-<script src="assets/js/storage.js"></script>
 <script type="module" src="assets/js/receive.js"></script>
 
 <script>

@@ -1,110 +1,67 @@
-import { requireAuth, getCurrentUser } from "./auth.js";
+import { getCurrentUser, requireAuth } from "./auth.js";
 
-// ---------- Auth Guard ----------
 requireAuth();
-const currentUser = getCurrentUser();
-const DB_KEY = `clinic_system_db_${currentUser.email}`;
+const user = getCurrentUser();
 
-// ---------- Elements ----------
+const PATIENTS_KEY = `patients_${user.id}`;
+const TABLE_KEY = `patient_table_${user.id}`;
+
 const form = document.getElementById("patientForm");
 const table = document.getElementById("patientsTable");
-const search = document.getElementById("searchInput");
 
-let editId = null;
+let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
+let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
 
-// ---------- Helpers ----------
-function getDB() {
-  let db = JSON.parse(localStorage.getItem(DB_KEY));
-  if (!db) {
-    db = { patients: [] };
-    localStorage.setItem(DB_KEY, JSON.stringify(db));
-  }
-  return db;
+function saveAll() {
+  localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients));
+  localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
 }
 
-function saveDB(db) {
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
-}
-
-function getPatients() {
-  return getDB().patients;
-}
-
-// ---------- Render ----------
 function renderPatients() {
-  const patients = getPatients();
-  const key = search.value.toLowerCase();
   table.innerHTML = "";
-
-  patients
-    .filter(p => p.name.toLowerCase().includes(key))
-    .forEach((p, i) => {
-      table.innerHTML += `
-        <tr>
-          <td>${i + 1}</td>
-          <td>${p.name}</td>
-          <td>${p.phone}</td>
-          <td>
-            <span class="action-btn" onclick="editPatient(${p.id})">✏️</span>
-          </td>
-          <td>
-            <span class="action-btn" onclick="deletePatientUI(${p.id})">🗑️</span>
-          </td>
-        </tr>
-      `;
-    });
+  patients.forEach((p, i) => {
+    table.innerHTML += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${p.name}</td>
+        <td>${p.fileNumber}</td>
+      </tr>
+    `;
+  });
 }
 
-// ---------- Form Submit ----------
 form.onsubmit = e => {
   e.preventDefault();
 
   const name = patientName.value.trim();
-  const phone = patientPhone.value.trim();
-  if (!name || !phone) return;
+  const fileNumber = patientFile.value.trim();
+  if (!name) return;
 
-  const db = getDB();
+  const patient = {
+    id: Date.now(),
+    name,
+    fileNumber
+  };
 
-  if (editId) {
-    const p = db.patients.find(p => p.id === editId);
-    if (p) {
-      p.name = name;
-      p.phone = phone;
-    }
-    editId = null;
-  } else {
-    db.patients.push({
-      id: Date.now(),
-      name,
-      phone
-    });
-  }
+  patients.push(patient);
 
-  saveDB(db);
+  // ➕ صف تلقائي في الجدول
+  rows.push({
+    patientId: patient.id,
+    name: patient.name,
+    fileNumber: patient.fileNumber,
+    sessionType: "",
+    paidAmount: 0,
+    totalAmount: 0,
+    sessionsCount: "",
+    paymentMethod: "",
+    note: "",
+    sessionHandler: ""
+  });
+
+  saveAll();
   form.reset();
   renderPatients();
 };
 
-// ---------- Edit ----------
-window.editPatient = function (id) {
-  const p = getPatients().find(p => p.id === id);
-  if (!p) return;
-
-  patientName.value = p.name;
-  patientPhone.value = p.phone;
-  editId = id;
-};
-
-// ---------- Delete ----------
-window.deletePatientUI = function (id) {
-  if (!confirm("حذف المريض؟")) return;
-
-  const db = getDB();
-  db.patients = db.patients.filter(p => p.id !== id);
-  saveDB(db);
-  renderPatients();
-};
-
-// ---------- Events ----------
-search.oninput = renderPatients;
 document.addEventListener("DOMContentLoaded", renderPatients);

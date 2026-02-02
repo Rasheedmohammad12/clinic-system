@@ -100,11 +100,9 @@
       border: none;
       cursor: pointer;
       font-size: 12px;
-      margin: 2px;
+      background:#ef4444;
+      color:#fff;
     }
-
-    .btn-edit { background: #22c55e; color: #fff; }
-    .btn-delete { background: #ef4444; color: #fff; }
   </style>
 </head>
 
@@ -126,7 +124,6 @@
   <div class="card">
     <h2>📋 جدول المرضى</h2>
 
-    <!-- 🔍 البحث -->
     <div class="search-box">
       <input id="searchFile" placeholder="🔍 ابحث برقم الملف">
     </div>
@@ -143,7 +140,7 @@
           <th>طريقة الدفع</th>
           <th>ملاحظة</th>
           <th>مسك الجلسة</th>
-          <th>إجراءات</th>
+          <th>حذف</th>
         </tr>
       </thead>
       <tbody id="patientsTableBody"></tbody>
@@ -152,112 +149,116 @@
 
 </div>
 
-<script src="assets/js/storage.js"></script>
+<script>
+/* =====================
+   مفاتيح موحدة
+===================== */
+const PATIENTS_KEY = "patients";
+const TABLE_KEY = "patient_table";
 
-<script type="module">
-  import { getCurrentUser, requireAuth } from "./assets/js/auth.js";
+/* عناصر */
+const form = document.getElementById("patientForm");
+const nameInput = document.getElementById("patientName");
+const fileInput = document.getElementById("patientFile");
+const tbody = document.getElementById("patientsTableBody");
+const searchInput = document.getElementById("searchFile");
 
-  requireAuth();
-  const user = getCurrentUser();
+/* بيانات */
+let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
+let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
 
-  const PATIENTS_KEY = `patients_${user.id}`;
-  const TABLE_KEY = `patient_table_${user.id}`;
+/* حفظ */
+function saveAll(){
+  localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients));
+  localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
+}
 
-  const form = document.getElementById("patientForm");
-  const nameInput = document.getElementById("patientName");
-  const fileInput = document.getElementById("patientFile");
-  const tbody = document.getElementById("patientsTableBody");
-  const searchInput = document.getElementById("searchFile");
+/* عرض الجدول */
+function renderTable(filter=""){
+  tbody.innerHTML = "";
 
-  let patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
-  let rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
+  rows
+    .filter(r => (r.fileNumber || "").includes(filter))
+    .forEach((r,index)=>{
+      const tr = document.createElement("tr");
 
-  function saveAll() {
-    localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients));
-    localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
-  }
+      tr.innerHTML = `
+        <td>${r.name}</td>
+        <td contenteditable>${r.sessionType}</td>
+        <td contenteditable>${r.paidAmount}</td>
+        <td contenteditable>${r.remaining}</td>
+        <td>${r.fileNumber}</td>
+        <td contenteditable>${r.sessionsCount}</td>
+        <td contenteditable>${r.paymentMethod}</td>
+        <td contenteditable>${r.note}</td>
+        <td contenteditable>${r.sessionHandler}</td>
+        <td><button class="btn-action">حذف</button></td>
+      `;
 
-  function renderTable(filter = "") {
-    tbody.innerHTML = "";
+      const fields = [
+        "sessionType","paidAmount","remaining",
+        "sessionsCount","paymentMethod","note","sessionHandler"
+      ];
 
-    rows
-      .filter(r => r.fileNumber.includes(filter))
-      .forEach((r, index) => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${r.name}</td>
-          <td contenteditable>${r.sessionType}</td>
-          <td contenteditable>${r.paidAmount}</td>
-          <td contenteditable>${r.remaining}</td>
-          <td>${r.fileNumber}</td>
-          <td contenteditable>${r.sessionsCount}</td>
-          <td contenteditable>${r.paymentMethod}</td>
-          <td contenteditable>${r.note}</td>
-          <td contenteditable>${r.sessionHandler}</td>
-          <td>
-            <button class="btn-action btn-delete">حذف</button>
-          </td>
-        `;
-
-        tr.querySelectorAll("[contenteditable]").forEach((cell, i) => {
-          const fields = [
-            "sessionType","paidAmount","remaining",
-            "sessionsCount","paymentMethod","note","sessionHandler"
-          ];
-          cell.addEventListener("input", () => {
-            r[fields[i]] = cell.innerText.trim();
-            saveAll();
-          });
-        });
-
-        tr.querySelector(".btn-delete").onclick = () => {
-          if (!confirm("هل أنت متأكد من الحذف؟")) return;
-          rows.splice(index, 1);
-          patients = patients.filter(p => p.id !== r.patientId);
+      tr.querySelectorAll("[contenteditable]").forEach((cell,i)=>{
+        cell.addEventListener("input",()=>{
+          r[fields[i]] = cell.innerText.trim();
           saveAll();
-          renderTable(searchInput.value);
-        };
-
-        tbody.appendChild(tr);
+        });
       });
-  }
 
-  searchInput.addEventListener("input", () => {
-    renderTable(searchInput.value.trim());
-  });
+      tr.querySelector("button").onclick = ()=>{
+        if(!confirm("هل أنت متأكد من الحذف؟")) return;
+        rows.splice(index,1);
+        patients = patients.filter(p=>p.id!==r.patientId);
+        saveAll();
+        renderTable(searchInput.value);
+      };
 
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    const name = nameInput.value.trim();
-    const fileNumber = fileInput.value.trim();
-    if (!name) return;
-
-    const patient = { id: Date.now(), name, fileNumber };
-    patients.push(patient);
-
-    addPatient(patient.name, patient.fileNumber);
-
-    rows.push({
-      patientId: patient.id,
-      name,
-      fileNumber,
-      sessionType: "",
-      paidAmount: 0,
-      remaining: 0,
-      sessionsCount: "",
-      paymentMethod: "",
-      note: "",
-      sessionHandler: ""
+      tbody.appendChild(tr);
     });
+}
 
-    saveAll();
-    form.reset();
-    renderTable();
+/* إضافة مريض */
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+
+  const name = nameInput.value.trim();
+  const fileNumber = fileInput.value.trim();
+  if(!name) return;
+
+  const patient = {
+    id: Date.now(),
+    name,
+    fileNumber
+  };
+
+  patients.push(patient);
+
+  rows.push({
+    patientId: patient.id,
+    name: patient.name,
+    fileNumber: patient.fileNumber,
+    sessionType:"",
+    paidAmount:0,
+    remaining:0,
+    sessionsCount:"",
+    paymentMethod:"",
+    note:"",
+    sessionHandler:""
   });
 
+  saveAll();
+  form.reset();
   renderTable();
+});
+
+/* بحث */
+searchInput.addEventListener("input",()=>{
+  renderTable(searchInput.value.trim());
+});
+
+renderTable();
 </script>
 
 </body>

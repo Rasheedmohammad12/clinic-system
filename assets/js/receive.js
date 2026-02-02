@@ -1,56 +1,46 @@
-/* =====================
-   TEMP DEBUG VERSION
-   بدون auth.js
-===================== */
-
-const userId = localStorage.getItem("currentUserId") || "demo";
-
-/* نفس المفاتيح */
-const PATIENTS_KEY = `patients_${userId}`;
-const TABLE_KEY    = `patient_table_${userId}`;
-const PAYMENTS_KEY = `payments_${userId}`;
+const PATIENTS_KEY = "patients";
+const TABLE_KEY    = "patient_table";
+const PAYMENTS_KEY = "payments";
 
 const form = document.getElementById("receiveForm");
 const patientSelect = document.getElementById("patientSelect");
 const amountInput = document.getElementById("amount");
 const noteInput = document.getElementById("note");
 
-/* تفريغ القائمة */
+/* تعبئة المرضى */
 patientSelect.innerHTML = `<option value="">-- اختر مريض --</option>`;
 
-/* تحميل المرضى */
 const patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
 
-console.log("PATIENTS:", patients);
-
-patients.forEach(p => {
+patients.forEach(p=>{
   const opt = document.createElement("option");
   opt.value = p.id;
-  opt.textContent = p.name;
+  opt.textContent = `${p.name} (${p.fileNumber || "-"})`;
   patientSelect.appendChild(opt);
 });
 
-/* حفظ */
-form.addEventListener("submit", e => {
+/* حفظ المبلغ */
+form.addEventListener("submit", e=>{
   e.preventDefault();
 
   const patientId = Number(patientSelect.value);
   const amount = Number(amountInput.value) || 0;
+  const note = noteInput.value.trim();
 
-  if (!patientId || amount <= 0) {
-    alert("اختيار مريض + مبلغ صحيح");
+  if(!patientId || amount<=0){
+    alert("اختر مريض وأدخل مبلغ صحيح");
     return;
   }
 
-  /* حفظ الدفعة */
+  /* حفظ في المدفوعات */
   const payments = JSON.parse(localStorage.getItem(PAYMENTS_KEY)) || [];
-  const patient = patients.find(p => p.id === patientId);
+  const patient = patients.find(p=>p.id===patientId);
 
   payments.push({
     patientId,
-    patientName: patient?.name || "",
+    patientName: patient.name,
     amount,
-    note: noteInput.value.trim(),
+    note,
     date: new Date().toLocaleDateString("ar-EG")
   });
 
@@ -58,13 +48,13 @@ form.addEventListener("submit", e => {
 
   /* خصم المتبقي */
   const rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
-  const row = rows.find(r => r.patientId === patientId);
+  const row = rows.find(r=>r.patientId===patientId);
 
-  if (row) {
-    row.remaining = Math.max(0, Number(row.remaining || 0) - amount);
+  if(row){
+    row.remaining = Math.max(0, Number(row.remaining||0) - amount);
     localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
   }
 
-  alert("تم الحفظ");
+  alert("✅ تم حفظ المبلغ");
   form.reset();
 });

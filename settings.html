@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Settings</title>
+<title>الإعدادات</title>
 
 <style>
 body{
@@ -62,26 +62,26 @@ button{
 
 <body>
 
-<form>
+<form id="settingsForm">
 
-  <h3>⚙️ System Settings</h3>
+  <h3>⚙️ إعدادات النظام</h3>
 
   <!-- LANGUAGE -->
-  <label>Language</label>
+  <label>اللغة</label>
   <select id="lang">
     <option value="ar">العربية</option>
     <option value="en">English</option>
   </select>
 
   <!-- THEME -->
-  <label>Theme</label>
+  <label>المظهر</label>
   <select id="theme">
-    <option value="light">Light</option>
-    <option value="dark">Dark</option>
+    <option value="light">فاتح</option>
+    <option value="dark">داكن</option>
   </select>
 
   <!-- CURRENCY -->
-  <label>Currency</label>
+  <label>العملة</label>
   <select id="currency">
     <option value="JOD">JOD</option>
     <option value="USD">USD</option>
@@ -90,71 +90,63 @@ button{
 
   <!-- PAYMENTS PIN -->
   <div class="pin-box">
-    <h3>🔐 Payments PIN</h3>
+    <h3>🔐 رمز المدفوعات</h3>
 
-    <label>Account Password</label>
-    <input type="password" id="accountPassword" placeholder="كلمة مرور الحساب">
-
-    <label>New Payments PIN</label>
-    <input type="password" id="paymentsPin" placeholder="رمز سري (4 أرقام أو أكثر)">
+    <label>رمز جديد للمدفوعات</label>
+    <input
+      type="password"
+      id="paymentPin"
+      placeholder="رمز سري (4 أرقام أو أكثر)"
+    >
   </div>
 
-  <button type="button" id="save">Save Settings</button>
+  <button type="submit">💾 حفظ الإعدادات</button>
 
 </form>
 
-<!-- SYSTEM SETTINGS -->
-<script type="module">
-  import {
-    getSettings,
-    saveSettings,
-    setPaymentsPIN
-  } from "./assets/js/settings-system.js";
+<script>
+/* =====================
+   عناصر
+===================== */
+const form = document.getElementById("settingsForm");
+const paymentPinInput = document.getElementById("paymentPin");
 
-  import { getCurrentUser, requireAuth } from "./assets/js/auth.js";
+const lang = document.getElementById("lang");
+const theme = document.getElementById("theme");
+const currency = document.getElementById("currency");
 
-  requireAuth();
-  const user = getCurrentUser();
+/* =====================
+   تحميل الإعدادات
+===================== */
+lang.value = localStorage.getItem("lang") || "ar";
+theme.value = localStorage.getItem("theme") || "light";
+currency.value = localStorage.getItem("currency") || "JOD";
 
-  const lang = document.getElementById("lang");
-  const theme = document.getElementById("theme");
-  const currency = document.getElementById("currency");
-  const saveBtn = document.getElementById("save");
+/* =====================
+   حفظ
+===================== */
+form.addEventListener("submit", e => {
+  e.preventDefault();
 
-  const accountPassword = document.getElementById("accountPassword");
-  const paymentsPin = document.getElementById("paymentsPin");
+  // حفظ الإعدادات العامة
+  localStorage.setItem("lang", lang.value);
+  localStorage.setItem("theme", theme.value);
+  localStorage.setItem("currency", currency.value);
 
-  // تحميل الإعدادات
-  const s = getSettings();
-  lang.value = s.lang;
-  theme.value = s.theme;
-  currency.value = s.currency;
-
-  saveBtn.onclick = () => {
-    // حفظ الإعدادات العامة
-    s.lang = lang.value;
-    s.theme = theme.value;
-    s.currency = currency.value;
-    saveSettings(s);
-
-    // تغيير PIN (إذا انكتب)
-    if (paymentsPin.value) {
-      if (accountPassword.value !== user.password) {
-        alert("كلمة مرور الحساب غير صحيحة");
-        return;
-      }
-
-      if (paymentsPin.value.length < 4) {
-        alert("الرمز يجب أن يكون 4 أرقام أو أكثر");
-        return;
-      }
-
-      setPaymentsPIN(paymentsPin.value);
-      alert("تم حفظ رمز المدفوعات بنجاح");
+  // حفظ PIN (إذا انكتب)
+  if (paymentPinInput.value) {
+    if (paymentPinInput.value.length < 4) {
+      alert("الرمز لازم يكون 4 أرقام على الأقل");
+      return;
     }
 
-    location.reload();
-  };
+    // ✅ نفس المفتاح اللي الداشبورد يستخدمه
+    localStorage.setItem("paymentPin", paymentPinInput.value);
+  }
+
+  alert("✅ تم حفظ الإعدادات بنجاح");
+  paymentPinInput.value = "";
+});
 </script>
 
 </body>

@@ -17,10 +17,14 @@ const noteInput = document.getElementById("note");
 ===================== */
 const patients = JSON.parse(localStorage.getItem(PATIENTS_KEY)) || [];
 
+if (patients.length === 0) {
+  console.warn("⚠️ لا يوجد مرضى مسجلين");
+}
+
 patients.forEach(p => {
   const opt = document.createElement("option");
-  opt.value = p.id;            // نستخدم ID
-  opt.textContent = p.name;
+  opt.value = p.id;        // 👈 ID هو الصح
+  opt.textContent = `${p.name} (${p.fileNumber || "-"})`;
   patientSelect.appendChild(opt);
 });
 
@@ -42,9 +46,11 @@ form.addEventListener("submit", e => {
   /* ===== حفظ الدفعة ===== */
   const payments = JSON.parse(localStorage.getItem(PAYMENTS_KEY)) || [];
 
+  const patient = patients.find(p => p.id === patientId);
+
   payments.push({
     patientId,
-    patientName: patients.find(p => p.id === patientId)?.name || "",
+    patientName: patient?.name || "",
     amount,
     note,
     date: new Date().toLocaleDateString("ar-EG")
@@ -54,13 +60,13 @@ form.addEventListener("submit", e => {
 
   /* ===== خصم المتبقي ===== */
   const rows = JSON.parse(localStorage.getItem(TABLE_KEY)) || [];
-
   const row = rows.find(r => r.patientId === patientId);
+
   if (row) {
     row.remaining = Math.max(0, Number(row.remaining || 0) - amount);
     localStorage.setItem(TABLE_KEY, JSON.stringify(rows));
   }
 
-  alert("✅ تم حفظ الدفعة وتحديث المتبقي");
+  alert("✅ تم حفظ المبلغ وتحديث المتبقي");
   form.reset();
 });

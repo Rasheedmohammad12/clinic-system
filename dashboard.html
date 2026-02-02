@@ -547,25 +547,22 @@ btnLogout && btnLogout.addEventListener("click", () => {
 });
 
 
-/* =====================
-   PAYMENTS PIN
-===================== */
+<!-- 🔐 التعديل الوحيد (PIN PROTECTION) -->
+<script type="module">
+import { verifyPaymentsPIN, t } from "./assets/js/settings-system.js";
+
 const paymentsLink = document.getElementById("navPaymentsLink");
 
-paymentsLink && paymentsLink.addEventListener("click", (e) => {
+paymentsLink.addEventListener("click", (e) => {
   e.preventDefault();
 
-  const savedPin = localStorage.getItem("paymentPin");
-  if (!savedPin) {
-    alert("يرجى تعيين PIN من الإعدادات أولاً");
-    return;
-  }
+  const enteredPin = prompt(t("enterPin"));
+  if (!enteredPin) return;
 
-  const enteredPin = prompt("أدخل PIN");
-  if (enteredPin === savedPin) {
+  if (verifyPaymentsPIN(enteredPin)) {
     window.location.href = "payments.html";
   } else {
-    alert("PIN غير صحيح");
+    alert(t("wrongPin"));
   }
 });
 </script>

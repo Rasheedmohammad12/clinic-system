@@ -1,29 +1,24 @@
-// حماية الصفحة
-if (localStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "index.html";
-}
+import { getCurrentUser, requireAuth } from "./auth.js";
 
+requireAuth();
+const user = getCurrentUser();
+
+const PAYMENTS_KEY = `payments_${user.id}`;
 const tbody = document.getElementById("paymentsBody");
 
-function renderPayments() {
-  const payments = getPayments();   // من storage.js
-  const patients = getPatients();   // من storage.js
+const payments = JSON.parse(localStorage.getItem(PAYMENTS_KEY)) || [];
 
-  tbody.innerHTML = "";
+tbody.innerHTML = "";
 
-  payments.forEach(p => {
-    const patient = patients.find(x => x.id == p.patientId);
+payments.forEach(p => {
+  const tr = document.createElement("tr");
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${patient ? patient.name : "—"}</td>
-      <td>${formatCurrency(p.amount)}</td>
-      <td>${p.note || ""}</td>
-      <td>${new Date(p.date).toLocaleDateString()}</td>
-    `;
+  tr.innerHTML = `
+    <td>${p.patient}</td>
+    <td>${p.amount}</td>
+    <td>${p.note || "-"}</td>
+    <td>${p.date}</td>
+  `;
 
-    tbody.appendChild(tr);
-  });
-}
-
-document.addEventListener("DOMContentLoaded", renderPayments);
+  tbody.appendChild(tr);
+});

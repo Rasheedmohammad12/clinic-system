@@ -43,7 +43,6 @@
       color: var(--text);
     }
 
-    /* Topbar */
     .topbar{
       position: sticky;
       top: 0;
@@ -59,513 +58,138 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap: 12px;
-      flex-wrap: wrap;
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-    }
+
+    .brand{display:flex;gap:10px;align-items:center;}
     .brand-badge{
-      width:40px;height:40px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 18px;
-    }
-    .brand h1{
-      margin:0;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
-    .brand p{
-      margin:0;
-      font-size: 12px;
-      opacity: .9;
+      width:40px;height:40px;border-radius:14px;
+      background:rgba(255,255,255,.2);
+      display:flex;align-items:center;justify-content:center;
     }
 
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap: wrap;
-    }
-    .user-chip{
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-    .chip-dot{
-      width:10px;height:10px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
-    }
     .btn{
-      border: none;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      background: rgba(255,255,255,0.16);
-      color: #fff;
-      transition: .18s;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      white-space: nowrap;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.24); transform: translateY(-1px); }
-    .btn:active{ transform: translateY(0px); }
-
-    /* Layout */
-    .wrap{
-      max-width: 1200px;
-      margin: 18px auto 36px;
-      padding: 0 18px;
+      border:none;border-radius:12px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.18);
+      color:#fff;cursor:pointer;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-    }
+    .wrap{max-width:1200px;margin:20px auto;padding:0 18px;}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+    @media(max-width:900px){.grid{grid-template-columns:1fr;}}
 
-    /* Cards */
     .card{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .card-head{
-      padding: 16px 16px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .card-title{
-      margin:0;
-      font-size: 14px;
-      color: var(--muted);
-      font-weight: 700;
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-    .pill{
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 12px;
-      background: rgba(2,6,23,0.02);
-    }
-    body.dark .pill{ background: rgba(255,255,255,0.04); }
-
-    /* Stats */
-    .stats{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      padding: 16px;
-    }
-    @media (max-width: 720px){
-      .stats{ grid-template-columns: 1fr; }
-    }
-    .stat{
-      background: rgba(2,6,23,0.02);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      position: relative;
-      overflow:hidden;
-    }
-    body.dark .stat{ background: rgba(255,255,255,0.03); }
-    .stat .label{
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .stat .value{
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-    .stat .sub{
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 12px;
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      padding:16px;
     }
 
-    /* Quick nav */
     .nav{
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding: 16px;
-    }
-    @media (max-width: 520px){
-      .nav{ grid-template-columns: 1fr; }
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
     }
     .nav a{
       text-decoration:none;
-      color: var(--text);
-      background: rgba(2,6,23,0.02);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      gap: 12px;
-      transition: .18s;
-    }
-    body.dark .nav a{ background: rgba(255,255,255,0.03); }
-    .nav a:hover{
-      transform: translateY(-2px);
-      box-shadow: var(--shadow2);
-      border-color: rgba(37,99,235,0.35);
-    }
-    .nav .left{
-      display:flex; align-items:center; gap:12px;
-    }
-    .nav .icon{
-      width:40px;height:40px;
-      border-radius: 14px;
-      background: rgba(37,99,235,0.14);
-      display:flex; align-items:center; justify-content:center;
-      font-size: 18px;
-      color: var(--primary);
-    }
-    .nav .text{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .nav .text b{
-      font-size: 14px;
-    }
-    .nav .text small{
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .nav .arrow{
-      color: var(--muted);
-      font-size: 16px;
-    }
-
-    /* Chart */
-    .chart-wrap{
-      padding: 12px 16px 16px;
-    }
-    .chart-wrap canvas{
-      width: 100% !important;
-      height: 320px !important;
-    }
-    @media (max-width: 720px){
-      .chart-wrap canvas{ height: 260px !important; }
-    }
-
-    /* Right column */
-    .side{
-      display:flex;
-      flex-direction:column;
-      gap: 18px;
-    }
-
-    .mini{
-      padding: 16px;
-    }
-
-    .row{
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 12px 0;
-      border-bottom: 1px dashed var(--border);
-      gap: 10px;
-    }
-    .row:last-child{ border-bottom: none; }
-    .row .k{
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .row .v{
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .hint{
-      padding: 12px 16px 16px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
+      align-items:center;
     }
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-badge">🏥</div>
-        <div>
-          <h1 id="uiTitle">Clinic System</h1>
-          <p id="uiSub">Dashboard</p>
-        </div>
-      </div>
 
-      <div class="actions">
-        <div class="user-chip" title="Current user">
-          <span class="chip-dot"></span>
-          <span id="uiUser">—</span>
-        </div>
-
-        <button class="btn" id="btnLang" title="Toggle Language">🌐 <span id="uiLang">AR</span></button>
-        <button class="btn" id="btnTheme" title="Toggle Theme">🌓 <span id="uiTheme">Light</span></button>
-        <button class="btn" id="btnLogout" title="Logout">🚪 <span id="uiLogout">Logout</span></button>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge">🏥</div>
+      <div>
+        <b>Clinic System</b>
+        <div style="font-size:12px">Dashboard</div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
-    <div class="grid">
-
-      <!-- Left: Stats + Chart -->
-      <div class="card">
-        <div class="card-head">
-          <h3 class="card-title">📊 <span id="uiOverview">Overview</span></h3>
-          <span class="pill" id="uiCurrencyPill">JOD</span>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="label">👥 <span id="uiPatients">Patients</span></div>
-            <div class="value" id="patientsCount">0</div>
-            <div class="sub" id="uiPatientsSub">Total registered</div>
-          </div>
-
-         
-
-          <div class="stat">
-            <div class="label">💳 <span id="uiPayments">Payments</span></div>
-            <div class="value" id="paymentsTotal">0</div>
-            <div class="sub" id="uiPaymentsSub">Total collected</div>
-          </div>
-        </div>
-
-        <div class="chart-wrap">
-          <div class="card-head" style="border:0; padding: 0 0 10px; margin: 0 16px;">
-            <h3 class="card-title">📈 <span id="uiChartTitle">Payments (Last 6 months)</span></h3>
-            <span class="pill" id="uiChartHint">Auto</span>
-          </div>
-          <canvas id="paymentsChart"></canvas>
-        </div>
-
-        <div class="hint" id="uiHint">
-          Tip: Use “Receive Payment” to quickly add receipts. Payments are shown in reports and charts automatically.
-        </div>
-      </div>
-
-      <!-- Right: Quick actions -->
-      <div class="side">
-
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">⚡ <span id="uiQuick">Quick Actions</span></h3>
-            <span class="pill" id="uiSecure">Secure</span>
-          </div>
-
-          <div class="nav">
-            <a href="patients.html">
-              <div class="left">
-                <div class="icon">👥</div>
-                <div class="text">
-                  <b id="navPatients">Patients</b>
-                  <small id="navPatientsSub">Add / search</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-      
-
-          
-            <!-- Payments: protected by PIN on click -->
-            <a href="#" id="navPaymentsLink">
-              <div class="left">
-                <div class="icon">💳</div>
-                <div class="text">
-                  <b id="navPayments">Payments</b>
-                  <small id="navPaymentsSub">PIN protected</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="receive.html">
-              <div class="left">
-                <div class="icon">💰</div>
-                <div class="text">
-                  <b id="navReceive">Receive</b>
-                  <small id="navReceiveSub">Add receipt</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="patient-report.html">
-              <div class="left">
-                <div class="icon">📄</div>
-                <div class="text">
-                  <b id="navReport">Report</b>
-                  <small id="navReportSub">Patient statement</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="settings.html">
-              <div class="left">
-                <div class="icon">⚙️</div>
-                <div class="text">
-                  <b id="navSettings">Settings</b>
-                  <small id="navSettingsSub">Language / theme</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-
-            <a href="users.html">
-              <div class="left">
-                <div class="icon">👤</div>
-                <div class="text">
-                  <b id="navUsers">Users</b>
-                  <small id="navUsersSub">Admin</small>
-                </div>
-              </div>
-              <div class="arrow">›</div>
-            </a>
-          </div>
-        </div>
-
-        <div class="card mini">
-          <div class="row">
-            <div class="k" id="uiMiniPatients">Patients</div>
-            <div class="v" id="miniPatients">0</div>
-          </div>
-          <div class="row">
-            <div class="k" id="uiMiniSessions">Sessions</div>
-            <div class="v" id="miniSessions">0</div>
-          </div>
-          <div class="row">
-            <div class="k" id="uiMiniTotal">Total</div>
-            <div class="v" id="miniTotal">0</div>
-          </div>
-        </div>
-
-      </div>
-
+    <div>
+      <button class="btn" id="btnLang">🌐</button>
+      <button class="btn" id="btnTheme">🌓</button>
+      <button class="btn" id="btnLogout">🚪</button>
     </div>
   </div>
+</div>
 
-  <!-- Dependencies -->
-  <script src="assets/js/storage.js"></script>
-  <script src="assets/js/settings-system.js"></script>
+<div class="wrap">
+  <div class="card">
+    <h3>⚡ Quick Actions</h3>
 
-  <!-- Dashboard Module -->
-  <script type="module" src="assets/js/dashboard.module.js"></script>
-  <script>
-/* =====================
-   THEME: Light / Dark
-===================== */
+    <div class="nav">
+      <a href="patients.html">👥 Patients</a>
+      <a href="#" id="navPaymentsLink">💳 Payments</a>
+      <a href="receive.html">💰 Receive</a>
+      <a href="settings.html">⚙️ Settings</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+
+<script src="assets/js/storage.js"></script>
+
+<!-- THEME -->
+<script>
 const btnTheme = document.getElementById("btnTheme");
-const uiTheme  = document.getElementById("uiTheme");
-
-function applyTheme(theme){
-  document.body.classList.toggle("dark", theme === "dark");
-  if (uiTheme) uiTheme.textContent = theme === "dark" ? "Dark" : "Light";
-  localStorage.setItem("theme", theme);
+function applyTheme(t){
+  document.body.classList.toggle("dark", t==="dark");
+  localStorage.setItem("theme",t);
 }
+applyTheme(localStorage.getItem("theme")||"light");
+btnTheme.onclick=()=>applyTheme(
+  document.body.classList.contains("dark")?"light":"dark"
+);
+</script>
 
-// تحميل الثيم المحفوظ
-applyTheme(localStorage.getItem("theme") || "light");
+<!-- LANGUAGE -->
+<script>
+const btnLang=document.getElementById("btnLang");
+btnLang.onclick=()=>{
+  const l=localStorage.getItem("lang")==="ar"?"en":"ar";
+  localStorage.setItem("lang",l);
+  document.documentElement.dir=l==="ar"?"rtl":"ltr";
+};
+</script>
 
-btnTheme && btnTheme.addEventListener("click", () => {
-  const next = document.body.classList.contains("dark") ? "light" : "dark";
-  applyTheme(next);
-});
-
-
-/* =====================
-   LANGUAGE: AR / EN
-===================== */
-const btnLang = document.getElementById("btnLang");
-const uiLang  = document.getElementById("uiLang");
-
-function applyLang(lang){
-  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  if (uiLang) uiLang.textContent = lang.toUpperCase();
-  localStorage.setItem("lang", lang);
-}
-
-// تحميل اللغة المحفوظة
-applyLang(localStorage.getItem("lang") || "en");
-
-btnLang && btnLang.addEventListener("click", () => {
-  const current = localStorage.getItem("lang") || "en";
-  applyLang(current === "en" ? "ar" : "en");
-});
-
-
-/* =====================
-   LOGOUT
-===================== */
-const btnLogout = document.getElementById("btnLogout");
-
-btnLogout && btnLogout.addEventListener("click", () => {
+<!-- LOGOUT -->
+<script>
+document.getElementById("btnLogout").onclick=()=>{
   localStorage.removeItem("loggedIn");
-  window.location.href = "index.html";
-});
+  location.href="index.html";
+};
+</script>
 
-
-<!-- 🔐 التعديل الوحيد (PIN PROTECTION) -->
+<!-- 🔐 PAYMENTS PIN (الصحيح والمستقر) -->
 <script type="module">
 import { verifyPaymentsPIN, t } from "./assets/js/settings-system.js";
 
-const paymentsLink = document.getElementById("navPaymentsLink");
+const paymentsLink=document.getElementById("navPaymentsLink");
 
-paymentsLink.addEventListener("click", (e) => {
+paymentsLink.addEventListener("click",e=>{
   e.preventDefault();
 
-  const enteredPin = prompt(t("enterPin"));
-  if (!enteredPin) return;
+  const pin=prompt(t("enterPin"));
+  if(!pin) return;
 
-  if (verifyPaymentsPIN(enteredPin)) {
-    window.location.href = "payments.html";
-  } else {
+  if(verifyPaymentsPIN(pin)){
+    location.href="payments.html";
+  }else{
     alert(t("wrongPin"));
   }
 });
 </script>
 
 </body>
-</html>   
+</html>

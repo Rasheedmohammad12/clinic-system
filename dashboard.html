@@ -169,27 +169,36 @@ document.getElementById("btnLogout").onclick=()=>{
   localStorage.removeItem("loggedIn");
   location.href="index.html";
 };
-</script>
-
-<!-- 🔐 PAYMENTS PIN (الصحيح والمستقر) -->
 <script type="module">
-import { verifyPaymentsPIN, t } from "./assets/js/settings-system.js";
+import { verifyPaymentsPIN, t, getSettings } from "./assets/js/settings-system.js";
+import { getCurrentUser } from "./assets/js/auth.js";
 
-const paymentsLink=document.getElementById("navPaymentsLink");
+const user = getCurrentUser();
+const paymentsLink = document.getElementById("navPaymentsLink");
 
-paymentsLink.addEventListener("click",e=>{
+paymentsLink.addEventListener("click", e => {
   e.preventDefault();
 
-  const pin=prompt(t("enterPin"));
-  if(!pin) return;
+  if (!user) {
+    alert("المستخدم غير مسجل دخول");
+    return;
+  }
 
-  if(verifyPaymentsPIN(pin)){
-    location.href="payments.html";
-  }else{
-    alert(t("wrongPin"));
+  // ✅ جلب اللغة الصحيحة
+  const settings = getSettings(user.id);
+  const lang = settings.lang;
+
+  const pin = prompt(t(lang, "enterPin"));
+  if (!pin) return;
+
+  if (verifyPaymentsPIN(user.id, pin)) {
+    window.location.href = "payments.html";
+  } else {
+    alert(t(lang, "wrongPin"));
   }
 });
 </script>
+
 
 </body>
 </html>

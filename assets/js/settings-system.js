@@ -1,14 +1,15 @@
 /* ===============================
-   SETTINGS SYSTEM (PER USER)
+   SETTINGS SYSTEM (PER USER - FIXED)
 ================================ */
 
 import { getCurrentUser } from "./auth.js";
 
-/* ====== USER ====== */
-const user = getCurrentUser();
-if (!user) {
-  window.location.href = "index.html";
+/* ====== SAFE USER ====== */
+function safeUser() {
+  return getCurrentUser() || { id: "guest" };
 }
+
+const user = safeUser();
 
 /* ====== STORAGE KEYS ====== */
 const SETTINGS_KEY = `clinic_settings_${user.id}`;
@@ -42,7 +43,7 @@ export function getPaymentsPIN() {
 }
 
 export function verifyPaymentsPIN(pin) {
-  return getPaymentsPIN() === pin;
+  return pin === getPaymentsPIN();
 }
 
 /* ====== LANGUAGE ====== */
@@ -77,7 +78,7 @@ const translations = {
 
 export function t(key) {
   const { lang } = getSettings();
-  return translations[lang][key] || key;
+  return translations[lang]?.[key] || key;
 }
 
 /* ====== CURRENCY ====== */
@@ -99,7 +100,7 @@ export function applySystem() {
 
 document.addEventListener("DOMContentLoaded", applySystem);
 
-/* ====== PAYMENTS GATE (PROTECTION) ====== */
+/* ====== PAYMENTS GATE ====== */
 export function protectPaymentsPage() {
   const pin = getPaymentsPIN();
   if (!pin) {

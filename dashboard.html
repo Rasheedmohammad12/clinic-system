@@ -153,5 +153,53 @@ document.getElementById("navPaymentsLink").onclick=e=>{
 };
 </script>
 
+<script>
+const translations = {
+  ar: {
+    system: "نظام العيادة",
+    dashboard: "لوحة التحكم",
+    quick: "⚡ إجراءات سريعة",
+    patients: "👥 المرضى",
+    payments: "💳 المدفوعات",
+    receive: "💰 استلام",
+    settings: "⚙️ الإعدادات"
+  },
+  en: {
+    system: "Clinic System",
+    dashboard: "Dashboard",
+    quick: "⚡ Quick Actions",
+    patients: "👥 Patients",
+    payments: "💳 Payments",
+    receive: "💰 Receive",
+    settings: "⚙️ Settings"
+  }
+};
+
+function applyDashboardLang(lang){
+  const t = translations[lang];
+
+  document.getElementById("txtSystem").innerText = t.system;
+  document.getElementById("txtDashboard").innerText = t.dashboard;
+  document.getElementById("txtQuick").innerText = t.quick;
+  document.getElementById("txtPatients").innerText = t.patients;
+  document.getElementById("txtPayments").innerText = t.payments;
+  document.getElementById("txtReceive").innerText = t.receive;
+  document.getElementById("txtSettings").innerText = t.settings;
+
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  localStorage.setItem("lang", lang);
+}
+
+// تحميل اللغة عند فتح الصفحة
+applyDashboardLang(localStorage.getItem("lang") || "ar");
+
+// زر تغيير اللغة 🌐
+document.getElementById("btnLang").onclick = () => {
+  const current = localStorage.getItem("lang") || "ar";
+  applyDashboardLang(current === "ar" ? "en" : "ar");
+};
+</script>
+
+  
 </body>
 </html>

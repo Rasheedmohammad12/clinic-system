@@ -1,5 +1,5 @@
 /* ===============================
-   AUTH SYSTEM (LOGIN + REGISTER)
+   AUTH SYSTEM (FIXED)
 ================================ */
 
 // ---------- Helpers ----------
@@ -12,11 +12,11 @@ function saveUsers(users) {
 }
 
 export function getCurrentUser() {
-  const email = localStorage.getItem("loggedInUser");
-  if (!email) return null;
+  const id = localStorage.getItem("loggedInUser");
+  if (!id) return null;
 
   const users = getUsers();
-  return users.find(u => u.email === email) || null;
+  return users.find(u => String(u.id) === String(id)) || null;
 }
 
 export function requireAuth() {
@@ -49,7 +49,8 @@ if (loginForm) {
       return;
     }
 
-    localStorage.setItem("loggedInUser", user.email);
+    // ✅ الحفظ الصحيح
+    localStorage.setItem("loggedInUser", user.id);
     localStorage.setItem("loggedIn", "true");
 
     window.location.href = "dashboard.html";
@@ -79,14 +80,12 @@ if (registerForm) {
       return;
     }
 
-    const isFirstUser = users.length === 0;
-
     const newUser = {
       id: Date.now(),
       username: name,
       email,
       password,
-      role: isFirstUser ? "admin" : "user"
+      role: users.length === 0 ? "admin" : "user"
     };
 
     users.push(newUser);

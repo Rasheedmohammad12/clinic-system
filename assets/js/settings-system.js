@@ -1,23 +1,20 @@
 /* ===============================
-   SETTINGS SYSTEM (PER USER - FIXED)
+   SETTINGS SYSTEM (PER USER – FINAL)
 ================================ */
 
-import { getCurrentUser } from "./auth.js";
-
-/* ====== SAFE USER ====== */
-function safeUser() {
-  return getCurrentUser() || { id: "guest" };
+/* ====== STORAGE KEY HELPERS ====== */
+function settingsKey(userId) {
+  return `clinic_settings_${userId}`;
 }
 
-const user = safeUser();
-
-/* ====== STORAGE KEYS ====== */
-const SETTINGS_KEY = `clinic_settings_${user.id}`;
-const PAYMENTS_PIN_KEY = `payments_pin_${user.id}`;
+function pinKey(userId) {
+  return `payments_pin_${userId}`;
+}
 
 /* ====== SETTINGS ====== */
-export function getSettings() {
-  const s = localStorage.getItem(SETTINGS_KEY);
+export function getSettings(userId) {
+  const key = settingsKey(userId);
+  const s = localStorage.getItem(key);
   if (s) return JSON.parse(s);
 
   const init = {
@@ -25,93 +22,43 @@ export function getSettings() {
     theme: "light",
     currency: "JOD"
   };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(init));
+  localStorage.setItem(key, JSON.stringify(init));
   return init;
 }
 
-export function saveSettings(s) {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+export function saveSettings(userId, s) {
+  localStorage.setItem(settingsKey(userId), JSON.stringify(s));
 }
 
 /* ====== PAYMENTS PIN ====== */
-export function setPaymentsPIN(pin) {
-  localStorage.setItem(PAYMENTS_PIN_KEY, pin);
+export function setPaymentsPIN(userId, pin) {
+  localStorage.setItem(pinKey(userId), pin);
 }
 
-export function getPaymentsPIN() {
-  return localStorage.getItem(PAYMENTS_PIN_KEY);
+export function verifyPaymentsPIN(userId, pin) {
+  return localStorage.getItem(pinKey(userId)) === pin;
 }
 
-export function verifyPaymentsPIN(pin) {
-  return pin === getPaymentsPIN();
-}
-
-/* ====== LANGUAGE ====== */
+/* ====== TRANSLATIONS ====== */
 const translations = {
   ar: {
-    dashboard: "لوحة التحكم",
-    patients: "المرضى",
-    sessions: "الجلسات",
-    payments: "المدفوعات",
-    receive: "استلام المبالغ",
-    settings: "الإعدادات",
-    users: "المستخدمين",
-    logout: "تسجيل خروج",
-    totalPayments: "إجمالي المدفوعات",
     enterPin: "أدخل الرمز السري للمدفوعات",
     wrongPin: "الرمز غير صحيح"
   },
   en: {
-    dashboard: "Dashboard",
-    patients: "Patients",
-    sessions: "Sessions",
-    payments: "Payments",
-    receive: "Receive Payment",
-    settings: "Settings",
-    users: "Users",
-    logout: "Logout",
-    totalPayments: "Total Payments",
     enterPin: "Enter payments PIN",
     wrongPin: "Wrong PIN"
   }
 };
 
-export function t(key) {
-  const { lang } = getSettings();
+export function t(lang, key) {
   return translations[lang]?.[key] || key;
 }
 
-/* ====== CURRENCY ====== */
-export function formatCurrency(v) {
-  const { lang, currency } = getSettings();
-  return new Intl.NumberFormat(
-    lang === "ar" ? "ar-JO" : "en-US",
-    { style: "currency", currency }
-  ).format(Number(v) || 0);
-}
-
-/* ====== THEME + DIRECTION ====== */
-export function applySystem() {
-  const s = getSettings();
+/* ====== APPLY SYSTEM ====== */
+export function applySystem(userId) {
+  const s = getSettings(userId);
   document.documentElement.lang = s.lang;
   document.documentElement.dir = s.lang === "ar" ? "rtl" : "ltr";
   document.body.className = s.theme;
-}
-
-document.addEventListener("DOMContentLoaded", applySystem);
-
-/* ====== PAYMENTS GATE ====== */
-export function protectPaymentsPage() {
-  const pin = getPaymentsPIN();
-  if (!pin) {
-    alert("لم يتم تعيين رمز سري للمدفوعات");
-    window.location.href = "settings.html";
-    return;
-  }
-
-  const entered = prompt(t("enterPin"));
-  if (entered !== pin) {
-    alert(t("wrongPin"));
-    window.location.href = "dashboard.html";
-  }
 }

@@ -88,7 +88,26 @@ tbody tr:hover{
   </div>
 </div>
 
-<!-- JS -->
+<!-- ===============================
+     🔐 PAYMENTS PIN PROTECTION
+     (الحل النهائي)
+================================ -->
+<script type="module">
+import { protectPaymentsPage } from "./assets/js/settings-system.js";
+
+/*
+  هذا السطر هو السر:
+  - نفس الصفحة
+  - نفس المستخدم
+  - نفس المفتاح
+  - لا mismatch
+*/
+protectPaymentsPage();
+</script>
+
+<!-- ===============================
+     باقي السكربتات
+================================ -->
 <script src="assets/js/settings-system.js"></script>
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/payments.js"></script>

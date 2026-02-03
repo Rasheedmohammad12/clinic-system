@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>Clinic System | Dashboard</title>
@@ -10,81 +10,46 @@
 
   <style>
     :root{
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --primary-2: #1e40af;
-      --border: rgba(15, 23, 42, 0.08);
-      --shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
-      --shadow2: 0 8px 20px rgba(2, 6, 23, 0.06);
-      --radius: 16px;
+      --bg:#f4f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;
+      --primary:#2563eb;--primary-2:#1e40af;
+      --border:rgba(15,23,42,.08);--shadow:0 10px 30px rgba(2,6,23,.08);
+      --radius:16px;
     }
-
     body.dark{
-      --bg: #0b1220;
-      --card: #0f1b32;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --primary: #60a5fa;
-      --primary-2: #3b82f6;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 12px 36px rgba(0,0,0,0.35);
-      --shadow2: 0 10px 24px rgba(0,0,0,0.28);
+      --bg:#0b1220;--card:#0f1b32;--text:#e5e7eb;--muted:#9ca3af;
+      --primary:#60a5fa;--primary-2:#3b82f6;
     }
-
-    *{ box-sizing: border-box; }
-    html, body { height: 100%; }
     body{
-      margin:0;
-      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      margin:0;font-family:"Segoe UI",Tahoma,Arial;
+      background:var(--bg);color:var(--text);
     }
-
     .topbar{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff;
-      padding: 14px 18px;
-      box-shadow: var(--shadow2);
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      color:#fff;padding:14px 18px;
     }
     .topbar-inner{
-      max-width: 1200px;
-      margin: 0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      max-width:1200px;margin:auto;
+      display:flex;justify-content:space-between;align-items:center;
     }
-
-    .brand{display:flex;gap:10px;align-items:center;}
+    .brand{display:flex;gap:10px;align-items:center}
     .brand-badge{
       width:40px;height:40px;border-radius:14px;
       background:rgba(255,255,255,.2);
       display:flex;align-items:center;justify-content:center;
     }
-
     .btn{
       border:none;border-radius:12px;
       padding:10px 12px;
       background:rgba(255,255,255,.18);
       color:#fff;cursor:pointer;
     }
-
-    .wrap{max-width:1200px;margin:20px auto;padding:0 18px;}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-    @media(max-width:900px){.grid{grid-template-columns:1fr;}}
-
+    .wrap{max-width:1200px;margin:20px auto;padding:0 18px}
     .card{
       background:var(--card);
       border-radius:16px;
       box-shadow:var(--shadow);
       padding:16px;
     }
-
     .nav{
       display:grid;
       grid-template-columns:repeat(2,1fr);
@@ -114,7 +79,6 @@
         <div style="font-size:12px">Dashboard</div>
       </div>
     </div>
-
     <div>
       <button class="btn" id="btnLang">🌐</button>
       <button class="btn" id="btnTheme">🌓</button>
@@ -126,7 +90,6 @@
 <div class="wrap">
   <div class="card">
     <h3>⚡ Quick Actions</h3>
-
     <div class="nav">
       <a href="patients.html">👥 Patients</a>
       <a href="#" id="navPaymentsLink">💳 Payments</a>
@@ -136,15 +99,11 @@
   </div>
 </div>
 
-<!-- ===== SCRIPTS ===== -->
-
-<script src="assets/js/storage.js"></script>
-
 <!-- THEME -->
 <script>
-const btnTheme = document.getElementById("btnTheme");
+const btnTheme=document.getElementById("btnTheme");
 function applyTheme(t){
-  document.body.classList.toggle("dark", t==="dark");
+  document.body.classList.toggle("dark",t==="dark");
   localStorage.setItem("theme",t);
 }
 applyTheme(localStorage.getItem("theme")||"light");
@@ -167,38 +126,32 @@ btnLang.onclick=()=>{
 <script>
 document.getElementById("btnLogout").onclick=()=>{
   localStorage.removeItem("loggedIn");
+  localStorage.removeItem("loggedInUser");
   location.href="index.html";
 };
-<script type="module">
-import { verifyPaymentsPIN, t, getSettings } from "./assets/js/settings-system.js";
-import { getCurrentUser } from "./assets/js/auth.js";
+</script>
 
-const user = getCurrentUser();
-const paymentsLink = document.getElementById("navPaymentsLink");
-
-paymentsLink.addEventListener("click", e => {
+<!-- 🔐 PAYMENTS PIN (مضمون) -->
+<script>
+document.getElementById("navPaymentsLink").onclick=e=>{
   e.preventDefault();
 
-  if (!user) {
-    alert("المستخدم غير مسجل دخول");
+  const pin=localStorage.getItem("paymentPin");
+  if(!pin){
+    alert("يرجى تعيين رمز المدفوعات من الإعدادات أولًا");
     return;
   }
 
-  // ✅ جلب اللغة الصحيحة
-  const settings = getSettings(user.id);
-  const lang = settings.lang;
+  const entered=prompt("أدخل الرمز السري للمدفوعات");
+  if(!entered) return;
 
-  const pin = prompt(t(lang, "enterPin"));
-  if (!pin) return;
-
-  if (verifyPaymentsPIN(user.id, pin)) {
-    window.location.href = "payments.html";
-  } else {
-    alert(t(lang, "wrongPin"));
+  if(entered===pin){
+    location.href="payments.html";
+  }else{
+    alert("الرمز غير صحيح");
   }
-});
+};
 </script>
-
 
 </body>
 </html>
